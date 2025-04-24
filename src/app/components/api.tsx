@@ -6,7 +6,7 @@ function Api() {
     <div>
       <button
         onClick={async () => {
-          const res = electron.ipcRenderer.send("ping");
+          const res = await electron.ipcRenderer.invoke("ping");
           console.log("ping res", res);
         }}
       >
