@@ -1,7 +1,7 @@
 "use client";
 
 import { User } from "@/generated/prisma";
-import { deleteUser } from "@/lib/actions/user";
+import { deleteUser } from "@/server/user";
 
 interface UserCardProps {
   user: User;

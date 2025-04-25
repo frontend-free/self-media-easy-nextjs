@@ -1,4 +1,4 @@
-import * as UserAction from "@/lib/actions/user";
+import * as UserAction from "@/server/user";
 import AddUserForm from "./components/add_user_form";
 import UserCard from "./components/user_card";
 import Api from "./components/api";

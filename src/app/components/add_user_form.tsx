@@ -1,6 +1,6 @@
 "use client";
 
-import * as UserAction from "@/lib/actions/user";
+import * as UserAction from "@/server/user";
 import { useState } from "react";
 
 function AddUserForm() {
