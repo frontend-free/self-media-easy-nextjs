@@ -1,4 +1,4 @@
 // @ts-ignore
-const electron = window.electron;
+const electron = window && window.electron;
 
 export default electron;
