@@ -16,16 +16,10 @@ datasource db {
 
 // 用户模型
 model User {
-  // 用户ID，主键，自动递增
   id        Int      @id @default(autoincrement())
-  // 用户邮箱，唯一
-  email     String   @unique
-  // 用户名称，可选
+  mobile    String   @unique
   name      String?
-  // 用户密码
   password  String
-  // 创建时间，默认为当前时间
   createdAt DateTime @default(now())
-  // 更新时间，自动更新
   updatedAt DateTime @updatedAt
 }

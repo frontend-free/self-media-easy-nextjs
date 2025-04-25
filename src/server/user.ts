@@ -5,12 +5,16 @@ import { revalidatePath } from "next/cache";
 
 const prisma = new PrismaClient();
 
-export type CreateUserInput = Pick<User, "email" | "name" | "password">;
+export type CreateUserInput = Pick<User, "mobile" | "name">;
 export type UpdateUserInput = Partial<Pick<User, "name" | "password">>;
 
 export async function createUser(data: CreateUserInput) {
   const user = await prisma.user.create({
-    data,
+    data: {
+      ...data,
+      // 默认密码
+      password: "123456",
+    },
   });
   revalidatePath("/");
   return user;
