@@ -1,19 +1,15 @@
-"use client";
+'use client';
 
-import { useState, useRef, RefObject } from "react";
-import { Button, message } from "antd";
-import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
-import { useRouter } from "next/navigation";
-import { ModalForm, ProTable, ProFormText } from "@ant-design/pro-components";
-import type { ActionType, ProColumns } from "@ant-design/pro-components";
-import * as UserAction from "@/server/user";
-import { User } from "@/generated/prisma";
+import { User } from '@/generated/prisma';
+import * as UserAction from '@/server/user';
+import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
+import type { ActionType, ProColumns } from '@ant-design/pro-components';
+import { ModalForm, ProFormText, ProTable } from '@ant-design/pro-components';
+import { Button, message } from 'antd';
+import { useRouter } from 'next/navigation';
+import { RefObject, useRef } from 'react';
 
-function UserAdd({
-  actionRef,
-}: {
-  actionRef: RefObject<ActionType | undefined>;
-}) {
+function UserAdd({ actionRef }: { actionRef: RefObject<ActionType | undefined> }) {
   return (
     <ModalForm
       title="新增用户"
@@ -21,7 +17,7 @@ function UserAdd({
       onFinish={async (values) => {
         await UserAction.createUser(values as UserAction.CreateUserInput);
 
-        message.success("新增成功");
+        message.success('新增成功');
 
         actionRef.current?.reload();
 
@@ -35,56 +31,43 @@ function UserAdd({
 }
 
 function UsersPage() {
-  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
   const fetchUsers = async () => {
-    setLoading(true);
-    try {
-      const data = await UserAction.getUsers();
-      return {
-        data,
-        success: true,
-        total: data.length,
-      };
-    } catch (error) {
-      message.error("获取用户列表失败");
-      return {
-        data: [],
-        success: false,
-        total: 0,
-      };
-    } finally {
-      setLoading(false);
-    }
+    const data = await UserAction.getUsers();
+    return {
+      data,
+      success: true,
+      total: data.length,
+    };
   };
 
   const columns: ProColumns<User>[] = [
     {
-      title: "ID",
-      dataIndex: "id",
-      key: "id",
+      title: 'ID',
+      dataIndex: 'id',
+      key: 'id',
     },
     {
-      title: "手机号",
-      dataIndex: "mobile",
-      key: "mobile",
+      title: '手机号',
+      dataIndex: 'mobile',
+      key: 'mobile',
     },
     {
-      title: "姓名",
-      dataIndex: "name",
-      key: "name",
+      title: '姓名',
+      dataIndex: 'name',
+      key: 'name',
     },
     {
-      title: "创建时间",
-      dataIndex: "createdAt",
-      key: "createdAt",
-      valueType: "dateTime",
+      title: '创建时间',
+      dataIndex: 'createdAt',
+      key: 'createdAt',
+      valueType: 'dateTime',
     },
     {
-      title: "操作",
-      key: "action",
-      valueType: "option",
+      title: '操作',
+      key: 'action',
+      valueType: 'option',
       render: (_, record) => [
         <Button
           key="edit"
@@ -99,24 +82,18 @@ function UsersPage() {
           type="link"
           danger
           icon={<DeleteOutlined />}
-          onClick={() => handleDelete(record.id)}
+          onClick={async () => {
+            await UserAction.deleteUser(record.id);
+            message.success('删除成功');
+            // 刷新表格
+            actionRef.current?.reload();
+          }}
         >
           删除
         </Button>,
       ],
     },
   ];
-
-  const handleDelete = async (id: number) => {
-    try {
-      await UserAction.deleteUser(id);
-      message.success("删除成功");
-      // 刷新表格
-      actionRef.current?.reload();
-    } catch (error) {
-      message.error("删除失败");
-    }
-  };
 
   const actionRef = useRef<ActionType | undefined>(undefined);
 
@@ -126,11 +103,10 @@ function UsersPage() {
         headerTitle="用户管理"
         actionRef={actionRef}
         rowKey="id"
-        loading={loading}
         columns={columns}
         request={fetchUsers}
         search={false}
-        toolBarRender={() => [<UserAdd actionRef={actionRef} />]}
+        toolBarRender={() => [<UserAdd key="add" actionRef={actionRef} />]}
       />
     </div>
   );
