@@ -1,6 +1,6 @@
 'use client';
 
-import { HomeOutlined, SendOutlined, UserOutlined } from '@ant-design/icons';
+import { HomeOutlined, ScheduleOutlined, SendOutlined, UserOutlined } from '@ant-design/icons';
 import { Menu } from 'antd';
 import { usePathname, useRouter } from 'next/navigation';
 
@@ -19,6 +19,11 @@ const menuItems = [
     key: '/account',
     label: '账号',
     icon: <UserOutlined />,
+  },
+  {
+    key: '/schedule',
+    label: '任务',
+    icon: <ScheduleOutlined />,
   },
 ];
 

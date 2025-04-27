@@ -15,6 +15,7 @@ function UserDropdown({ children }: { children: React.ReactNode }) {
 
   return (
     <Dropdown
+      trigger={['click']}
       menu={{
         items: [
           {

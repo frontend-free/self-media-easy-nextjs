@@ -1,7 +1,9 @@
 import * as AuthAction from '@/app/actions/auth_action';
+import AuthComponent from '@/app/components/auth_component';
 import { UserAvatar } from '@/app/components/avatar';
 import AppMenu from '@/app/components/menu';
 import UserDropdown from '@/app/components/user_dropdown';
+import { RightOutlined } from '@ant-design/icons';
 import { AntdRegistry } from '@ant-design/nextjs-registry';
 import type { Metadata } from 'next';
 import './globals.css';
@@ -19,7 +21,8 @@ const Icon = async () => {
       <UserDropdown>
         <div className="flex gap-2 items-center cursor-pointer">
           <UserAvatar size={30} src={user?.avatar || undefined} />
-          <div>{user?.name}</div>
+          <div className="flex-1">{user?.name}</div>
+          <RightOutlined className="text-xs" />
         </div>
       </UserDropdown>
     </div>
@@ -32,15 +35,16 @@ function RootLayout({ children }: { children: React.ReactNode }) {
       <body>
         <AntdRegistry>
           <div className="h-screen w-screen flex bg-gray-200">
-            <div className="w-[220px] h-full flex flex-col gap-2">
-              <div className="h-5"></div>
-
-              <Icon />
-              <div className="flex-1">
-                <AppMenu />
+            <AuthComponent>
+              <div className="w-[220px] h-full flex flex-col gap-2">
+                <div className="h-5"></div>
+                <Icon />
+                <div className="flex-1">
+                  <AppMenu />
+                </div>
+                <div></div>
               </div>
-              <div></div>
-            </div>
+            </AuthComponent>
 
             <div className="flex-1 p-2 flex flex-col">
               <div className="bg-white rounded-md flex-1 p-2">{children}</div>
