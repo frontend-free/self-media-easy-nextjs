@@ -1,12 +1,11 @@
 -- CreateTable
 CREATE TABLE "User" (
     "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    "mobile" TEXT NOT NULL,
-    "name" TEXT,
+    "name" TEXT NOT NULL,
     "password" TEXT NOT NULL,
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" DATETIME NOT NULL
 );
 
 -- CreateIndex
-CREATE UNIQUE INDEX "User_mobile_key" ON "User"("mobile");
+CREATE UNIQUE INDEX "User_name_key" ON "User"("name");

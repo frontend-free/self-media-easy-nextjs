@@ -1,7 +1,7 @@
 'use client';
 
+import * as UserAction from '@/app/actions/user_action';
 import { User } from '@/generated/prisma';
-import * as UserAction from '@/server/user';
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { ModalForm, ProFormText, ProTable } from '@ant-design/pro-components';
@@ -24,8 +24,7 @@ function UserAdd({ actionRef }: { actionRef: RefObject<ActionType | undefined> }
         return true;
       }}
     >
-      <ProFormText name="name" label="姓名" />
-      <ProFormText name="mobile" label="手机号" />
+      <ProFormText name="name" label="用户名" />
     </ModalForm>
   );
 }
@@ -49,12 +48,7 @@ function UsersPage() {
       key: 'id',
     },
     {
-      title: '手机号',
-      dataIndex: 'mobile',
-      key: 'mobile',
-    },
-    {
-      title: '姓名',
+      title: '用户名',
       dataIndex: 'name',
       key: 'name',
     },
