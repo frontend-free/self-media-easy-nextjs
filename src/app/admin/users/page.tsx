@@ -4,7 +4,7 @@ import * as UserAction from '@/app/actions/user_action';
 import { User } from '@/generated/prisma';
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
-import { ModalForm, ProFormText, ProTable } from '@ant-design/pro-components';
+import { ModalForm, ProFormSwitch, ProFormText, ProTable } from '@ant-design/pro-components';
 import { Button, message } from 'antd';
 import { useRouter } from 'next/navigation';
 import { RefObject, useRef } from 'react';
@@ -25,6 +25,7 @@ function UserAdd({ actionRef }: { actionRef: RefObject<ActionType | undefined> }
       }}
     >
       <ProFormText name="name" label="用户名" />
+      <ProFormSwitch name="isAdmin" label="是否为管理员" />
     </ModalForm>
   );
 }

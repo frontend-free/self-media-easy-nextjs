@@ -45,4 +45,4 @@ function AppMenu() {
   );
 }
 
-export default AppMenu;
+export { AppMenu };

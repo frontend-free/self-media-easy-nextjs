@@ -13,4 +13,4 @@ function AuthComponent({ children }: { children: React.ReactNode }) {
   return children;
 }
 
-export default AuthComponent;
+export { AuthComponent };

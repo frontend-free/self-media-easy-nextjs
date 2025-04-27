@@ -11,6 +11,7 @@ declare module 'next-auth' {
   interface User {
     id: string;
     name: string;
+    isAdmin: boolean;
   }
 }
 
@@ -34,6 +35,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         return {
           id: user.id,
           name: user.name,
+          isAdmin: user.isAdmin,
         };
       },
     }),
@@ -43,6 +45,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (user) {
         token.id = user.id;
         token.name = user.name;
+        token.isAdmin = user.isAdmin;
       }
       return token;
     },
@@ -51,6 +54,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         session.user = {
           ...session.user,
           id: token.id as string,
+          name: token.name as string,
+          isAdmin: token.isAdmin as boolean,
         };
       }
       return session;

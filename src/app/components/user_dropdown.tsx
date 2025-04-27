@@ -16,6 +16,7 @@ function UserDropdown({ children }: { children: React.ReactNode }) {
   return (
     <Dropdown
       trigger={['click']}
+      placement="bottomRight"
       menu={{
         items: [
           {
@@ -31,4 +32,4 @@ function UserDropdown({ children }: { children: React.ReactNode }) {
   );
 }
 
-export default UserDropdown;
+export { UserDropdown };

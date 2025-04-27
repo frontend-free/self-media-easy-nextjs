@@ -1,11 +1,13 @@
 import * as AuthAction from '@/app/actions/auth_action';
-import AuthComponent from '@/app/components/auth_component';
+import { AuthComponent } from '@/app/components/auth_component';
 import { UserAvatar } from '@/app/components/avatar';
-import AppMenu from '@/app/components/menu';
-import UserDropdown from '@/app/components/user_dropdown';
+import { AppMenu } from '@/app/components/menu';
+import { UserDropdown } from '@/app/components/user_dropdown';
 import { RightOutlined } from '@ant-design/icons';
 import { AntdRegistry } from '@ant-design/nextjs-registry';
+import '@ant-design/v5-patch-for-react-19';
 import type { Metadata } from 'next';
+import Link from 'next/link';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -18,13 +20,17 @@ const Icon = async () => {
 
   return (
     <div className="p-2 pl-4">
-      <UserDropdown>
-        <div className="flex gap-2 items-center cursor-pointer">
+      <div className="flex gap-2 items-center cursor-pointer">
+        <Link href="/" className="flex flex-1 gap-2 items-center">
           <UserAvatar size={30} src={user?.avatar || undefined} />
           <div className="flex-1">{user?.name}</div>
-          <RightOutlined className="text-xs" />
-        </div>
-      </UserDropdown>
+        </Link>
+        <UserDropdown>
+          <div>
+            <RightOutlined className="text-xs" />
+          </div>
+        </UserDropdown>
+      </div>
     </div>
   );
 };
