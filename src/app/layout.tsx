@@ -3,6 +3,8 @@ import { AdminComponent, AuthComponent } from '@/app/components/auth_component';
 import { UserAvatar } from '@/app/components/avatar';
 import { AppMenu } from '@/app/components/menu';
 import { UserDropdown } from '@/app/components/user_dropdown';
+import { initDatabase } from '@/init/init_db';
+
 import {
   HomeOutlined,
   RightOutlined,
@@ -18,6 +20,9 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import './globals.css';
 
+// 初始化数据库
+initDatabase().catch(console.error);
+
 export const metadata: Metadata = {
   title: '驾K先锋',
   description: '驾K先锋',
@@ -31,7 +36,7 @@ const Icon = async () => {
       <div className="flex gap-2 items-center cursor-pointer">
         <Link href="/" className="flex flex-1 gap-2 items-center">
           <UserAvatar size={30} src={user?.avatar || undefined} />
-          <div className="flex-1 text-black">{user?.name}</div>
+          <div className="flex-1 text-black">{user?.nickname || user?.name}</div>
         </Link>
         <UserDropdown>
           <div>
