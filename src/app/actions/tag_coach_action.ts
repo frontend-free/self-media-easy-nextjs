@@ -23,10 +23,15 @@ export async function createTagCoach(data: CreateTagCoachInput) {
 
 // 分页获取 TagCoach
 export async function pageTagCoaches(params: { pageSize: number; current: number; name?: string }) {
+  const { sessionUser } = await needAuth();
+
   return pageModel<TagCoach, 'tagCoach'>({
     model: 'tagCoach',
     params,
-    where: { name: { contains: params.name } },
+    where: {
+      name: { contains: params.name },
+      userId: sessionUser.id,
+    },
     include: {
       user: true,
       account: true,

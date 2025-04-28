@@ -78,9 +78,9 @@ function RootLayout({ children }: { children: React.ReactNode }) {
         <AntdRegistry>
           <ConfigProvider locale={zhCN}>
             <App>
-              <AdminComponent admin={children}>
-                <div className="h-screen w-screen flex bg-gray-200">
-                  <AuthComponent>
+              <AdminComponent element={children}>
+                <AuthComponent element={children}>
+                  <div className="h-screen w-screen flex bg-gray-200">
                     <div className="w-[220px] h-full flex flex-col gap-2">
                       <div className="h-5"></div>
                       <Icon />
@@ -89,12 +89,12 @@ function RootLayout({ children }: { children: React.ReactNode }) {
                       </div>
                       <div></div>
                     </div>
-                  </AuthComponent>
 
-                  <div className="flex-1 p-2 flex flex-col">
-                    <div className="bg-white rounded-md flex-1 p-4">{children}</div>
+                    <div className="flex-1 p-2 flex flex-col">
+                      <div className="bg-white rounded-md flex-1 p-4">{children}</div>
+                    </div>
                   </div>
-                </div>
+                </AuthComponent>
               </AdminComponent>
             </App>
           </ConfigProvider>
