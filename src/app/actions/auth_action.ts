@@ -1,9 +1,9 @@
 'use server';
 
 import * as UserAction from '@/app/actions/user_action';
-import { auth, signIn, signOut } from '@/auth';
+import { signIn, signOut } from '@/auth';
 import { User } from '@/generated/prisma';
-import { prisma } from './helper';
+import { needAuth, prisma } from './helper';
 
 export async function login({ name, password }: { name: string; password: string }) {
   await signIn('credentials', {
@@ -20,13 +20,9 @@ export async function logout() {
 }
 
 export async function getUser() {
-  const session = await auth();
+  const { sessionUser } = await needAuth();
 
-  if (!session?.user) {
-    return null;
-  }
-
-  const user = await UserAction.getUserById(session.user.id);
+  const user = await UserAction.getUserById(sessionUser.id);
 
   return user as User;
 }

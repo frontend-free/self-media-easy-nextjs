@@ -112,7 +112,11 @@ export async function getModelById<T>({
   await needId(id);
   await needAuth();
 
+  console.log('1');
+
   const prismaModel = prisma[model] as any;
+
+  console.log('2', prismaModel);
 
   const result = await prismaModel.findUnique({
     where: { id, ...where },
