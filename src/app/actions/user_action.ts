@@ -2,6 +2,7 @@
 
 import { PrismaClient, User } from '@/generated/prisma';
 import { revalidatePath } from 'next/cache';
+import { pageModel } from './helper';
 
 const prisma = new PrismaClient();
 
@@ -16,13 +17,17 @@ export async function createUser(data: CreateUserInput) {
       password: '123456',
     },
   });
-  revalidatePath('/');
+  revalidatePath('/admin/users');
   return user;
 }
 
-// 获取所有用户
-export async function getUsers() {
-  return prisma.user.findMany();
+// 分页获取用户
+export async function pageUsers(params: { pageSize: number; current: number; name?: string }) {
+  return pageModel<User, 'user'>({
+    model: 'user',
+    params,
+    where: { name: { contains: params.name } },
+  });
 }
 
 // 根据 ID 获取用户
@@ -45,5 +50,5 @@ export async function deleteUser(id: string) {
   await prisma.user.delete({
     where: { id },
   });
-  revalidatePath('/');
+  revalidatePath('/admin/users');
 }

@@ -1,13 +1,13 @@
 import * as AuthAction from '@/app/actions/auth_action';
-import { AuthComponent } from '@/app/components/auth_component';
+import { AdminComponent, AuthComponent } from '@/app/components/auth_component';
 import { UserAvatar } from '@/app/components/avatar';
 import { AppMenu } from '@/app/components/menu';
 import { UserDropdown } from '@/app/components/user_dropdown';
 import {
   HomeOutlined,
   RightOutlined,
-  ScheduleOutlined,
   SendOutlined,
+  UnorderedListOutlined,
   UserOutlined,
 } from '@ant-design/icons';
 import { AntdRegistry } from '@ant-design/nextjs-registry';
@@ -31,7 +31,7 @@ const Icon = async () => {
       <div className="flex gap-2 items-center cursor-pointer">
         <Link href="/" className="flex flex-1 gap-2 items-center">
           <UserAvatar size={30} src={user?.avatar || undefined} />
-          <div className="flex-1">{user?.name}</div>
+          <div className="flex-1 text-black">{user?.name}</div>
         </Link>
         <UserDropdown>
           <div>
@@ -67,7 +67,7 @@ const menuItems = [
   {
     key: '/schedule',
     label: '任务',
-    icon: <ScheduleOutlined />,
+    icon: <UnorderedListOutlined />,
   },
 ];
 
@@ -78,22 +78,24 @@ function RootLayout({ children }: { children: React.ReactNode }) {
         <AntdRegistry>
           <ConfigProvider locale={zhCN}>
             <App>
-              <div className="h-screen w-screen flex bg-gray-200">
-                <AuthComponent>
-                  <div className="w-[220px] h-full flex flex-col gap-2">
-                    <div className="h-5"></div>
-                    <Icon />
-                    <div className="flex-1">
-                      <AppMenu items={menuItems} />
+              <AdminComponent admin={children}>
+                <div className="h-screen w-screen flex bg-gray-200">
+                  <AuthComponent>
+                    <div className="w-[220px] h-full flex flex-col gap-2">
+                      <div className="h-5"></div>
+                      <Icon />
+                      <div className="flex-1">
+                        <AppMenu items={menuItems} />
+                      </div>
+                      <div></div>
                     </div>
-                    <div></div>
-                  </div>
-                </AuthComponent>
+                  </AuthComponent>
 
-                <div className="flex-1 p-2 flex flex-col">
-                  <div className="bg-white rounded-md flex-1 p-2">{children}</div>
+                  <div className="flex-1 p-2 flex flex-col">
+                    <div className="bg-white rounded-md flex-1 p-4">{children}</div>
+                  </div>
                 </div>
-              </div>
+              </AdminComponent>
             </App>
           </ConfigProvider>
         </AntdRegistry>

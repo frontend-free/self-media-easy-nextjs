@@ -2,34 +2,45 @@
 
 import { DeleteOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
-import { ModalForm, ProTable } from '@ant-design/pro-components';
+import { ModalForm } from '@ant-design/pro-components';
 import { App, Button, message } from 'antd';
+import dynamic from 'next/dynamic';
 import { ReactNode, RefObject, useCallback, useMemo, useRef } from 'react';
 
-interface CRUDProps<T> {
+const ProTable = dynamic(
+  () => import('@ant-design/pro-components').then((mod) => mod.ProTable as any),
+  {
+    ssr: false,
+  },
+) as (typeof import('@ant-design/pro-components'))['ProTable'];
+
+interface CRUDProps<T, P> {
   title: string;
   columns: ProColumns<T>[];
   detailForm: ReactNode;
 
-  request: () => Promise<{
+  request: (params: { current: number; pageSize: number } & P) => Promise<{
+    success: boolean;
     data: T[];
+    total: number;
   }>;
   requestAdd: (values: T) => Promise<void>;
   requestDelete: (id: string) => Promise<void>;
 }
 
-function Add<T>({
+function Add<T, P>({
   actionRef,
   requestAdd,
   detailForm,
 }: {
   actionRef: RefObject<ActionType | undefined>;
-  requestAdd: CRUDProps<T>['requestAdd'];
-  detailForm: CRUDProps<T>['detailForm'];
+  requestAdd: CRUDProps<T, P>['requestAdd'];
+  detailForm: CRUDProps<T, P>['detailForm'];
 }) {
   return (
     <ModalForm
       title="新增"
+      autoFocusFirstInput
       trigger={<Button type="primary">新增</Button>}
       onFinish={async (values) => {
         await requestAdd(values as T);
@@ -46,14 +57,14 @@ function Add<T>({
   );
 }
 
-function CRUD<T extends Record<string, any>>({
+function CRUD<T extends Record<string, any>, P extends Record<string, any>>({
   title,
   columns,
   request,
   detailForm,
   requestAdd,
   requestDelete,
-}: CRUDProps<T>) {
+}: CRUDProps<T, P>) {
   const { modal } = App.useApp();
 
   const newColumns: ProColumns<T>[] = useMemo(() => {
@@ -70,7 +81,6 @@ function CRUD<T extends Record<string, any>>({
             danger
             icon={<DeleteOutlined />}
             onClick={() => {
-              console.log('delete');
               modal.confirm({
                 title: '确定删除吗？',
                 onOk: async () => {
@@ -88,29 +98,39 @@ function CRUD<T extends Record<string, any>>({
 
   const actionRef = useRef<ActionType | undefined>(undefined);
 
-  const handleRequest = useCallback(async () => {
-    const res = await request();
-    return {
-      data: res.data,
-      success: true,
-      total: res.data.length,
-    };
-  }, [request]);
+  const handleRequest = useCallback(
+    async (params) => {
+      const res = await request(params);
+      return {
+        data: res.data,
+        success: res.success,
+        total: res.total,
+      };
+    },
+    [request],
+  );
 
   return (
-    <div className="p-6">
-      <ProTable<T>
-        headerTitle={title}
-        actionRef={actionRef}
-        rowKey="id"
-        columns={newColumns}
-        request={handleRequest}
-        search={false}
-        toolBarRender={() => [
-          <Add key="add" actionRef={actionRef} requestAdd={requestAdd} detailForm={detailForm} />,
-        ]}
-      />
-    </div>
+    <ProTable<T>
+      cardBordered
+      headerTitle={title}
+      actionRef={actionRef}
+      rowKey="id"
+      columns={newColumns}
+      request={handleRequest}
+      toolBarRender={() => [
+        <Add<T, P>
+          key="add"
+          actionRef={actionRef}
+          requestAdd={requestAdd}
+          detailForm={detailForm}
+        />,
+      ]}
+      options={false}
+      search={{
+        labelWidth: 'auto',
+      }}
+    />
   );
 }
 

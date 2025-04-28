@@ -31,9 +31,11 @@ model User {
 
 // 标签-教练
 model TagCoach {
-  id     String  @id @default(uuid())
-  name   String
-  avatar String?
+  id   String @id @default(uuid())
+  name String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   userId String
   user   User   @relation(fields: [userId], references: [id])
@@ -46,6 +48,9 @@ model Account {
   id   String @id @default(uuid())
   name String
   type String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   tagCoach   TagCoach @relation(fields: [tagCoachId], references: [id])
   tagCoachId String

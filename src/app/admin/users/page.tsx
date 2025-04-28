@@ -5,9 +5,9 @@ import { CRUD } from '@/app/components/crud';
 import { User } from '@/generated/prisma';
 import { ProFormSwitch, ProFormText } from '@ant-design/pro-components';
 
-function UsersPage() {
+function UsersList() {
   return (
-    <CRUD<User>
+    <CRUD<User, Partial<Pick<User, 'name'>>>
       title="用户管理"
       columns={[
         {
@@ -19,11 +19,13 @@ function UsersPage() {
           title: '昵称',
           dataIndex: 'nickname',
           key: 'nickname',
+          search: false,
         },
         {
           title: '手机号',
           dataIndex: 'mobile',
           key: 'mobile',
+          search: false,
         },
         {
           title: '管理员',
@@ -34,12 +36,14 @@ function UsersPage() {
             checkedChildren: '是',
             unCheckedChildren: '',
           },
+          search: false,
         },
         {
           title: '创建时间',
           dataIndex: 'createdAt',
           key: 'createdAt',
           valueType: 'dateTime',
+          search: false,
         },
       ]}
       detailForm={
@@ -48,10 +52,12 @@ function UsersPage() {
           <ProFormSwitch name="isAdmin" label="是否为管理员" />
         </>
       }
-      request={async () => {
-        const data = await UserAction.getUsers();
+      request={async (params) => {
+        const res = await UserAction.pageUsers(params);
         return {
-          data,
+          data: res.data,
+          total: res.total,
+          success: res.success,
         };
       }}
       requestAdd={async (values) => {
@@ -64,4 +70,4 @@ function UsersPage() {
   );
 }
 
-export default UsersPage;
+export default UsersList;
