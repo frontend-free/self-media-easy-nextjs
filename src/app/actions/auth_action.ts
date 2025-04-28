@@ -2,9 +2,8 @@
 
 import * as UserAction from '@/app/actions/user_action';
 import { auth, signIn, signOut } from '@/auth';
-import { PrismaClient, User } from '@/generated/prisma';
-
-const prisma = new PrismaClient();
+import { User } from '@/generated/prisma';
+import { prisma } from './helper';
 
 export async function login({ name, password }: { name: string; password: string }) {
   await signIn('credentials', {

@@ -3,15 +3,15 @@ import NextAuth, { DefaultSession } from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
 
 declare module 'next-auth' {
-  interface Session {
-    user: User;
-    expires: DefaultSession['expires'];
-  }
-
   interface User {
     id: string;
     name: string;
     isAdmin: boolean;
+  }
+
+  interface Session {
+    user: User;
+    expires: DefaultSession['expires'];
   }
 }
 

@@ -13,6 +13,11 @@ function Page() {
           title: '名字',
           dataIndex: 'name',
         },
+        {
+          title: '归属用户',
+          dataIndex: 'user',
+          render: (_, record) => record.user?.name,
+        },
       ]}
       detailForm={
         <div>

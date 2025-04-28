@@ -27,6 +27,7 @@ model User {
   updatedAt DateTime @updatedAt
 
   tagCoachList TagCoach[]
+  Account      Account[]
 }
 
 // 标签-教练
@@ -40,7 +41,7 @@ model TagCoach {
   userId String
   user   User   @relation(fields: [userId], references: [id])
 
-  Account Account[]
+  account Account[]
 }
 
 // 账号
@@ -52,6 +53,9 @@ model Account {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  tagCoach   TagCoach @relation(fields: [tagCoachId], references: [id])
-  tagCoachId String
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  tagCoach   TagCoach? @relation(fields: [tagCoachId], references: [id])
+  tagCoachId String?
 }

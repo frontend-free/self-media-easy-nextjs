@@ -1,11 +1,7 @@
 'use server';
 
-import { auth } from '@/auth';
-import { PrismaClient, TagCoach } from '@/generated/prisma';
-import { revalidatePath } from 'next/cache';
-import { pageModel } from './helper';
-
-const prisma = new PrismaClient();
+import { TagCoach } from '@/generated/prisma';
+import { needAuth, pageModel, prisma } from './helper';
 
 export type CreateTagCoachInput = Pick<TagCoach, 'name'>;
 
@@ -13,16 +9,15 @@ export type UpdateTagCoachInput = Partial<Pick<TagCoach, 'name'>>;
 
 // 创建 TagCoach
 export async function createTagCoach(data: CreateTagCoachInput) {
-  const session = await auth();
+  const { sessionUser } = await needAuth();
 
   const tagCoach = await prisma.tagCoach.create({
     data: {
       ...data,
-      userId: session?.user?.id || '',
+      userId: sessionUser.id,
     },
   });
 
-  revalidatePath('/tag-coach');
   return tagCoach;
 }
 
@@ -32,6 +27,10 @@ export async function pageTagCoaches(params: { pageSize: number; current: number
     model: 'tagCoach',
     params,
     where: { name: { contains: params.name } },
+    include: {
+      user: true,
+      account: true,
+    },
   });
 }
 
@@ -41,7 +40,7 @@ export async function getTagCoachById(id: string) {
     where: { id },
     include: {
       user: true,
-      Account: true,
+      account: true,
     },
   });
 }
@@ -52,7 +51,6 @@ export async function updateTagCoach(id: string, data: UpdateTagCoachInput) {
     where: { id },
     data,
   });
-  revalidatePath('/tag-coach');
   return tagCoach;
 }
 
@@ -61,5 +59,4 @@ export async function deleteTagCoach(id: string) {
   await prisma.tagCoach.delete({
     where: { id },
   });
-  revalidatePath('/tag-coach');
 }

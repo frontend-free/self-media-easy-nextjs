@@ -1,10 +1,7 @@
 'use server';
 
-import { PrismaClient, User } from '@/generated/prisma';
-import { revalidatePath } from 'next/cache';
-import { pageModel } from './helper';
-
-const prisma = new PrismaClient();
+import { User } from '@/generated/prisma';
+import { pageModel, prisma } from './helper';
 
 export type CreateUserInput = Pick<User, 'name' | 'password'>;
 export type UpdateUserInput = Partial<Pick<User, 'name' | 'password'>>;
@@ -17,7 +14,6 @@ export async function createUser(data: CreateUserInput) {
       password: '123456',
     },
   });
-  revalidatePath('/admin/users');
   return user;
 }
 
@@ -50,5 +46,4 @@ export async function deleteUser(id: string) {
   await prisma.user.delete({
     where: { id },
   });
-  revalidatePath('/admin/users');
 }
