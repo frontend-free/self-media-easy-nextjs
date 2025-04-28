@@ -22,7 +22,31 @@ model User {
   avatar    String?
   mobile    String?
   nickname  String?
-  isAdmin    Boolean  @default(false)
+  isAdmin   Boolean  @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  tagCoachList TagCoach[]
+}
+
+// 标签-教练
+model TagCoach {
+  id     String  @id @default(uuid())
+  name   String
+  avatar String?
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  Account Account[]
+}
+
+// 账号
+model Account {
+  id   String @id @default(uuid())
+  name String
+  type String
+
+  tagCoach   TagCoach @relation(fields: [tagCoachId], references: [id])
+  tagCoachId String
 }

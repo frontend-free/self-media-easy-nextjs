@@ -11,6 +11,11 @@ const compat = new FlatCompat({
 
 const eslintConfig = [
   ...compat.extends('next', 'next/core-web-vitals', 'next/typescript', 'prettier'),
+  {
+    rules: {
+      '@typescript-eslint/no-explicit-any': 'off', // 允许使用 any 类型
+    },
+  },
 ];
 
 export default eslintConfig;
