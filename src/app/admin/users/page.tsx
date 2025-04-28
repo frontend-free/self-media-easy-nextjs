@@ -48,7 +48,7 @@ function UsersList() {
       ]}
       detailForm={
         <>
-          <ProFormText name="name" label="用户名" />
+          <ProFormText name="name" label="用户名" required rules={[{ required: true }]} />
           <ProFormSwitch name="isAdmin" label="是否为管理员" />
         </>
       }

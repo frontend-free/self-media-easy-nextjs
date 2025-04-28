@@ -13,15 +13,10 @@ function Page() {
           title: '名字',
           dataIndex: 'name',
         },
-        {
-          title: '归属用户',
-          dataIndex: 'user',
-          render: (_, record) => record.user?.name,
-        },
       ]}
       detailForm={
         <div>
-          <ProFormText name="name" label="名字" />
+          <ProFormText name="name" label="名字" required rules={[{ required: true }]} />
         </div>
       }
       request={async (params) => {

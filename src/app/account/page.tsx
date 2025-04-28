@@ -1,5 +1,8 @@
+'use client';
+import { EnumPlatform, listPlatform } from '@/generated/enums';
 import { Account } from '@/generated/prisma';
-import { ProFormText } from '@ant-design/pro-components';
+import { ProFormSelect, ProFormText } from '@ant-design/pro-components';
+import * as AccountAction from '../actions/account_action';
 import { CRUD } from '../components/crud';
 
 function Page() {
@@ -18,22 +21,33 @@ function Page() {
         {
           title: '教练',
           dataIndex: 'tagCoach',
+          render: (_, record) => record.tagCoach?.name,
         },
       ]}
       detailForm={
         <div>
-          <ProFormText name="name" label="用户名" />
+          <ProFormText name="name" label="用户名" required rules={[{ required: true }]} />
+          <ProFormSelect
+            name="type"
+            label="类型"
+            options={listPlatform}
+            initialValue={EnumPlatform.TIKTOK}
+            required
+            rules={[{ required: true }]}
+          />
+          <ProFormSelect name="tagCoachId" label="教练" options={[]} />
         </div>
       }
-      request={() =>
-        Promise.resolve({
-          data: [],
-          total: 0,
-          success: true,
-        })
-      }
-      requestAdd={() => Promise.resolve()}
-      requestDelete={() => Promise.resolve()}
+      request={async (params) => {
+        const res = await AccountAction.pageAccounts(params);
+        return res;
+      }}
+      requestAdd={async (values) => {
+        await AccountAction.createAccount(values as AccountAction.CreateAccountInput);
+      }}
+      requestDelete={async (id) => {
+        await AccountAction.deleteAccount(id);
+      }}
     />
   );
 }
