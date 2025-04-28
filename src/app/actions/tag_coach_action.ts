@@ -25,8 +25,7 @@ export async function createTagCoach(data: CreateTagCoachInput) {
 export async function pageTagCoaches(params: { pageSize: number; current: number; name?: string }) {
   const { sessionUser } = await needAuth();
 
-  return pageModel<TagCoach, 'tagCoach'>({
-    model: 'tagCoach',
+  return pageModel<TagCoach>('tagCoach', {
     params,
     where: {
       name: { contains: params.name },

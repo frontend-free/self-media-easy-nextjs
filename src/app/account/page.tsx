@@ -19,7 +19,7 @@ function Page() {
           dataIndex: 'type',
         },
         {
-          title: '教练',
+          title: '所属教练',
           dataIndex: 'tagCoach',
           render: (_, record) => record.tagCoach?.name,
         },
@@ -35,14 +35,14 @@ function Page() {
             required
             rules={[{ required: true }]}
           />
-          <ProFormSelect name="tagCoachId" label="教练" options={[]} />
+          <ProFormSelect name="tagCoachId" label="所属教练" options={[]} />
         </div>
       }
       request={async (params) => {
         const res = await AccountAction.pageAccounts(params);
         return res;
       }}
-      requestAdd={async (values) => {
+      requestCreate={async (values) => {
         await AccountAction.createAccount(values as AccountAction.CreateAccountInput);
       }}
       requestDelete={async (id) => {

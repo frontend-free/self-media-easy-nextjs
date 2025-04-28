@@ -1,49 +1,37 @@
 'use server';
 
 import { User } from '@/generated/prisma';
-import { pageModel, prisma } from './helper';
+import { createModel, deleteModel, getModelById, pageModel, updateModel } from './helper';
 
+export type UserDetail = Omit<User, 'password'>;
 export type CreateUserInput = Pick<User, 'name' | 'password'>;
-export type UpdateUserInput = Partial<Pick<User, 'name' | 'password'>>;
+export type UpdateUserInput = Partial<Omit<User, 'name' | 'createdAt' | 'updatedAt'>> & {
+  id: string;
+};
 
 export async function createUser(data: CreateUserInput) {
-  const user = await prisma.user.create({
-    data: {
-      ...data,
-      // 默认密码
-      password: '123456',
-    },
+  return createModel<CreateUserInput>('user', {
+    ...data,
+    // 默认密码
+    password: '123456',
   });
-  return user;
 }
 
-// 分页获取用户
 export async function pageUsers(params: { pageSize: number; current: number; name?: string }) {
-  return pageModel<User, 'user'>({
-    model: 'user',
+  return pageModel<UserDetail>('user', {
     params,
     where: { name: { contains: params.name } },
   });
 }
 
-// 根据 ID 获取用户
 export async function getUserById(id: string) {
-  return prisma.user.findUnique({
-    where: { id },
-  });
+  return getModelById<UserDetail>('user', id);
 }
 
-// 更新用户
-export async function updateUser(id: string, data: UpdateUserInput) {
-  return prisma.user.update({
-    where: { id },
-    data,
-  });
+export async function updateUser(data: UpdateUserInput) {
+  return updateModel<UpdateUserInput>('user', data);
 }
 
-// 删除用户
 export async function deleteUser(id: string) {
-  await prisma.user.delete({
-    where: { id },
-  });
+  return deleteModel('user', id);
 }

@@ -27,7 +27,7 @@ function Page() {
           success: res.success,
         };
       }}
-      requestAdd={async (values) => {
+      requestCreate={async (values) => {
         await TagCoachAction.createTagCoach(values as TagCoachAction.CreateTagCoachInput);
       }}
       requestDelete={async (id) => {

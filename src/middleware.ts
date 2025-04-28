@@ -7,8 +7,6 @@ export async function middleware(request: NextRequest) {
   const isAuthPage = request.nextUrl.pathname.startsWith('/auth/');
   const isAdminPage = request.nextUrl.pathname.startsWith('/admin/');
 
-  console.log('session', session);
-
   const isAdmin = session?.user?.isAdmin;
 
   // 如果用户未登录且不在认证页面，重定向到登录页

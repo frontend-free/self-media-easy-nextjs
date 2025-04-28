@@ -33,8 +33,7 @@ export async function pageAccounts(params: {
   type?: string;
   tagCoachId?: string;
 }) {
-  return pageModel<Account, 'account'>({
-    model: 'account',
+  return pageModel<Account>('account', {
     params,
     where: {
       name: { contains: params.name },
