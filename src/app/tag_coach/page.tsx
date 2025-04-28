@@ -13,12 +13,20 @@ function Page() {
           title: '名字',
           dataIndex: 'name',
         },
+        {
+          title: '创建时间',
+          dataIndex: 'createdAt',
+          key: 'createdAt',
+          valueType: 'dateTime',
+          search: false,
+        },
       ]}
-      detailForm={
+      detailForm={() => (
         <div>
+          {/* <ProFormSelect name="id" label="账号" hidden /> */}
           <ProFormText name="name" label="名字" required rules={[{ required: true }]} />
         </div>
-      }
+      )}
       request={async (params) => {
         const res = await TagCoachAction.pageTagCoaches(params);
         return {
@@ -32,6 +40,13 @@ function Page() {
       }}
       requestDelete={async (id) => {
         await TagCoachAction.deleteTagCoach(id);
+      }}
+      requestDetail={async (id) => {
+        const res = await TagCoachAction.getTagCoachById(id);
+        return res;
+      }}
+      requestUpdate={async (values) => {
+        await TagCoachAction.updateTagCoach(values as TagCoachAction.UpdateTagCoachInput);
       }}
     />
   );

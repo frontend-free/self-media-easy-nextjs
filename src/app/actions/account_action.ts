@@ -1,31 +1,26 @@
 'use server';
 
 import { Account } from '@/generated/prisma';
-import { needAuth, pageModel, prisma } from './helper';
+import { createModel, deleteModel, getModelById, needAuth, pageModel, updateModel } from './helper';
 
-export type CreateAccountInput = Pick<Account, 'name' | 'type'> & {
-  tagCoachId?: string;
+export type CreateAccountInput = Pick<Account, 'name' | 'type' | 'tagCoachId'>;
+
+export type UpdateAccountInput = Partial<Pick<Account, 'name' | 'type' | 'tagCoachId'>> & {
+  id: string;
 };
 
-export type UpdateAccountInput = Partial<Pick<Account, 'name' | 'type'>> & {
-  tagCoachId?: string;
-};
-
-// 创建账号
 export async function createAccount(data: CreateAccountInput) {
   const { sessionUser } = await needAuth();
 
-  const account = await prisma.account.create({
+  return createModel<CreateAccountInput & { userId: string }>({
+    model: 'account',
     data: {
       ...data,
       userId: sessionUser.id,
     },
   });
-
-  return account;
 }
 
-// 分页获取账号
 export async function pageAccounts(params: {
   pageSize: number;
   current: number;
@@ -33,20 +28,24 @@ export async function pageAccounts(params: {
   type?: string;
   tagCoachId?: string;
 }) {
-  return pageModel<Account>('account', {
+  return pageModel<Account>({
+    model: 'account',
     params,
     where: {
       name: { contains: params.name },
       type: params.type,
       tagCoachId: params.tagCoachId,
     },
+    include: {
+      tagCoach: true,
+    },
   });
 }
 
-// 根据 ID 获取账号
 export async function getAccountById(id: string) {
-  return prisma.account.findUnique({
-    where: { id },
+  return getModelById<Account>({
+    model: 'account',
+    id,
     include: {
       user: true,
       tagCoach: true,
@@ -54,18 +53,16 @@ export async function getAccountById(id: string) {
   });
 }
 
-// 更新账号
-export async function updateAccount(id: string, data: UpdateAccountInput) {
-  const account = await prisma.account.update({
-    where: { id },
+export async function updateAccount(data: UpdateAccountInput) {
+  return updateModel<UpdateAccountInput>({
+    model: 'account',
     data,
   });
-  return account;
 }
 
-// 删除账号
 export async function deleteAccount(id: string) {
-  await prisma.account.delete({
-    where: { id },
+  return deleteModel({
+    model: 'account',
+    id,
   });
 }

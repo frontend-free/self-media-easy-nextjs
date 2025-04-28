@@ -13,6 +13,22 @@ export async function needAuth(): Promise<{ sessionUser: Session['user'] }> {
   return { sessionUser: session.user };
 }
 
+export async function needIsAdmin(): Promise<{ sessionUser: Session['user'] }> {
+  const { sessionUser } = await needAuth();
+
+  if (!sessionUser.isAdmin) {
+    throw new Error('非管理员');
+  }
+
+  return { sessionUser: sessionUser };
+}
+
+export async function needId(id: string): Promise<void> {
+  if (!id) {
+    throw new Error('id 不能为空');
+  }
+}
+
 export interface PageParams {
   pageSize: number;
   current: number;
@@ -35,29 +51,31 @@ export const prisma = new PrismaClient({
   },
 });
 
+interface CommonArgs {
+  where?: any;
+  include?: any;
+  omit?: any;
+  select?: any;
+}
+
 /** 封装通用分页查询 */
-export async function pageModel<T>(
-  model: keyof PrismaClient,
-  {
-    params,
-    where,
-    include,
-    omit,
-    select,
-  }: {
-    params: PageParams;
-    where: any;
-    include?: any;
-    omit?: any;
-    select?: any;
-  },
-): Promise<PageResult<T>> {
+export async function pageModel<T>({
+  model,
+  params,
+  where,
+  include,
+  omit,
+  select,
+}: {
+  model: keyof PrismaClient;
+  params: PageParams;
+} & CommonArgs): Promise<PageResult<T>> {
+  await needAuth();
+
   const { pageSize, current } = params;
   const skip = (current - 1) * pageSize;
 
   const prismaModel = prisma[model] as any;
-
-  await needAuth();
 
   const [total, data] = await Promise.all([
     prismaModel.count({ where }),
@@ -82,13 +100,23 @@ export async function pageModel<T>(
 }
 
 /** 封装常用 get */
-export async function getModelById<T>(model: keyof PrismaClient, id: string) {
-  const prismaModel = prisma[model] as any;
-
+export async function getModelById<T>({
+  model,
+  id,
+  where,
+  include,
+}: {
+  model: keyof PrismaClient;
+  id: string;
+} & CommonArgs) {
+  await needId(id);
   await needAuth();
 
+  const prismaModel = prisma[model] as any;
+
   const result = await prismaModel.findUnique({
-    where: { id },
+    where: { id, ...where },
+    include,
   });
 
   if (!result) {
@@ -99,7 +127,13 @@ export async function getModelById<T>(model: keyof PrismaClient, id: string) {
 }
 
 /** 封装常用 create */
-export async function createModel<T>(model: keyof PrismaClient, data: T) {
+export async function createModel<T>({
+  model,
+  data,
+}: {
+  model: keyof PrismaClient;
+  data: T;
+} & CommonArgs) {
   const prismaModel = prisma[model] as any;
 
   await needAuth();
@@ -112,10 +146,17 @@ export async function createModel<T>(model: keyof PrismaClient, data: T) {
 }
 
 /** 封装常用 update */
-export async function updateModel<T>(model: keyof PrismaClient, data: T & { id: string }) {
-  const prismaModel = prisma[model] as any;
-
+export async function updateModel<T>({
+  model,
+  data,
+}: {
+  model: keyof PrismaClient;
+  data: T & { id: string };
+} & CommonArgs) {
+  await needId(data.id);
   await needAuth();
+
+  const prismaModel = prisma[model] as any;
 
   const result = await prismaModel.update({
     where: { id: data.id },
@@ -130,11 +171,14 @@ export async function updateModel<T>(model: keyof PrismaClient, data: T & { id: 
 }
 
 /** 封装常用 delete */
-export async function deleteModel(model: keyof PrismaClient, id: string) {
-  const prismaModel = prisma[model] as any;
-
+export async function deleteModel({
+  model,
+  id,
+}: { model: keyof PrismaClient; id: string } & CommonArgs) {
+  await needId(id);
   await needAuth();
 
+  const prismaModel = prisma[model] as any;
   const result = await prismaModel.delete({
     where: { id },
   });

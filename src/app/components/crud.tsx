@@ -159,6 +159,7 @@ function CRUD<T extends Record<string, any>, P extends Record<string, any>>({
           ),
           !disabledUpdate && (
             <Update
+              key="update"
               data={record}
               actionRef={actionRef}
               requestDetail={requestDetail}

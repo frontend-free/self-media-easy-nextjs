@@ -48,7 +48,7 @@ function UsersList() {
       ]}
       detailForm={({ type }) => (
         <>
-          {type === 'update' && <ProFormText name="id" label="ID" hidden />}
+          <ProFormText name="id" label="ID" hidden />
           <ProFormText
             name="name"
             label="用户名"

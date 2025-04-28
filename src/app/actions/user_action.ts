@@ -10,28 +10,32 @@ export type UpdateUserInput = Partial<Omit<User, 'name' | 'createdAt' | 'updated
 };
 
 export async function createUser(data: CreateUserInput) {
-  return createModel<CreateUserInput>('user', {
-    ...data,
-    // 默认密码
-    password: '123456',
+  return createModel<CreateUserInput>({
+    model: 'user',
+    data: {
+      ...data,
+      // 默认密码
+      password: '123456',
+    },
   });
 }
 
 export async function pageUsers(params: { pageSize: number; current: number; name?: string }) {
-  return pageModel<UserDetail>('user', {
+  return pageModel<UserDetail>({
+    model: 'user',
     params,
     where: { name: { contains: params.name } },
   });
 }
 
 export async function getUserById(id: string) {
-  return getModelById<UserDetail>('user', id);
+  return getModelById<UserDetail>({ model: 'user', id });
 }
 
 export async function updateUser(data: UpdateUserInput) {
-  return updateModel<UpdateUserInput>('user', data);
+  return updateModel<UpdateUserInput>({ model: 'user', data });
 }
 
 export async function deleteUser(id: string) {
-  return deleteModel('user', id);
+  return deleteModel({ model: 'user', id });
 }
