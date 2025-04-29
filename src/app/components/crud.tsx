@@ -17,7 +17,7 @@ const ProTable = dynamic(
 interface CRUDProps<T> {
   title: string;
   columns: ProColumns<T>[];
-  detailForm: (props: { type: 'create' | 'update' }) => ReactNode;
+  detailForm?: (props: { type: 'create' | 'update' }) => ReactNode;
   request: (params: { current: number; pageSize: number } & Record<string, any>) => Promise<{
     success: boolean;
     data: T[];
@@ -57,7 +57,7 @@ function Add<T>({
         </Button>
       }
       onFinish={async (values) => {
-        await requestCreate?.(values as T);
+        await requestCreate!(values as T);
 
         message.success('新增成功');
 
@@ -69,7 +69,7 @@ function Add<T>({
         destroyOnClose: true,
       }}
     >
-      {detailForm({ type: 'create' })}
+      {detailForm && detailForm({ type: 'create' })}
     </ModalForm>
   );
 }
@@ -109,7 +109,7 @@ function Update<T>({
       autoFocusFirstInput
       trigger={<Button type="link" icon={<EditOutlined />} />}
       onFinish={async (values) => {
-        await requestUpdate?.(values as Partial<T> & { id: string });
+        await requestUpdate!(values as Partial<T> & { id: string });
 
         message.success('修改成功');
 
@@ -122,7 +122,7 @@ function Update<T>({
       }}
       onOpenChange={handleOpenChange}
     >
-      {detailForm({ type: 'update' })}
+      {detailForm && detailForm({ type: 'update' })}
     </ModalForm>
   );
 }
@@ -170,7 +170,7 @@ function CRUD<T extends Record<string, any>>({
                 modal.confirm({
                   title: '确定删除吗？',
                   onOk: async () => {
-                    await requestDelete?.(record.id, record);
+                    await requestDelete!(record.id, record);
                     message.success('删除成功');
                     actionRef.current?.reload();
                   },

@@ -2,7 +2,6 @@ const enums = {
   Platform: {
     TIKTOK: {
       text: '抖音',
-      value: 'tiktok',
       data: {
         icon: '/platform/tiktok.png',
       },
@@ -11,15 +10,33 @@ const enums = {
   AccountStatus: {
     UNAUTHED: {
       text: '未授权',
-      value: 'unauthed',
     },
     AUTHED: {
       text: '已授权',
-      value: 'authed',
     },
     INVALID: {
       text: '已失效',
-      value: 'invalid',
+    },
+  },
+  PublishResourceType: {
+    VIDEO: {
+      text: '视频',
+    },
+  },
+  PublishType: {
+    OFFICIAL: {
+      text: '正式',
+    },
+    DRAFT: {
+      text: '草稿',
+    },
+  },
+  TaskStatus: {
+    SUCCESS: {
+      text: '成功',
+    },
+    FAILED: {
+      text: '失败',
     },
   },
 };

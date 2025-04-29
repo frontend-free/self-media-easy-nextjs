@@ -14,11 +14,38 @@ datasource db {
   url      = "file:./dev.db"
 }
 
+enum AccountStatus {
+  // 未授权
+  UNAUTHED
+  // 已授权
+  AUTHED
+  // 已失效
+  INVALID
+}
+
+enum PublishResourceType {
+  // 视频
+  VIDEO
+}
+
+enum PublishType {
+  // 正式
+  OFFICIAL
+  // 草稿
+  DRAFT
+}
+
+enum TaskStatus {
+  // 已发布
+  SUCCESS
+  // 发布失败
+  FAILED
+}
+
 // 用户模型
 model User {
-  id   String @id @default(uuid())
-  name String @unique
-
+  id       String  @id @default(uuid())
+  name     String  @unique
   password String
   avatar   String?
   mobile   String?
@@ -30,6 +57,7 @@ model User {
 
   tagCoachList TagCoach[]
   Account      Account[]
+  publishes    Publish[]
 }
 
 // 标签-教练
@@ -47,23 +75,58 @@ model TagCoach {
 
 // 账号
 model Account {
-  id String @id @default(uuid())
-
+  id             String         @id @default(uuid())
   platform       String // 平台
   platformName   String? // 平台名称
   platformAvatar String? // 平台头像
   platformId     String? // 平台ID
+  authInfo       String? // 授权信息
+  status         AccountStatus? @default(UNAUTHED) // 账号状态
+  authedAt       DateTime // 授权时间
+  logs           String? // 授权日志 JSON
 
-  authInfo String? // 授权信息
-
-  status   String? // 账号状态
-  authedAt DateTime // 授权时间
+  tagCoach   TagCoach? @relation(fields: [tagCoachId], references: [id])
+  tagCoachId String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  userId     String
-  user       User      @relation(fields: [userId], references: [id])
-  tagCoach   TagCoach? @relation(fields: [tagCoachId], references: [id])
-  tagCoachId String?
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+  tasks  Task[]
+}
+
+// 任务
+model Task {
+  id        String     @id @default(uuid())
+  status    TaskStatus // 任务状态
+  logs      String? // 任务日志 JSON
+  accountId String
+  account   Account    @relation(fields: [accountId], references: [id])
+  startAt   DateTime? // 开始发布时间
+  endAt     DateTime? // 结束发布时间
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  publishId String
+  publish   Publish @relation(fields: [publishId], references: [id])
+}
+
+// 发布
+model Publish {
+  id              String              @id @default(uuid())
+  resourceType    PublishResourceType // 资源类型
+  resourceOfVideo String? // 视频资源
+  title           String? // 标题
+  description     String? // 描述
+  publishType     PublishType // 发布类型
+
+  tasks Task[] // 任务
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
 }

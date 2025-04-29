@@ -4,13 +4,13 @@ import { Tag } from 'antd';
 // --- Platform
 
 export enum EnumPlatform {
-  TIKTOK = 'tiktok',
+  TIKTOK = 'TIKTOK',
 }
 
 export const valueEnumPlatform = {
   [EnumPlatform.TIKTOK]: {
     text: '抖音',
-    value: 'tiktok',
+    value: 'TIKTOK',
     data: { icon: '/platform/tiktok.png' },
   },
 };
@@ -42,23 +42,23 @@ export function TagPlatform(props: { value?: EnumPlatform | string } & TagProps)
 // --- AccountStatus
 
 export enum EnumAccountStatus {
-  UNAUTHED = 'unauthed',
-  AUTHED = 'authed',
-  INVALID = 'invalid',
+  UNAUTHED = 'UNAUTHED',
+  AUTHED = 'AUTHED',
+  INVALID = 'INVALID',
 }
 
 export const valueEnumAccountStatus = {
   [EnumAccountStatus.UNAUTHED]: {
     text: '未授权',
-    value: 'unauthed',
+    value: 'UNAUTHED',
   },
   [EnumAccountStatus.AUTHED]: {
     text: '已授权',
-    value: 'authed',
+    value: 'AUTHED',
   },
   [EnumAccountStatus.INVALID]: {
     text: '已失效',
-    value: 'invalid',
+    value: 'INVALID',
   },
 };
 
@@ -74,6 +74,129 @@ export const listAccountStatus = Object.keys(valueEnumAccountStatus).map((key) =
 
 export function TagAccountStatus(props: { value?: EnumAccountStatus | string } & TagProps) {
   const item = props.value && valueEnumAccountStatus[props.value];
+
+  if (item) {
+    return (
+      <Tag color={item.color} {...props}>
+        {item.text}
+      </Tag>
+    );
+  }
+
+  return null;
+}
+
+// --- PublishResourceType
+
+export enum EnumPublishResourceType {
+  VIDEO = 'VIDEO',
+}
+
+export const valueEnumPublishResourceType = {
+  [EnumPublishResourceType.VIDEO]: {
+    text: '视频',
+    value: 'VIDEO',
+  },
+};
+
+export const listPublishResourceType = Object.keys(valueEnumPublishResourceType).map((key) => {
+  const item = valueEnumPublishResourceType[key];
+
+  return {
+    value: item.value !== undefined ? item.value : key,
+    label: item.text,
+    originData: item.data,
+  };
+});
+
+export function TagPublishResourceType(
+  props: { value?: EnumPublishResourceType | string } & TagProps,
+) {
+  const item = props.value && valueEnumPublishResourceType[props.value];
+
+  if (item) {
+    return (
+      <Tag color={item.color} {...props}>
+        {item.text}
+      </Tag>
+    );
+  }
+
+  return null;
+}
+
+// --- PublishType
+
+export enum EnumPublishType {
+  OFFICIAL = 'OFFICIAL',
+  DRAFT = 'DRAFT',
+}
+
+export const valueEnumPublishType = {
+  [EnumPublishType.OFFICIAL]: {
+    text: '正式',
+    value: 'OFFICIAL',
+  },
+  [EnumPublishType.DRAFT]: {
+    text: '草稿',
+    value: 'DRAFT',
+  },
+};
+
+export const listPublishType = Object.keys(valueEnumPublishType).map((key) => {
+  const item = valueEnumPublishType[key];
+
+  return {
+    value: item.value !== undefined ? item.value : key,
+    label: item.text,
+    originData: item.data,
+  };
+});
+
+export function TagPublishType(props: { value?: EnumPublishType | string } & TagProps) {
+  const item = props.value && valueEnumPublishType[props.value];
+
+  if (item) {
+    return (
+      <Tag color={item.color} {...props}>
+        {item.text}
+      </Tag>
+    );
+  }
+
+  return null;
+}
+
+// --- TaskStatus
+
+export enum EnumTaskStatus {
+  SUCCESS = 'SUCCESS',
+  FAILED = 'FAILED',
+}
+
+export const valueEnumTaskStatus = {
+  [EnumTaskStatus.SUCCESS]: {
+    text: '成功',
+    value: 'SUCCESS',
+  },
+  [EnumTaskStatus.FAILED]: {
+    text: '失败',
+    value: 'FAILED',
+  },
+};
+
+export const listTaskStatus = Object.keys(valueEnumTaskStatus).map((key) => {
+  const item = valueEnumTaskStatus[key];
+
+  return {
+    value: item.value !== undefined ? item.value : key,
+    label: item.text,
+    originData: item.data,
+  };
+});
+
+export function TagTaskStatus(props: { value?: EnumTaskStatus | string } & TagProps) {
+  const item = props.value && valueEnumTaskStatus[props.value];
 
   if (item) {
     return (

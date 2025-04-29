@@ -29,7 +29,7 @@ function Add({ refCRUD }) {
 
     console.log('platformAuth', res);
 
-    if (res.data) {
+    if (res.success && res.data) {
       await AccountAction.createAccount({
         platform,
         platformId: res.data.platformId || null,
@@ -37,8 +37,9 @@ function Add({ refCRUD }) {
         platformAvatar: res.data.platformAvatar || null,
 
         status: EnumAccountStatus.AUTHED,
-        authInfo: res.data.authInfo,
+        authInfo: res.data.authInfo || null,
         authedAt: new Date(),
+        logs: JSON.stringify(res.data.logs || []),
       });
 
       message.success('授权成功');
@@ -109,6 +110,7 @@ function Page() {
           title: '授权时间',
           dataIndex: 'authedAt',
           valueType: 'dateTime',
+          search: false,
         },
         {
           title: '所属教练',

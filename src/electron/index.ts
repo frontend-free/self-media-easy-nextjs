@@ -14,12 +14,13 @@ function getElectron(): any {
 
 interface PlatformResult {
   success: boolean;
-  data?: {
+  data: {
     platform: string;
     platformName?: string;
     platformAvatar?: string;
     platformId?: string;
-    authInfo: string;
+    authInfo?: string;
+    logs?: string[];
   };
   message?: string;
 }
