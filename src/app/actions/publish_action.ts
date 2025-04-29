@@ -24,13 +24,14 @@ export async function pagePublishes(params: {
   publishType?: string;
   resourceType?: string;
 }) {
+  const { sessionUser } = await needAuth();
+
   return pageModel<Publish>({
     model: 'publish',
     params,
     where: {
       title: { contains: params.title },
-      publishType: params.publishType as any,
-      resourceType: params.resourceType as any,
+      userId: sessionUser.id,
     },
     include: {
       tasks: {
@@ -43,8 +44,13 @@ export async function pagePublishes(params: {
 }
 
 export async function deletePublish(id: string) {
+  const { sessionUser } = await needAuth();
+
   return deleteModel({
     model: 'publish',
     id,
+    where: {
+      userId: sessionUser.id,
+    },
   });
 }

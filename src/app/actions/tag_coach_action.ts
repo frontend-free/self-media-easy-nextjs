@@ -47,7 +47,6 @@ export async function getTagCoachById(id: string) {
       account: true,
     },
     where: {
-      id,
       userId: sessionUser.id,
     },
   });

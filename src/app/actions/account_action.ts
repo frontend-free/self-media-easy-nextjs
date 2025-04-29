@@ -23,8 +23,6 @@ export type UpdateAccountInput = Partial<
 };
 
 export async function createAccount(data: CreateAccountInput) {
-  console.log('createAccount', data);
-
   const { sessionUser } = await needAuth();
 
   // 如果有 平台 id 则先检查是否存在
@@ -33,6 +31,7 @@ export async function createAccount(data: CreateAccountInput) {
       where: {
         platform: data.platform,
         platformId: data.platformId,
+        userId: sessionUser.id,
       },
     });
 
@@ -44,7 +43,6 @@ export async function createAccount(data: CreateAccountInput) {
         where: { id: account.id },
         data: {
           ...data,
-          userId: sessionUser.id,
         },
       });
 
@@ -69,6 +67,8 @@ export async function pageAccounts(params: {
   platform?: string;
   tagCoachId?: string;
 }) {
+  const { sessionUser } = await needAuth();
+
   return pageModel<Account>({
     model: 'account',
     params,
@@ -76,6 +76,7 @@ export async function pageAccounts(params: {
       platformName: { contains: params.platformName },
       platform: params.platform,
       tagCoachId: params.tagCoachId,
+      userId: sessionUser.id,
     },
     include: {
       tagCoach: true,
@@ -84,9 +85,14 @@ export async function pageAccounts(params: {
 }
 
 export async function getAccountById(id: string) {
+  const { sessionUser } = await needAuth();
+
   return getModelById<Account>({
     model: 'account',
     id,
+    where: {
+      userId: sessionUser.id,
+    },
     include: {
       user: true,
       tagCoach: true,
@@ -95,15 +101,25 @@ export async function getAccountById(id: string) {
 }
 
 export async function updateAccount(data: UpdateAccountInput) {
+  const { sessionUser } = await needAuth();
+
   return updateModel<UpdateAccountInput>({
     model: 'account',
     data,
+    where: {
+      userId: sessionUser.id,
+    },
   });
 }
 
 export async function deleteAccount(id: string) {
+  const { sessionUser } = await needAuth();
+
   return deleteModel({
     model: 'account',
     id,
+    where: {
+      userId: sessionUser.id,
+    },
   });
 }

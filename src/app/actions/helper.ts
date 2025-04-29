@@ -174,13 +174,14 @@ export async function updateModel<T>({
 export async function deleteModel({
   model,
   id,
+  where,
 }: { model: keyof PrismaClient; id: string } & CommonArgs) {
   await needId(id);
   await needAuth();
 
   const prismaModel = prisma[model] as any;
   const result = await prismaModel.delete({
-    where: { id },
+    where: { id, ...where },
   });
 
   if (!result) {
