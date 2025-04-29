@@ -7,7 +7,7 @@ import { ProFormSwitch, ProFormText } from '@ant-design/pro-components';
 
 function UsersList() {
   return (
-    <CRUD<UserDetail, Partial<Pick<UserDetail, 'name'>>>
+    <CRUD<UserDetail>
       title="用户管理"
       columns={[
         {

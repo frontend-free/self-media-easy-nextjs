@@ -14,15 +14,6 @@ datasource db {
   url      = "file:./dev.db"
 }
 
-enum AccountStatus {
-  // 未授权
-  UNAUTHED
-  // 已授权
-  AUTHED
-  // 已失效
-  INVALID
-}
-
 // 用户模型
 model User {
   id   String @id @default(uuid())
@@ -56,13 +47,17 @@ model TagCoach {
 
 // 账号
 model Account {
-  id   String @id @default(uuid())
-  name String
+  id String @id @default(uuid())
 
-  platform String // 平台
-  status   AccountStatus @default(UNAUTHED) // 账号状态
-  authedAt DateTime // 授权时间
+  platform       String // 平台
+  platformName   String? // 平台名称
+  platformAvatar String? // 平台头像
+  platformId     String? // 平台ID
+
   authInfo String? // 授权信息
+
+  status   String? // 账号状态
+  authedAt DateTime // 授权时间
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

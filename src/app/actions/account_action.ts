@@ -1,17 +1,56 @@
 'use server';
 
 import { Account } from '@/generated/prisma';
-import { createModel, deleteModel, getModelById, needAuth, pageModel, updateModel } from './helper';
+import {
+  createModel,
+  deleteModel,
+  getModelById,
+  needAuth,
+  pageModel,
+  prisma,
+  updateModel,
+} from './helper';
 
-export type CreateAccountInput = Pick<Account, 'name' | 'platform' | 'tagCoachId'>;
+export type CreateAccountInput = Omit<
+  Account,
+  'id' | 'userId' | 'tagCoachId' | 'createdAt' | 'updatedAt'
+>;
 
-export type UpdateAccountInput = Partial<Pick<Account, 'name' | 'platform' | 'tagCoachId'>> & {
+export type UpdateAccountInput = Partial<
+  Pick<Account, 'platformName' | 'platformAvatar' | 'status' | 'authInfo' | 'authedAt'>
+> & {
   id: string;
 };
 
 export async function createAccount(data: CreateAccountInput) {
+  console.log('createAccount', data);
+
   const { sessionUser } = await needAuth();
 
+  // 如果有 平台 id 则先检查是否存在
+  if (data.platform && data.platformId) {
+    let account = await prisma.account.findFirst({
+      where: {
+        platform: data.platform,
+        platformId: data.platformId,
+      },
+    });
+
+    // 存在则更新
+    if (account) {
+      account = await prisma.account.update({
+        where: { id: account.id },
+        data: {
+          ...data,
+          userId: sessionUser.id,
+        },
+      });
+
+      return account;
+    }
+  }
+
+  // 不存在则创建
   return createModel<CreateAccountInput & { userId: string }>({
     model: 'account',
     data: {
@@ -24,7 +63,7 @@ export async function createAccount(data: CreateAccountInput) {
 export async function pageAccounts(params: {
   pageSize: number;
   current: number;
-  name?: string;
+  platformName?: string;
   platform?: string;
   tagCoachId?: string;
 }) {
@@ -32,7 +71,7 @@ export async function pageAccounts(params: {
     model: 'account',
     params,
     where: {
-      name: { contains: params.name },
+      platformName: { contains: params.platformName },
       platform: params.platform,
       tagCoachId: params.tagCoachId,
     },

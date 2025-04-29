@@ -14,11 +14,11 @@ const ProTable = dynamic(
   },
 ) as (typeof import('@ant-design/pro-components'))['ProTable'];
 
-interface CRUDProps<T, P> {
+interface CRUDProps<T> {
   title: string;
   columns: ProColumns<T>[];
   detailForm: (props: { type: 'create' | 'update' }) => ReactNode;
-  request: (params: { current: number; pageSize: number } & P) => Promise<{
+  request: (params: { current: number; pageSize: number } & Record<string, any>) => Promise<{
     success: boolean;
     data: T[];
     total: number;
@@ -34,14 +34,14 @@ interface CRUDProps<T, P> {
   toolBarRenderPre?: ReactNode;
 }
 
-function Add<T, P>({
+function Add<T>({
   actionRef,
   requestCreate,
   detailForm,
 }: {
   actionRef: RefObject<ActionType | undefined>;
-  requestCreate: CRUDProps<T, P>['requestCreate'];
-  detailForm: CRUDProps<T, P>['detailForm'];
+  requestCreate: CRUDProps<T>['requestCreate'];
+  detailForm: CRUDProps<T>['detailForm'];
 }) {
   return (
     <ModalForm
@@ -70,7 +70,7 @@ function Add<T, P>({
   );
 }
 
-function Update<T, P>({
+function Update<T>({
   data,
   actionRef,
   requestDetail,
@@ -79,9 +79,9 @@ function Update<T, P>({
 }: {
   data: T;
   actionRef: RefObject<ActionType | undefined>;
-  requestDetail: CRUDProps<T, P>['requestDetail'];
-  requestUpdate: CRUDProps<T, P>['requestUpdate'];
-  detailForm: CRUDProps<T, P>['detailForm'];
+  requestDetail: CRUDProps<T>['requestDetail'];
+  requestUpdate: CRUDProps<T>['requestUpdate'];
+  detailForm: CRUDProps<T>['detailForm'];
 }) {
   const formRef = useRef<ProFormInstance | null>(null);
 
@@ -122,7 +122,7 @@ function Update<T, P>({
   );
 }
 
-function CRUD<T extends Record<string, any>, P extends Record<string, any>>({
+function CRUD<T extends Record<string, any>>({
   title,
   columns,
   request,
@@ -135,7 +135,7 @@ function CRUD<T extends Record<string, any>, P extends Record<string, any>>({
   requestDetail,
   requestUpdate,
   toolBarRenderPre,
-}: CRUDProps<T, P>) {
+}: CRUDProps<T>) {
   const { modal } = App.useApp();
 
   const newColumns: ProColumns<T>[] = useMemo(() => {
@@ -213,7 +213,7 @@ function CRUD<T extends Record<string, any>, P extends Record<string, any>>({
       toolBarRender={() => [
         toolBarRenderPre,
         !disabledCreate && (
-          <Add<T, P>
+          <Add<T>
             key="add"
             actionRef={actionRef}
             requestCreate={requestCreate}
