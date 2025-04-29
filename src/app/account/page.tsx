@@ -1,10 +1,53 @@
 'use client';
-import { EnumPlatform, listPlatform, valueEnumPlatform } from '@/generated/enums';
+
+import { electronApi } from '@/electron';
+import {
+  EnumPlatform,
+  listPlatform,
+  valueEnumAccountStatus,
+  valueEnumPlatform,
+} from '@/generated/enums';
 import { Account } from '@/generated/prisma';
+import { PlusCircleOutlined } from '@ant-design/icons';
 import { ProFormSelect, ProFormText } from '@ant-design/pro-components';
+import { Button, Modal } from 'antd';
+import Image from 'next/image';
+import { useState } from 'react';
 import * as AccountAction from '../actions/account_action';
 import * as TagCoachAction from '../actions/tag_coach_action';
 import { CRUD } from '../components/crud';
+
+function Add() {
+  const [open, setOpen] = useState(false);
+  return (
+    <>
+      <Modal
+        title="新增账号"
+        open={open}
+        onCancel={() => setOpen(false)}
+        destroyOnClose
+        footer={null}
+      >
+        <div className="flex flex-row flex-wrap gap-4 p-10">
+          {listPlatform.map((item) => (
+            <div
+              key={item.value}
+              className="flex flex-row items-center cursor-pointer"
+              onClick={() => {
+                electronApi.platformAuth(item.value);
+              }}
+            >
+              <Image src={item.originData.icon} alt={item.label} width={50} height={50} />
+            </div>
+          ))}
+        </div>
+      </Modal>
+      <Button type="primary" icon={<PlusCircleOutlined />} onClick={() => setOpen(true)}>
+        新增
+      </Button>
+    </>
+  );
+}
 
 function Page() {
   return (
@@ -16,14 +59,24 @@ function Page() {
           dataIndex: 'name',
         },
         {
-          title: '类型',
-          dataIndex: 'type',
-          valueEnum: valueEnumPlatform,
-        },
-        {
           title: '所属教练',
           dataIndex: 'tagCoach',
           render: (_, record: Account) => record.tagCoach?.name,
+        },
+        {
+          title: '平台',
+          dataIndex: 'platform',
+          valueEnum: valueEnumPlatform,
+        },
+        {
+          title: '状态',
+          dataIndex: 'status',
+          valueEnum: valueEnumAccountStatus,
+        },
+        {
+          title: '授权时间',
+          dataIndex: 'authedAt',
+          valueType: 'dateTime',
         },
         {
           title: '创建时间',
@@ -65,9 +118,7 @@ function Page() {
         const res = await AccountAction.pageAccounts(params);
         return res;
       }}
-      requestCreate={async (values) => {
-        await AccountAction.createAccount(values as AccountAction.CreateAccountInput);
-      }}
+      disabledCreate
       requestDelete={async (id) => {
         await AccountAction.deleteAccount(id);
       }}
@@ -78,6 +129,7 @@ function Page() {
       requestUpdate={async (values) => {
         await AccountAction.updateAccount(values as AccountAction.UpdateAccountInput);
       }}
+      toolBarRenderPre={<Add />}
     />
   );
 }

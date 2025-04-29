@@ -14,15 +14,26 @@ datasource db {
   url      = "file:./dev.db"
 }
 
+enum AccountStatus {
+  // 未授权
+  UNAUTHED
+  // 已授权
+  AUTHED
+  // 已失效
+  INVALID
+}
+
 // 用户模型
 model User {
-  id        String   @id @default(uuid())
-  name      String   @unique
-  password  String
-  avatar    String?
-  mobile    String?
-  nickname  String?
-  isAdmin   Boolean  @default(false)
+  id   String @id @default(uuid())
+  name String @unique
+
+  password String
+  avatar   String?
+  mobile   String?
+  nickname String?
+  isAdmin  Boolean @default(false)
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -38,9 +49,8 @@ model TagCoach {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  userId String
-  user   User   @relation(fields: [userId], references: [id])
-
+  userId  String
+  user    User      @relation(fields: [userId], references: [id])
   account Account[]
 }
 
@@ -48,16 +58,17 @@ model TagCoach {
 model Account {
   id   String @id @default(uuid())
   name String
-  type String
 
-  authedAt DateTime?
+  platform String // 平台
+  status   AccountStatus @default(UNAUTHED) // 账号状态
+  authedAt DateTime // 授权时间
+  authInfo String? // 授权信息
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  userId String
-  user   User   @relation(fields: [userId], references: [id])
-
+  userId     String
+  user       User      @relation(fields: [userId], references: [id])
   tagCoach   TagCoach? @relation(fields: [tagCoachId], references: [id])
   tagCoachId String?
 }

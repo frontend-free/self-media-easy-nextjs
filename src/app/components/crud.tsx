@@ -1,6 +1,6 @@
 'use client';
 
-import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
+import { DeleteOutlined, EditOutlined, PlusCircleOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns, ProFormInstance } from '@ant-design/pro-components';
 import { ModalForm } from '@ant-design/pro-components';
 import { App, Button, message } from 'antd';
@@ -24,12 +24,14 @@ interface CRUDProps<T, P> {
     total: number;
   }>;
   disabledCreate?: boolean;
-  requestCreate: (createValues: Partial<T>) => Promise<void>;
+  requestCreate?: (createValues: Partial<T>) => Promise<void>;
   disabledDelete?: boolean;
-  requestDelete: (id: string, data: T) => Promise<void>;
+  requestDelete?: (id: string, data: T) => Promise<void>;
   disabledUpdate?: boolean;
-  requestDetail: (id: string, data: T) => Promise<T>;
-  requestUpdate: (updateValues: Partial<T> & { id: string }) => Promise<void>;
+  requestDetail?: (id: string, data: T) => Promise<T>;
+  requestUpdate?: (updateValues: Partial<T> & { id: string }) => Promise<void>;
+
+  toolBarRenderPre?: ReactNode;
 }
 
 function Add<T, P>({
@@ -45,9 +47,13 @@ function Add<T, P>({
     <ModalForm
       title="新增"
       autoFocusFirstInput
-      trigger={<Button type="primary">新增</Button>}
+      trigger={
+        <Button type="primary" icon={<PlusCircleOutlined />}>
+          新增
+        </Button>
+      }
       onFinish={async (values) => {
-        await requestCreate(values as T);
+        await requestCreate?.(values as T);
 
         message.success('新增成功');
 
@@ -84,7 +90,7 @@ function Update<T, P>({
       if (open) {
         const id = (data as any).id;
 
-        const res = await requestDetail(id, data);
+        const res = await requestDetail?.(id, data);
         formRef.current?.setFieldsValue(res);
       }
     },
@@ -98,7 +104,7 @@ function Update<T, P>({
       autoFocusFirstInput
       trigger={<Button type="link" icon={<EditOutlined />} />}
       onFinish={async (values) => {
-        await requestUpdate(values as Partial<T> & { id: string });
+        await requestUpdate?.(values as Partial<T> & { id: string });
 
         message.success('修改成功');
 
@@ -128,6 +134,7 @@ function CRUD<T extends Record<string, any>, P extends Record<string, any>>({
   disabledUpdate,
   requestDetail,
   requestUpdate,
+  toolBarRenderPre,
 }: CRUDProps<T, P>) {
   const { modal } = App.useApp();
 
@@ -149,7 +156,7 @@ function CRUD<T extends Record<string, any>, P extends Record<string, any>>({
                 modal.confirm({
                   title: '确定删除吗？',
                   onOk: async () => {
-                    await requestDelete(record.id, record);
+                    await requestDelete?.(record.id, record);
                     message.success('删除成功');
                     actionRef.current?.reload();
                   },
@@ -204,6 +211,7 @@ function CRUD<T extends Record<string, any>, P extends Record<string, any>>({
       columns={newColumns}
       request={handleRequest}
       toolBarRender={() => [
+        toolBarRenderPre,
         !disabledCreate && (
           <Add<T, P>
             key="add"

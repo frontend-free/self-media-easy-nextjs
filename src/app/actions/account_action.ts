@@ -3,9 +3,9 @@
 import { Account } from '@/generated/prisma';
 import { createModel, deleteModel, getModelById, needAuth, pageModel, updateModel } from './helper';
 
-export type CreateAccountInput = Pick<Account, 'name' | 'type' | 'tagCoachId'>;
+export type CreateAccountInput = Pick<Account, 'name' | 'platform' | 'tagCoachId'>;
 
-export type UpdateAccountInput = Partial<Pick<Account, 'name' | 'type' | 'tagCoachId'>> & {
+export type UpdateAccountInput = Partial<Pick<Account, 'name' | 'platform' | 'tagCoachId'>> & {
   id: string;
 };
 
@@ -25,7 +25,7 @@ export async function pageAccounts(params: {
   pageSize: number;
   current: number;
   name?: string;
-  type?: string;
+  platform?: string;
   tagCoachId?: string;
 }) {
   return pageModel<Account>({
@@ -33,7 +33,7 @@ export async function pageAccounts(params: {
     params,
     where: {
       name: { contains: params.name },
-      type: params.type,
+      platform: params.platform,
       tagCoachId: params.tagCoachId,
     },
     include: {
