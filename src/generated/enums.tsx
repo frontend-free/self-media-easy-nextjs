@@ -167,6 +167,53 @@ export function TagPublishType(props: { value?: EnumPublishType | string } & Tag
   return null;
 }
 
+// --- PublishStatus
+
+export enum EnumPublishStatus {
+  WAITING = 'WAITING',
+  PUBLISHED = 'PUBLISHED',
+  STOPPED = 'STOPPED',
+}
+
+export const valueEnumPublishStatus = {
+  [EnumPublishStatus.WAITING]: {
+    text: '等待发布',
+    value: 'WAITING',
+  },
+  [EnumPublishStatus.PUBLISHED]: {
+    text: '已发布',
+    value: 'PUBLISHED',
+  },
+  [EnumPublishStatus.STOPPED]: {
+    text: '停止发布',
+    value: 'STOPPED',
+  },
+};
+
+export const listPublishStatus = Object.keys(valueEnumPublishStatus).map((key) => {
+  const item = valueEnumPublishStatus[key];
+
+  return {
+    value: item.value !== undefined ? item.value : key,
+    label: item.text,
+    originData: item.data,
+  };
+});
+
+export function TagPublishStatus(props: { value?: EnumPublishStatus | string } & TagProps) {
+  const item = props.value && valueEnumPublishStatus[props.value];
+
+  if (item) {
+    return (
+      <Tag color={item.color} {...props}>
+        {item.text}
+      </Tag>
+    );
+  }
+
+  return null;
+}
+
 // --- TaskStatus
 
 export enum EnumTaskStatus {
@@ -176,11 +223,11 @@ export enum EnumTaskStatus {
 
 export const valueEnumTaskStatus = {
   [EnumTaskStatus.SUCCESS]: {
-    text: '成功',
+    text: '发布成功',
     value: 'SUCCESS',
   },
   [EnumTaskStatus.FAILED]: {
-    text: '失败',
+    text: '发布失败',
     value: 'FAILED',
   },
 };

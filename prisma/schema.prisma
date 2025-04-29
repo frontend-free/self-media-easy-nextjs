@@ -28,6 +28,15 @@ enum PublishResourceType {
   VIDEO
 }
 
+enum PublishStatus {
+  // 等待发布
+  WAITING
+  // 已发布
+  PUBLISHED
+  // 停止发布
+  STOPPED
+}
+
 enum PublishType {
   // 正式
   OFFICIAL
@@ -36,7 +45,7 @@ enum PublishType {
 }
 
 enum TaskStatus {
-  // 已发布
+  // 发布成功
   SUCCESS
   // 发布失败
   FAILED
@@ -121,12 +130,13 @@ model Publish {
   title           String? // 标题
   description     String? // 描述
   publishType     PublishType // 发布类型
-
-  tasks Task[] // 任务
+  publishStatus   PublishStatus       @default(WAITING) // 发布状态
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   userId String
   user   User   @relation(fields: [userId], references: [id])
+
+  tasks Task[] // 任务
 }

@@ -31,12 +31,23 @@ const enums = {
       text: '草稿',
     },
   },
+  PublishStatus: {
+    WAITING: {
+      text: '等待发布',
+    },
+    PUBLISHED: {
+      text: '已发布',
+    },
+    STOPPED: {
+      text: '停止发布',
+    },
+  },
   TaskStatus: {
     SUCCESS: {
-      text: '成功',
+      text: '发布成功',
     },
     FAILED: {
-      text: '失败',
+      text: '发布失败',
     },
   },
 };

@@ -2,7 +2,11 @@
 
 import * as PublishAction from '@/app/actions/publish_action';
 import { CRUD } from '@/app/components/crud';
-import { valueEnumPublishResourceType, valueEnumPublishType } from '@/generated/enums';
+import {
+  valueEnumPublishResourceType,
+  valueEnumPublishStatus,
+  valueEnumPublishType,
+} from '@/generated/enums';
 import { PublishResourceType, PublishType } from '@/generated/prisma';
 import {
   ProFormField,
@@ -10,6 +14,7 @@ import {
   ProFormText,
   ProFormTextArea,
 } from '@ant-design/pro-components';
+import { Alert } from 'antd';
 
 function Page() {
   return (
@@ -36,6 +41,12 @@ function Page() {
           search: false,
         },
         {
+          title: '发布状态',
+          dataIndex: 'publishStatus',
+          valueEnum: valueEnumPublishStatus,
+          search: false,
+        },
+        {
           title: '创建时间',
           dataIndex: 'createdAt',
           valueType: 'dateTime',
@@ -44,6 +55,9 @@ function Page() {
       ]}
       detailForm={() => (
         <div>
+          <div className="my-4">
+            <Alert message="请不要随意移动资源，否则可能影响发布任务" type="info" />
+          </div>
           <ProFormText name="id" label="ID" hidden />
           <ProFormField
             name="resourceType"
