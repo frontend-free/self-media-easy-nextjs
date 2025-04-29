@@ -36,6 +36,8 @@ export async function createAccount(data: CreateAccountInput) {
       },
     });
 
+    console.log('createAccount exist', account);
+
     // 存在则更新
     if (account) {
       account = await prisma.account.update({

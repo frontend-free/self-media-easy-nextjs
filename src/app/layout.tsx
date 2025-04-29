@@ -4,6 +4,7 @@ import { UserAvatar } from '@/app/components/avatar';
 import { AppMenu } from '@/app/components/menu';
 import { UserDropdown } from '@/app/components/user_dropdown';
 import { initDatabase } from '@/init/init_db';
+import '@ant-design/v5-patch-for-react-19';
 
 import {
   HomeOutlined,
@@ -13,7 +14,7 @@ import {
   UserOutlined,
 } from '@ant-design/icons';
 import { AntdRegistry } from '@ant-design/nextjs-registry';
-import '@ant-design/v5-patch-for-react-19';
+
 import { App, ConfigProvider } from 'antd';
 import zhCN from 'antd/locale/zh_CN';
 import type { Metadata } from 'next';

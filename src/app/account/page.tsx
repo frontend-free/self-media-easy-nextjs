@@ -12,15 +12,15 @@ import { PlusCircleOutlined } from '@ant-design/icons';
 import { ProFormSelect, ProFormText } from '@ant-design/pro-components';
 import { App, Button, Modal } from 'antd';
 import Image from 'next/image';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import * as AccountAction from '../actions/account_action';
 import * as TagCoachAction from '../actions/tag_coach_action';
 import { CRUD } from '../components/crud';
 
-function Add() {
+function Add({ refCRUD }) {
   const [open, setOpen] = useState(false);
 
-  const { modal } = App.useApp();
+  const { modal, message } = App.useApp();
 
   const handleAuth = async (item) => {
     const platform = item.value;
@@ -30,7 +30,7 @@ function Add() {
     console.log('platformAuth', res);
 
     if (res.data) {
-      AccountAction.createAccount({
+      await AccountAction.createAccount({
         platform,
         platformId: res.data.platformId || null,
         platformName: res.data.platformName || null,
@@ -40,12 +40,17 @@ function Add() {
         authInfo: res.data.authInfo,
         authedAt: new Date(),
       });
+
+      message.success('授权成功');
+      refCRUD.current?.reload();
     } else {
       modal.error({
         title: '授权失败',
         content: res.message || '未知错误',
       });
     }
+
+    setOpen(false);
   };
 
   return (
@@ -79,8 +84,11 @@ function Add() {
 }
 
 function Page() {
+  const refCRUD = useRef<any | undefined>(undefined);
+
   return (
     <CRUD<Account>
+      ref={refCRUD}
       title="账号"
       columns={[
         {
@@ -150,7 +158,7 @@ function Page() {
       requestUpdate={async (values) => {
         await AccountAction.updateAccount(values as AccountAction.UpdateAccountInput);
       }}
-      toolBarRenderPre={<Add />}
+      toolBarRenderPre={<Add refCRUD={refCRUD} />}
     />
   );
 }

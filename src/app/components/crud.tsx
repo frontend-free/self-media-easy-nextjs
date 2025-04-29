@@ -3,9 +3,9 @@
 import { DeleteOutlined, EditOutlined, PlusCircleOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns, ProFormInstance } from '@ant-design/pro-components';
 import { ModalForm } from '@ant-design/pro-components';
-import { App, Button, message } from 'antd';
+import { App, Button } from 'antd';
 import dynamic from 'next/dynamic';
-import { ReactNode, RefObject, useCallback, useMemo, useRef } from 'react';
+import { ReactNode, RefObject, useCallback, useImperativeHandle, useMemo, useRef } from 'react';
 
 const ProTable = dynamic(
   () => import('@ant-design/pro-components').then((mod) => mod.ProTable as any),
@@ -32,6 +32,8 @@ interface CRUDProps<T> {
   requestUpdate?: (updateValues: Partial<T> & { id: string }) => Promise<void>;
 
   toolBarRenderPre?: ReactNode;
+
+  ref?: RefObject<{ reload: () => void } | undefined>;
 }
 
 function Add<T>({
@@ -43,6 +45,8 @@ function Add<T>({
   requestCreate: CRUDProps<T>['requestCreate'];
   detailForm: CRUDProps<T>['detailForm'];
 }) {
+  const { message } = App.useApp();
+
   return (
     <ModalForm
       title="新增"
@@ -84,6 +88,7 @@ function Update<T>({
   detailForm: CRUDProps<T>['detailForm'];
 }) {
   const formRef = useRef<ProFormInstance | null>(null);
+  const { message } = App.useApp();
 
   const handleOpenChange = useCallback(
     async (open: boolean) => {
@@ -123,6 +128,7 @@ function Update<T>({
 }
 
 function CRUD<T extends Record<string, any>>({
+  ref,
   title,
   columns,
   request,
@@ -136,7 +142,15 @@ function CRUD<T extends Record<string, any>>({
   requestUpdate,
   toolBarRenderPre,
 }: CRUDProps<T>) {
-  const { modal } = App.useApp();
+  const actionRef = useRef<ActionType | undefined>(undefined);
+
+  useImperativeHandle(ref, () => ({
+    reload: () => {
+      actionRef.current?.reload();
+    },
+  }));
+
+  const { modal, message } = App.useApp();
 
   const newColumns: ProColumns<T>[] = useMemo(() => {
     return [
@@ -182,13 +196,12 @@ function CRUD<T extends Record<string, any>>({
     detailForm,
     disabledDelete,
     disabledUpdate,
+    message,
     modal,
     requestDelete,
     requestDetail,
     requestUpdate,
   ]);
-
-  const actionRef = useRef<ActionType | undefined>(undefined);
 
   const handleRequest = useCallback(
     async (params) => {
@@ -230,3 +243,4 @@ function CRUD<T extends Record<string, any>>({
 }
 
 export { CRUD };
+export type { CRUDProps };
