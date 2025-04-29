@@ -3,7 +3,8 @@ import { AdminComponent, AuthComponent } from '@/app/components/auth_component';
 import { UserAvatar } from '@/app/components/avatar';
 import { AppMenu } from '@/app/components/menu';
 import { UserDropdown } from '@/app/components/user_dropdown';
-import { initDatabase } from '@/init/init_db';
+import { ErrorComponent } from '@/app/lib/error';
+import { initDatabase } from '@/app/lib/init_db';
 import '@ant-design/v5-patch-for-react-19';
 
 import {
@@ -84,6 +85,7 @@ function RootLayout({ children }: { children: React.ReactNode }) {
         <AntdRegistry>
           <ConfigProvider locale={zhCN}>
             <App>
+              <ErrorComponent />
               <AdminComponent element={children}>
                 <AuthComponent element={children}>
                   <div className="h-screen w-screen flex bg-gray-200">
