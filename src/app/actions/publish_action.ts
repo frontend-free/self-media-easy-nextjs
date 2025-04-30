@@ -2,7 +2,7 @@
 
 import { Publish } from '@/generated/prisma';
 import { omit } from 'lodash-es';
-import { createModel, deleteModel, needAuth, pageModel } from './helper';
+import { createModel, deleteModel, needAuth, pageModel, prisma } from './helper';
 import * as TaskAction from './task_action';
 
 export type CreatePublishInput = Pick<
@@ -17,7 +17,7 @@ export async function createPublish(data: CreatePublishInput) {
     Publish,
     CreatePublishInput & { accounts: { connect: { id: string }[] }; userId: string }
   >({
-    model: 'publish',
+    model: prisma.publish,
     data: {
       ...omit(data, 'accountIds'),
       accounts: {
@@ -43,7 +43,7 @@ export async function pagePublishes(params: { pageSize: number; current: number 
   const { sessionUser } = await needAuth();
 
   return pageModel<Publish>({
-    model: 'publish',
+    model: prisma.publish,
     params,
     where: {
       userId: sessionUser.id,
@@ -58,7 +58,7 @@ export async function deletePublish(id: string) {
   const { sessionUser } = await needAuth();
 
   return deleteModel({
-    model: 'publish',
+    model: prisma.publish,
     id,
     where: {
       userId: sessionUser.id,

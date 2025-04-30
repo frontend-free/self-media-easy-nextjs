@@ -164,7 +164,7 @@ function CRUD<T extends Record<string, any>>({
   const newColumns: ProColumns<T>[] = useMemo(() => {
     return [
       ...columns,
-      {
+      (!disabledDelete || !disabledUpdate) && {
         title: '操作',
         key: 'action',
         valueType: 'option',
@@ -199,7 +199,7 @@ function CRUD<T extends Record<string, any>>({
           ),
         ],
       },
-    ];
+    ].filter(Boolean) as ProColumns<T>[];
   }, [
     columns,
     detailForm,

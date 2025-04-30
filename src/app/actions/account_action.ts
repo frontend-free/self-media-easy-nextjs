@@ -27,7 +27,7 @@ export async function createAccount(data: CreateAccountInput) {
 
   // 如果有 平台 id 则先检查是否存在
   if (data.platform && data.platformId) {
-    let account = await prisma.account.findFirst({
+    const account = await prisma.account.findFirst({
       where: {
         platform: data.platform,
         platformId: data.platformId,
@@ -35,24 +35,18 @@ export async function createAccount(data: CreateAccountInput) {
       },
     });
 
-    console.log('createAccount exist', account);
-
     // 存在则更新
     if (account) {
-      account = await prisma.account.update({
-        where: { id: account.id },
-        data: {
-          ...data,
-        },
+      return await updateAccount({
+        id: account.id,
+        ...data,
       });
-
-      return account;
     }
   }
 
   // 不存在则创建
   return createModel<Account, CreateAccountInput & { userId: string }>({
-    model: 'account',
+    model: prisma.account,
     data: {
       ...data,
       userId: sessionUser.id,
@@ -70,7 +64,7 @@ export async function pageAccounts(params: {
   const { sessionUser } = await needAuth();
 
   return pageModel<Account>({
-    model: 'account',
+    model: prisma.account,
     params,
     where: {
       platformName: { contains: params.platformName },
@@ -88,7 +82,7 @@ export async function getAccountById(id: string) {
   const { sessionUser } = await needAuth();
 
   return getModelById<Account>({
-    model: 'account',
+    model: prisma.account,
     id,
     where: {
       userId: sessionUser.id,
@@ -104,7 +98,7 @@ export async function updateAccount(data: UpdateAccountInput) {
   const { sessionUser } = await needAuth();
 
   return updateModel<UpdateAccountInput>({
-    model: 'account',
+    model: prisma.account,
     data,
     where: {
       userId: sessionUser.id,
@@ -116,7 +110,7 @@ export async function deleteAccount(id: string) {
   const { sessionUser } = await needAuth();
 
   return deleteModel({
-    model: 'account',
+    model: prisma.account,
     id,
     where: {
       userId: sessionUser.id,

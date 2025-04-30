@@ -67,7 +67,7 @@ export async function pageModel<T>({
   omit,
   select,
 }: {
-  model: keyof PrismaClient;
+  model: any;
   params: PageParams;
 } & CommonArgs): Promise<PageResult<T>> {
   await needAuth();
@@ -75,11 +75,9 @@ export async function pageModel<T>({
   const { pageSize, current } = params;
   const skip = (current - 1) * pageSize;
 
-  const prismaModel = prisma[model] as any;
-
   const [total, data] = await Promise.all([
-    prismaModel.count({ where }),
-    prismaModel.findMany({
+    model.count({ where }),
+    model.findMany({
       where,
       skip,
       take: pageSize,
@@ -106,15 +104,13 @@ export async function getModelById<T>({
   where,
   include,
 }: {
-  model: keyof PrismaClient;
+  model: any;
   id: string;
 } & CommonArgs) {
   await needId(id);
   await needAuth();
 
-  const prismaModel = prisma[model] as any;
-
-  const result = await prismaModel.findUnique({
+  const result = await model.findUnique({
     where: { id, ...where },
     include,
   });
@@ -131,14 +127,12 @@ export async function createModel<T, C>({
   model,
   data,
 }: {
-  model: keyof PrismaClient;
+  model: any;
   data: C;
 } & CommonArgs) {
-  const prismaModel = prisma[model] as any;
-
   await needAuth();
 
-  const result = await prismaModel.create({
+  const result = await model.create({
     data,
   });
 
@@ -150,15 +144,13 @@ export async function updateModel<T>({
   model,
   data,
 }: {
-  model: keyof PrismaClient;
+  model: any;
   data: T & { id: string };
 } & CommonArgs) {
   await needId(data.id);
   await needAuth();
 
-  const prismaModel = prisma[model] as any;
-
-  const result = await prismaModel.update({
+  const result = await model.update({
     where: { id: data.id },
     data,
   });
@@ -171,16 +163,11 @@ export async function updateModel<T>({
 }
 
 /** 封装常用 delete */
-export async function deleteModel({
-  model,
-  id,
-  where,
-}: { model: keyof PrismaClient; id: string } & CommonArgs) {
+export async function deleteModel({ model, id, where }: { model: any; id: string } & CommonArgs) {
   await needId(id);
   await needAuth();
 
-  const prismaModel = prisma[model] as any;
-  const result = await prismaModel.delete({
+  const result = await model.delete({
     where: { id, ...where },
   });
 
