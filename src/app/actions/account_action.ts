@@ -51,7 +51,7 @@ export async function createAccount(data: CreateAccountInput) {
   }
 
   // 不存在则创建
-  return createModel<CreateAccountInput & { userId: string }>({
+  return createModel<Account, CreateAccountInput & { userId: string }>({
     model: 'account',
     data: {
       ...data,

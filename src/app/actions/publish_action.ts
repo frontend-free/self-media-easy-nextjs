@@ -3,6 +3,7 @@
 import { Publish } from '@/generated/prisma';
 import { omit } from 'lodash-es';
 import { createModel, deleteModel, needAuth, pageModel } from './helper';
+import * as TaskAction from './task_action';
 
 export type CreatePublishInput = Pick<
   Publish,
@@ -13,6 +14,7 @@ export async function createPublish(data: CreatePublishInput) {
   const { sessionUser } = await needAuth();
 
   const publish = await createModel<
+    Publish,
     CreatePublishInput & { accounts: { connect: { id: string }[] }; userId: string }
   >({
     model: 'publish',
@@ -25,23 +27,25 @@ export async function createPublish(data: CreatePublishInput) {
     },
   });
 
+  const publishId = publish.id;
+
+  for (const accountId of data.accountIds) {
+    await TaskAction.createTasksForPublish({
+      publishId,
+      accountId,
+    });
+  }
+
   return publish;
 }
 
-export async function pagePublishes(params: {
-  pageSize: number;
-  current: number;
-  title?: string;
-  publishType?: string;
-  resourceType?: string;
-}) {
+export async function pagePublishes(params: { pageSize: number; current: number }) {
   const { sessionUser } = await needAuth();
 
   return pageModel<Publish>({
     model: 'publish',
     params,
     where: {
-      title: { contains: params.title },
       userId: sessionUser.id,
     },
     include: {

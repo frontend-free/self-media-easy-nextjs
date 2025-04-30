@@ -72,7 +72,7 @@ const menuItems = [
     icon: <UserOutlined />,
   },
   {
-    key: '/schedule',
+    key: '/task',
     label: '任务',
     icon: <UnorderedListOutlined />,
   },

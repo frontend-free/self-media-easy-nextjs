@@ -10,7 +10,7 @@ export type UpdateUserInput = Partial<Omit<User, 'name' | 'createdAt' | 'updated
 };
 
 export async function createUser(data: CreateUserInput) {
-  return createModel<CreateUserInput>({
+  return createModel<User, CreateUserInput>({
     model: 'user',
     data: {
       ...data,

@@ -10,7 +10,7 @@ export type UpdateTagCoachInput = Partial<Pick<TagCoach, 'name'>> & { id: string
 export async function createTagCoach(data: CreateTagCoachInput) {
   const { sessionUser } = await needAuth();
 
-  return createModel<CreateTagCoachInput & { userId: string }>({
+  return createModel<TagCoach, CreateTagCoachInput & { userId: string }>({
     model: 'tagCoach',
     data: {
       ...data,

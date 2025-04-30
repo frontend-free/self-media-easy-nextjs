@@ -127,12 +127,12 @@ export async function getModelById<T>({
 }
 
 /** 封装常用 create */
-export async function createModel<T>({
+export async function createModel<T, C>({
   model,
   data,
 }: {
   model: keyof PrismaClient;
-  data: T;
+  data: C;
 } & CommonArgs) {
   const prismaModel = prisma[model] as any;
 
