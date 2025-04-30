@@ -1,12 +1,6 @@
 'use client';
 
-import { electronApi } from '@/electron';
-import {
-  EnumAccountStatus,
-  listPlatform,
-  valueEnumAccountStatus,
-  valueEnumPlatform,
-} from '@/generated/enums';
+import { listPlatform, valueEnumAccountStatus, valueEnumPlatform } from '@/generated/enums';
 import { Account } from '@/generated/prisma';
 import { ProFormSelect, ProFormText } from '@ant-design/pro-components';
 import { App, Button, Modal } from 'antd';
@@ -24,31 +18,24 @@ function Add({ refCRUD }) {
   const handleAuth = async (item) => {
     const platform = item.value;
 
-    const res = await electronApi.platformAuth({ platform });
-
-    if (res.success && res.data) {
-      await AccountAction.createAccount({
-        platform,
-        platformId: res.data.platformId || null,
-        platformName: res.data.platformName || null,
-        platformAvatar: res.data.platformAvatar || null,
-
-        status: EnumAccountStatus.AUTHED,
-        authInfo: res.data.authInfo || null,
-        authedAt: new Date(),
-        logs: JSON.stringify(res.data.logs || []),
-      });
-
+    try {
+      await AccountAction.authAccount(platform);
       message.success('授权成功');
-      refCRUD.current?.reload();
-    } else {
+    } catch (error) {
+      let message = '未知错误';
+
+      if (typeof error === 'object' && error !== null && 'message' in error) {
+        message = error.message as string;
+      }
+
       modal.error({
         title: '授权失败',
-        content: res.message || '未知错误',
+        content: message,
       });
+    } finally {
+      setOpen(false);
+      refCRUD.current?.reload();
     }
-
-    setOpen(false);
   };
 
   return (

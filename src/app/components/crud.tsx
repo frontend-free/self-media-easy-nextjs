@@ -45,6 +45,7 @@ interface CRUDProps<T> {
   requestUpdate?: (updateValues: Partial<T> & { id: string }) => Promise<void>;
 
   toolBarRenderPre?: ReactNode;
+  renderOperate?: (params: { record: T }) => ReactNode;
 
   ref?: RefObject<{ reload: () => void } | undefined>;
 }
@@ -150,6 +151,7 @@ function CRUD<T extends Record<string, any>>({
   requestDetail,
   requestUpdate,
   toolBarRenderPre,
+  renderOperate,
 }: CRUDProps<T>) {
   const actionRef = useRef<ActionType | undefined>(undefined);
 
@@ -164,11 +166,12 @@ function CRUD<T extends Record<string, any>>({
   const newColumns: ProColumns<T>[] = useMemo(() => {
     return [
       ...columns,
-      (!disabledDelete || !disabledUpdate) && {
+      (!disabledDelete || !disabledUpdate || renderOperate) && {
         title: '操作',
         key: 'action',
         valueType: 'option',
         render: (_, record) => [
+          renderOperate?.({ record }),
           !disabledDelete && (
             <Button
               key="edit"
@@ -207,6 +210,7 @@ function CRUD<T extends Record<string, any>>({
     disabledUpdate,
     message,
     modal,
+    renderOperate,
     requestDelete,
     requestDetail,
     requestUpdate,

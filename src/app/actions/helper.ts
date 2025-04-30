@@ -97,31 +97,6 @@ export async function pageModel<T>({
   };
 }
 
-/** 封装常用 get */
-export async function getModelById<T>({
-  model,
-  id,
-  where,
-  include,
-}: {
-  model: any;
-  id: string;
-} & CommonArgs) {
-  await needId(id);
-  await needAuth();
-
-  const result = await model.findUnique({
-    where: { id, ...where },
-    include,
-  });
-
-  if (!result) {
-    throw new Error(`${model.toString()} 不存在`);
-  }
-
-  return result as T;
-}
-
 /** 封装常用 create */
 export async function createModel<T, C>({
   model,
@@ -153,6 +128,31 @@ export async function updateModel<T>({
   const result = await model.update({
     where: { id: data.id },
     data,
+  });
+
+  if (!result) {
+    throw new Error(`${model.toString()} 不存在`);
+  }
+
+  return result as T;
+}
+
+/** 封装常用 get */
+export async function getModelById<T>({
+  model,
+  id,
+  where,
+  include,
+}: {
+  model: any;
+  id: string;
+} & CommonArgs) {
+  await needId(id);
+  await needAuth();
+
+  const result = await model.findUnique({
+    where: { id, ...where },
+    include,
   });
 
   if (!result) {

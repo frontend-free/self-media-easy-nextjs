@@ -2,6 +2,8 @@
 
 import { valueEnumPlatform, valueEnumTaskStatus } from '@/generated/enums';
 import { Task } from '@/generated/prisma';
+import { SendOutlined } from '@ant-design/icons';
+import { Button } from 'antd';
 import { useRef } from 'react';
 import * as TaskAction from '../actions/task_action';
 import { CRUD } from '../components/crud';
@@ -54,6 +56,25 @@ function Page() {
       disabledCreate
       disabledDelete
       disabledUpdate
+      renderOperate={({ record }) => {
+        return (
+          <Button
+            type="link"
+            icon={<SendOutlined />}
+            onClick={async () => {
+              try {
+                await TaskAction.publishTask(record.id, {
+                  force: true,
+                });
+              } finally {
+                refCRUD?.current?.reload();
+              }
+            }}
+          >
+            发布Debug
+          </Button>
+        );
+      }}
     />
   );
 }

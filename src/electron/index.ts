@@ -2,17 +2,7 @@
 
 import { EnumPlatform } from '@/generated/enums';
 
-function getElectron(): any {
-  // @ts-expect-error 先忽略
-  if (typeof window !== 'undefined' && window.electron) {
-    // @ts-expect-error 先忽略
-    return window.electron;
-  }
-
-  throw new Error('需要在桌面端使用');
-}
-
-interface PlatformResult {
+interface PlatformAuthResult {
   success: boolean;
   data?: {
     platform: string;
@@ -20,6 +10,26 @@ interface PlatformResult {
     platformAvatar?: string;
     platformId?: string;
     authInfo?: string;
+    logs?: string[];
+  };
+  message?: string;
+}
+
+interface PlatformPublishParams {
+  platform: EnumPlatform;
+  authInfo: string;
+  resourceOfVideo: string;
+}
+
+enum EnumPlatformPublishCode {
+  ERROR_AUTH_INFO_INVALID = 'ERROR_AUTH_INFO_INVALID',
+}
+
+interface PlatformPublishResult {
+  success: boolean;
+  data?: {
+    platform: EnumPlatform;
+    code: EnumPlatformPublishCode;
     logs?: string[];
   };
   message?: string;
@@ -33,12 +43,33 @@ interface ShowOpenDialogOfOpenFileResult {
   message?: string;
 }
 
+function getElectron(): any {
+  // @ts-expect-error 先忽略
+  if (typeof window !== 'undefined' && window.electron) {
+    // @ts-expect-error 先忽略
+    return window.electron;
+  }
+
+  throw new Error('需要在桌面端使用');
+}
+
 // 都封装在这里
 const electronApi = {
-  platformAuth: async ({ platform }: { platform: EnumPlatform }): Promise<PlatformResult> => {
+  platformAuth: async ({ platform }: { platform: EnumPlatform }): Promise<PlatformAuthResult> => {
     const electron = getElectron();
 
-    const res: PlatformResult = await electron.ipcRenderer.invoke('platformAuth', { platform });
+    const res: PlatformAuthResult = await electron.ipcRenderer.invoke('platformAuth', { platform });
+
+    console.log('platformAuth res', res);
+    return res;
+  },
+  platformPublish: async (params: PlatformPublishParams): Promise<PlatformPublishResult> => {
+    const electron = getElectron();
+
+    const res: PlatformPublishResult = await electron.ipcRenderer.invoke('platformPublish', params);
+
+    console.log('platformPublish res', res);
+
     return res;
   },
   showOpenDialogOfOpenFile: async (): Promise<ShowOpenDialogOfOpenFileResult> => {
@@ -47,6 +78,8 @@ const electronApi = {
     const res: ShowOpenDialogOfOpenFileResult = await electron.ipcRenderer.invoke(
       'showOpenDialogOfOpenFile',
     );
+
+    console.log('showOpenDialogOfOpenFile res', res);
 
     return res;
   },
