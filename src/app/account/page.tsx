@@ -8,7 +8,6 @@ import {
   valueEnumPlatform,
 } from '@/generated/enums';
 import { Account } from '@/generated/prisma';
-import { PlusCircleOutlined } from '@ant-design/icons';
 import { ProFormSelect, ProFormText } from '@ant-design/pro-components';
 import { App, Button, Modal } from 'antd';
 import Image from 'next/image';
@@ -77,7 +76,7 @@ function Add({ refCRUD }) {
           ))}
         </div>
       </Modal>
-      <Button type="primary" icon={<PlusCircleOutlined />} onClick={() => setOpen(true)}>
+      <Button type="primary" onClick={() => setOpen(true)}>
         新增
       </Button>
     </>

@@ -1,6 +1,6 @@
 'use client';
 
-import { DeleteOutlined, EditOutlined, PlusCircleOutlined } from '@ant-design/icons';
+import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns, ProFormInstance } from '@ant-design/pro-components';
 import { ModalForm } from '@ant-design/pro-components';
 import { App, Button } from 'antd';
@@ -51,11 +51,7 @@ function Add<T>({
     <ModalForm
       title="新增"
       autoFocusFirstInput
-      trigger={
-        <Button type="primary" icon={<PlusCircleOutlined />}>
-          新增
-        </Button>
-      }
+      trigger={<Button type="primary">新增</Button>}
       onFinish={async (values) => {
         await requestCreate!(values as T);
 
