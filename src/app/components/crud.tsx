@@ -7,6 +7,19 @@ import { App, Button } from 'antd';
 import dynamic from 'next/dynamic';
 import { ReactNode, RefObject, useCallback, useImperativeHandle, useMemo, useRef } from 'react';
 
+function handleFinish(onFinish) {
+  return async (formData) => {
+    try {
+      const res = await onFinish(formData);
+      return res;
+    } catch (e) {
+      setTimeout(() => {
+        throw e;
+      }, 0);
+    }
+  };
+}
+
 const ProTable = dynamic(
   () => import('@ant-design/pro-components').then((mod) => mod.ProTable as any),
   {
@@ -52,7 +65,7 @@ function Add<T>({
       title="新增"
       autoFocusFirstInput
       trigger={<Button type="primary">新增</Button>}
-      onFinish={async (values) => {
+      onFinish={handleFinish(async (values) => {
         await requestCreate!(values as T);
 
         message.success('新增成功');
@@ -60,7 +73,7 @@ function Add<T>({
         actionRef.current?.reload();
 
         return true;
-      }}
+      })}
       modalProps={{
         destroyOnClose: true,
       }}
@@ -104,7 +117,7 @@ function Update<T>({
       formRef={formRef}
       autoFocusFirstInput
       trigger={<Button type="link" icon={<EditOutlined />} />}
-      onFinish={async (values) => {
+      onFinish={handleFinish(async (values) => {
         await requestUpdate!(values as Partial<T> & { id: string });
 
         message.success('修改成功');
@@ -112,7 +125,7 @@ function Update<T>({
         actionRef.current?.reload();
 
         return true;
-      }}
+      })}
       modalProps={{
         destroyOnClose: true,
       }}

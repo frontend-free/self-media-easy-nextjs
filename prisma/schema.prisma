@@ -28,15 +28,6 @@ enum PublishResourceType {
   VIDEO
 }
 
-enum PublishStatus {
-  // 等待发布
-  WAITING
-  // 已发布
-  PUBLISHED
-  // 停止发布
-  STOPPED
-}
-
 enum PublishType {
   // 正式
   OFFICIAL
@@ -45,10 +36,16 @@ enum PublishType {
 }
 
 enum TaskStatus {
+  // 等待发布
+  PENDING
+  // 发布中
+  PUBLISHING
   // 发布成功
   SUCCESS
   // 发布失败
   FAILED
+  // 已取消
+  CANCELLED
 }
 
 // 用户模型
@@ -67,6 +64,7 @@ model User {
   tagCoachList TagCoach[]
   Account      Account[]
   publishes    Publish[]
+  tasks        Task[]
 }
 
 // 标签-教练
@@ -103,23 +101,7 @@ model Account {
   userId String
   user   User   @relation(fields: [userId], references: [id])
   tasks  Task[]
-}
-
-// 任务
-model Task {
-  id        String     @id @default(uuid())
-  status    TaskStatus // 任务状态
-  logs      String? // 任务日志 JSON
-  accountId String
-  account   Account    @relation(fields: [accountId], references: [id])
-  startAt   DateTime? // 开始发布时间
-  endAt     DateTime? // 结束发布时间
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  publishId String
-  publish   Publish @relation(fields: [publishId], references: [id])
+  publishes Publish[]
 }
 
 // 发布
@@ -130,7 +112,27 @@ model Publish {
   title           String? // 标题
   description     String? // 描述
   publishType     PublishType // 发布类型
-  publishStatus   PublishStatus       @default(WAITING) // 发布状态
+
+  accounts Account[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+  tasks Task[] // 任务
+}
+
+// 任务
+model Task {
+  id      String     @id @default(uuid())
+  status  TaskStatus @default(PENDING) // 任务状态
+  logs    String? // 任务日志 JSON
+  startAt DateTime? // 开始发布时间
+  endAt   DateTime? // 结束发布时间
+
+  accountId String
+  account   Account @relation(fields: [accountId], references: [id])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -138,5 +140,6 @@ model Publish {
   userId String
   user   User   @relation(fields: [userId], references: [id])
 
-  tasks Task[] // 任务
+  publishId String
+  publish   Publish @relation(fields: [publishId], references: [id])
 }

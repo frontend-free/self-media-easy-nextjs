@@ -1,19 +1,17 @@
 'use client';
 
+import * as AccountAction from '@/app/actions/account_action';
 import * as PublishAction from '@/app/actions/publish_action';
 import { CRUD } from '@/app/components/crud';
 import { electronApi } from '@/electron';
-import {
-  valueEnumPublishResourceType,
-  valueEnumPublishStatus,
-  valueEnumPublishType,
-} from '@/generated/enums';
+import { valueEnumPublishResourceType, valueEnumPublishType } from '@/generated/enums';
 import { PublishResourceType, PublishType } from '@/generated/prisma';
 import { DeleteOutlined } from '@ant-design/icons';
 import {
   ProForm,
   ProFormField,
   ProFormRadio,
+  ProFormSelect,
   ProFormText,
   ProFormTextArea,
 } from '@ant-design/pro-components';
@@ -73,29 +71,14 @@ function Page() {
       title="发布"
       columns={[
         {
-          title: '发布类型',
-          dataIndex: 'publishType',
-          valueEnum: valueEnumPublishType,
-          search: false,
-        },
-        {
           title: '资源',
           dataIndex: 'resourceOfVideo',
           search: false,
         },
         {
-          title: '标题',
-          dataIndex: 'title',
-        },
-        {
-          title: '描述',
-          dataIndex: 'description',
-          search: false,
-        },
-        {
-          title: '发布状态',
-          dataIndex: 'publishStatus',
-          valueEnum: valueEnumPublishStatus,
+          title: '发布类型',
+          dataIndex: 'publishType',
+          valueEnum: valueEnumPublishType,
           search: false,
         },
         {
@@ -117,6 +100,24 @@ function Page() {
             disabled
           />
           <ProFormFiles name="resourceOfVideo" label="视频" required rules={[{ required: true }]} />
+
+          <ProFormSelect
+            name="accountIds"
+            label="账号"
+            mode="multiple"
+            request={async () => {
+              const res = await AccountAction.pageAccounts({
+                pageSize: 100,
+                current: 1,
+              });
+              return res.data.map((item) => ({
+                label: item.platformName,
+                value: item.id,
+              }));
+            }}
+            required
+            rules={[{ required: true }]}
+          />
 
           <ProFormText name="title" label="标题" />
           <ProFormTextArea name="description" label="描述" />

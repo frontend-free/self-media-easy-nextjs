@@ -1,20 +1,31 @@
 'use server';
 
 import { Publish } from '@/generated/prisma';
+import { omit } from 'lodash-es';
 import { createModel, deleteModel, needAuth, pageModel } from './helper';
 
-export type CreatePublishInput = Omit<Publish, 'id' | 'userId' | 'createdAt' | 'updatedAt'>;
+export type CreatePublishInput = Pick<
+  Publish,
+  'resourceType' | 'resourceOfVideo' | 'title' | 'description' | 'publishType'
+> & { accountIds: string[] };
 
 export async function createPublish(data: CreatePublishInput) {
   const { sessionUser } = await needAuth();
 
-  return createModel<CreatePublishInput & { userId: string }>({
+  const publish = await createModel<
+    CreatePublishInput & { accounts: { connect: { id: string }[] }; userId: string }
+  >({
     model: 'publish',
     data: {
-      ...data,
+      ...omit(data, 'accountIds'),
+      accounts: {
+        connect: data.accountIds.map((id) => ({ id })),
+      },
       userId: sessionUser.id,
     },
   });
+
+  return publish;
 }
 
 export async function pagePublishes(params: {
@@ -34,11 +45,7 @@ export async function pagePublishes(params: {
       userId: sessionUser.id,
     },
     include: {
-      tasks: {
-        include: {
-          account: true,
-        },
-      },
+      tasks: true,
     },
   });
 }

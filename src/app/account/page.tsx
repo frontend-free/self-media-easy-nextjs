@@ -26,8 +26,6 @@ function Add({ refCRUD }) {
 
     const res = await electronApi.platformAuth({ platform });
 
-    console.log('platformAuth', res);
-
     if (res.success && res.data) {
       await AccountAction.createAccount({
         platform,
