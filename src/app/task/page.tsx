@@ -1,7 +1,8 @@
 'use client';
 
+import { electronApi } from '@/electron';
 import { valueEnumPlatform, valueEnumTaskStatus } from '@/generated/enums';
-import { Task } from '@/generated/prisma';
+import { Task, TaskStatus } from '@/generated/prisma';
 import { SendOutlined } from '@ant-design/icons';
 import { Button } from 'antd';
 import { useRef } from 'react';
@@ -11,6 +12,51 @@ import { CRUD } from '../components/crud';
 function Page() {
   const refCRUD = useRef<any | undefined>(undefined);
 
+  const handlePublishTask = async (task: Task) => {
+    try {
+      // 更新任务状态
+      TaskAction.updateTask({
+        id: task.id,
+        status: TaskStatus.PUBLISHING,
+        startAt: new Date(),
+      });
+
+      // @ts-expect-error 先忽略
+      const platform = task.account?.platform;
+      // @ts-expect-error 先忽略
+      const authInfo = task.account?.authInfo;
+      // @ts-expect-error 先忽略
+      const resourceOfVideo = task.publish?.resourceOfVideo;
+
+      // 发布
+      const res = await electronApi.platformPublish({
+        platform,
+        authInfo,
+        resourceOfVideo,
+      });
+
+      // 成功更新任务
+      if (res.success) {
+        TaskAction.updateTask({
+          id: task.id,
+          status: TaskStatus.SUCCESS,
+          logs: JSON.stringify(res.data?.logs || []),
+          endAt: new Date(),
+        });
+      }
+      // 失败更新任务
+      else {
+        TaskAction.updateTask({
+          id: task.id,
+          status: TaskStatus.FAILED,
+          logs: JSON.stringify(res.data?.logs || []),
+          endAt: new Date(),
+        });
+      }
+    } finally {
+      refCRUD?.current?.reload();
+    }
+  };
   return (
     <CRUD<Task>
       ref={refCRUD}
@@ -62,13 +108,7 @@ function Page() {
             type="link"
             icon={<SendOutlined />}
             onClick={async () => {
-              try {
-                await TaskAction.publishTask(record.id, {
-                  force: true,
-                });
-              } finally {
-                refCRUD?.current?.reload();
-              }
+              handlePublishTask(record);
             }}
           >
             发布Debug

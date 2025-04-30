@@ -1,7 +1,5 @@
 'use server';
 
-import { electronApi } from '@/electron';
-import { EnumAccountStatus, EnumPlatform } from '@/generated/enums';
 import { Account } from '@/generated/prisma';
 import {
   createModel,
@@ -118,25 +116,4 @@ export async function deleteAccount(id: string) {
       userId: sessionUser.id,
     },
   });
-}
-
-export async function authAccount(platform: EnumPlatform) {
-  const res = await electronApi.platformAuth({ platform });
-
-  // 成功
-  if (res.success && res.data) {
-    await createAccount({
-      platform,
-      platformId: res.data.platformId || null,
-      platformName: res.data.platformName || null,
-      platformAvatar: res.data.platformAvatar || null,
-
-      status: EnumAccountStatus.AUTHED,
-      authInfo: res.data.authInfo || null,
-      authedAt: new Date(),
-      logs: JSON.stringify(res.data.logs || []),
-    });
-  } else {
-    throw new Error(res.message || '未知错误');
-  }
 }
