@@ -3,7 +3,7 @@ import { Prisma, PrismaClient } from '@/generated/prisma';
 import { Operation } from '@prisma/client/runtime/library';
 import { Session } from 'next-auth';
 
-// 创建一个装饰器函数来检查用户认证
+/** 检查登录态 */
 export async function needAuth(): Promise<{ sessionUser: Session['user'] }> {
   const session = await auth();
 
@@ -14,6 +14,7 @@ export async function needAuth(): Promise<{ sessionUser: Session['user'] }> {
   return { sessionUser: session.user };
 }
 
+/** 检查是否是管理员 */
 export async function needIsAdmin(): Promise<{ sessionUser: Session['user'] }> {
   const { sessionUser } = await needAuth();
 
@@ -24,6 +25,7 @@ export async function needIsAdmin(): Promise<{ sessionUser: Session['user'] }> {
   return { sessionUser: sessionUser };
 }
 
+/** 检查 id 是否存在 */
 export async function needId(id: string): Promise<void> {
   if (!id) {
     throw new Error('id 不能为空');
@@ -60,6 +62,7 @@ interface CommonArgs<D, M extends Operation> {
 }
 
 interface CommonOptions {
+  /** 数据归属当前用户 */
   withUser?: boolean;
 }
 
@@ -80,7 +83,8 @@ export async function pageModel<D, R>(
 ): Promise<PageResult<R>> {
   const { sessionUser } = await needAuth();
 
-  const where = { ...argsWhere };
+  // 查询时，不包含已删除的数据
+  const where = { ...argsWhere, deletedAt: null };
 
   if (options?.withUser) {
     // @ts-expect-error 暂时不知道如何处理，先这样
@@ -113,22 +117,20 @@ export async function pageModel<D, R>(
 }
 
 /** 封装常用 create */
-export async function createModel<D, M>(
+export async function createModel<D, R>(
   {
     model,
     data: argsData,
   }: {
     model: any;
     data: Omit<Prisma.Args<D, 'create'>['data'], 'userId'>;
-    options?: {
-      withUser?: boolean;
-    };
   },
   options?: CommonOptions,
 ) {
   const data = { ...argsData };
   const { sessionUser } = await needAuth();
 
+  // 如果需要归属当前用户，则添加 userId
   if (options?.withUser) {
     // @ts-expect-error 暂时不知道如何处理，先这样
     data.userId = sessionUser.id;
@@ -138,7 +140,7 @@ export async function createModel<D, M>(
     data,
   });
 
-  return result as M;
+  return result as R;
 }
 
 /** 封装常用 get */
@@ -157,8 +159,9 @@ export async function getModelById<D, R>(
   await needId(id);
   const { sessionUser } = await needAuth();
 
-  const where = { ...argsWhere };
+  const where = { ...argsWhere, deletedAt: null };
 
+  // 如果需要归属当前用户，则添加 userId
   if (options?.withUser) {
     // @ts-expect-error 暂时不知道如何处理，先这样
     where.userId = sessionUser.id;
@@ -170,7 +173,7 @@ export async function getModelById<D, R>(
   });
 
   if (!result) {
-    throw new Error(`${model.toString()} 不存在`);
+    throw new Error(`数据不存在`);
   }
 
   return result as R;
@@ -191,8 +194,10 @@ export async function updateModel<D, R, U extends { id: string }>(
   await needId(data.id);
   const { sessionUser } = await needAuth();
 
-  const where = { ...argsWhere };
+  // 更新时，不包含已删除的数据
+  const where = { ...argsWhere, deletedAt: null };
 
+  // 如果需要归属当前用户，则添加 userId
   if (options?.withUser) {
     // @ts-expect-error 暂时不知道如何处理，先这样
     where.userId = sessionUser.id;
@@ -204,7 +209,7 @@ export async function updateModel<D, R, U extends { id: string }>(
   });
 
   if (!result) {
-    throw new Error(`${model.toString()} 不存在`);
+    throw new Error(`数据不存在`);
   }
 
   return result as R;
@@ -224,19 +229,20 @@ export async function deleteModel<D>(
 ) {
   await needId(id);
   const { sessionUser } = await needAuth();
-
   const where = { ...argsWhere };
 
+  // 如果需要归属当前用户，则添加 userId
   if (options?.withUser) {
     // @ts-expect-error 暂时不知道如何处理，先这样
     where.userId = sessionUser.id;
   }
 
-  const result = await model.delete({
+  const result = await model.update({
+    data: { deletedAt: new Date() },
     where: { id, ...where },
   });
 
   if (!result) {
-    throw new Error(`${model.toString()} 不存在`);
+    throw new Error(`数据不存在`);
   }
 }
