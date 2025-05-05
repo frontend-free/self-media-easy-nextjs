@@ -21,6 +21,7 @@ import { App, ConfigProvider } from 'antd';
 import zhCN from 'antd/locale/zh_CN';
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { Version } from './components/version';
 import './globals.css';
 
 // 初始化数据库
@@ -99,8 +100,11 @@ function RootLayout({ children }: { children: React.ReactNode }) {
                     <div className="w-[220px] h-full flex flex-col gap-2">
                       <div className="h-5"></div>
                       <Icon />
-                      <div className="flex-1">
-                        <AppMenu items={menuItems} />
+                      <div className="flex-1 flex flex-col">
+                        <div className="flex-1">
+                          <AppMenu items={menuItems} />
+                        </div>
+                        <Version />
                       </div>
                       <div></div>
                     </div>

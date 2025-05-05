@@ -3,19 +3,19 @@
 import { electronApi } from '@/electron';
 import {
   EnumAccountStatus,
+  EnumPlatform,
   listPlatform,
   valueEnumAccountStatus,
-  valueEnumPlatform,
 } from '@/generated/enums';
 import { Account } from '@/generated/prisma';
 import { ProFormSelect, ProFormText } from '@ant-design/pro-components';
 import { App, Button, Modal } from 'antd';
-import Image from 'next/image';
 import { useRef, useState } from 'react';
 import * as AccountAction from '../actions/account_action';
 import { createAccount } from '../actions/account_action';
 import * as TagCoachAction from '../actions/tag_coach_action';
 import { CRUD } from '../components/crud';
+import { Platform, PlatformWithName } from '../components/platform';
 
 function Add({ refCRUD }) {
   const [open, setOpen] = useState(false);
@@ -59,12 +59,13 @@ function Add({ refCRUD }) {
           {listPlatform.map((item) => (
             <div
               key={item.value}
-              className="flex flex-row items-center cursor-pointer"
+              className="flex flex-col items-center cursor-pointer gap-1"
               onClick={() => {
                 handleAuth(item);
               }}
             >
-              <Image src={item.originData.icon} alt={item.label} width={50} height={50} />
+              <Platform value={item.value} />
+              {item.label}
             </div>
           ))}
         </div>
@@ -85,13 +86,14 @@ function Page() {
       title="账号"
       columns={[
         {
-          title: '平台',
-          dataIndex: 'platform',
-          valueEnum: valueEnumPlatform,
-        },
-        {
           title: '平台账号',
           dataIndex: 'platformName',
+          render: (_, record: Account) => (
+            <PlatformWithName
+              name={record.platformName || ''}
+              value={record.platform as EnumPlatform}
+            />
+          ),
         },
         {
           title: '状态',

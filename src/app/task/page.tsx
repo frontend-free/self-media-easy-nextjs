@@ -1,12 +1,13 @@
 'use client';
 
-import { valueEnumPlatform, valueEnumTaskStatus } from '@/generated/enums';
+import { EnumPlatform, valueEnumTaskStatus } from '@/generated/enums';
 import { PublishResourceType, Task } from '@/generated/prisma';
 import { Button } from 'antd';
 import { useEffect, useRef } from 'react';
 import * as TaskAction from '../actions/task_action';
 import { publishTask } from '../components/auto_run';
 import { CRUD } from '../components/crud';
+import { PlatformWithName } from '../components/platform';
 import { Resource } from '../components/resource';
 
 function Page() {
@@ -33,15 +34,15 @@ function Page() {
       title="任务"
       columns={[
         {
-          title: '平台',
-          dataIndex: ['account', 'platform'],
-          valueEnum: valueEnumPlatform,
-          search: false,
-        },
-        {
           title: '平台账号',
-          dataIndex: ['account', 'platformName'],
+          dataIndex: ['account'],
           search: false,
+          render: (_, record: Task) => (
+            <PlatformWithName
+              name={record.account.platformName || ''}
+              value={record.account.platform as EnumPlatform}
+            />
+          ),
         },
         {
           title: '视频',

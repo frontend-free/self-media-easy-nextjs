@@ -20,6 +20,7 @@ import {
   ProFormTextArea,
 } from '@ant-design/pro-components';
 import { Alert, Button } from 'antd';
+import { PlatformWithName } from '../components/platform';
 import { Resource } from '../components/resource';
 
 interface FilesProps {
@@ -115,9 +116,12 @@ function Page() {
             return (
               <div>
                 {tasks.map((item) => (
-                  <div key={item.id}>
-                    {/* @ts-expect-error 先忽略 */}
-                    {item.account.platformName} - <TagTaskStatus value={item.status} />
+                  <div key={item.id} className="flex flex-row items-center gap-2">
+                    <PlatformWithName
+                      name={item.account.platformName}
+                      value={item.account.platform}
+                    />
+                    <TagTaskStatus value={item.status} />
                   </div>
                 ))}
               </div>

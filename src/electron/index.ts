@@ -55,6 +55,22 @@ function getElectron(): any {
 
 // 都封装在这里
 const electronApi = {
+  isElectron: () => {
+    try {
+      getElectron();
+      return true;
+    } catch (err) {
+      // nothing
+      return false;
+    }
+  },
+  getVersion: async (): Promise<string> => {
+    const electron = getElectron();
+
+    const res: string = await electron.ipcRenderer.invoke('getVersion');
+
+    return res;
+  },
   platformAuth: async ({ platform }: { platform: EnumPlatform }): Promise<PlatformAuthResult> => {
     const electron = getElectron();
 
