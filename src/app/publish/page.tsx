@@ -4,8 +4,12 @@ import * as AccountAction from '@/app/actions/account_action';
 import * as PublishAction from '@/app/actions/publish_action';
 import { CRUD } from '@/app/components/crud';
 import { electronApi } from '@/electron';
-import { valueEnumPublishResourceType, valueEnumPublishType } from '@/generated/enums';
-import { PublishResourceType, PublishType } from '@/generated/prisma';
+import {
+  TagTaskStatus,
+  valueEnumPublishResourceType,
+  valueEnumPublishType,
+} from '@/generated/enums';
+import { PublishResourceType, PublishType, Task } from '@/generated/prisma';
 import { DeleteOutlined } from '@ant-design/icons';
 import {
   ProForm,
@@ -49,8 +53,16 @@ function Files(props: FilesProps) {
           </div>
         )}
       </div>
-      <div className="mt-2">
-        <Alert message="请不要随意移动选中的资源，否则影响发布" type="info" />
+      <div className="mt-2 flex flex-col gap-2">
+        <Alert
+          message={
+            <div>
+              <div>1. 视频文件大小不超过16G，时长在60分钟以内。否则可能影响发布。</div>
+              <div>2. 请不要随意移动选中的资源，否则影响发布。</div>
+            </div>
+          }
+          type="info"
+        />
       </div>
     </div>
   );
@@ -72,6 +84,10 @@ function Page() {
       title="发布"
       columns={[
         {
+          title: '标题',
+          dataIndex: 'title',
+        },
+        {
           title: '视频',
           dataIndex: 'resourceOfVideo',
           search: false,
@@ -84,6 +100,29 @@ function Page() {
           dataIndex: 'publishType',
           valueEnum: valueEnumPublishType,
           search: false,
+        },
+        {
+          title: '账号发布状态',
+          dataIndex: 'tasks',
+          render: (value) => {
+            console.log(value);
+            if (!value) {
+              return null;
+            }
+
+            const tasks = value as Task[];
+
+            return (
+              <div>
+                {tasks.map((item) => (
+                  <div key={item.id}>
+                    {/* @ts-expect-error 先忽略 */}
+                    {item.account.platformName} - <TagTaskStatus value={item.status} />
+                  </div>
+                ))}
+              </div>
+            );
+          },
         },
         {
           title: '创建时间',

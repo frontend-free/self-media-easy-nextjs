@@ -10,13 +10,22 @@ export type CreatePublishInput = Pick<
   'resourceType' | 'resourceOfVideo' | 'title' | 'description' | 'publishType'
 > & { accountIds: string[] };
 
-export async function pagePublishes(params: { pageSize: number; current: number }) {
+export async function pagePublishes(params: { pageSize: number; current: number; title?: string }) {
   return pageModel<Prisma.PublishDelegate, Publish>(
     {
       model: prisma.publish,
       params,
       include: {
-        tasks: true,
+        tasks: {
+          include: {
+            account: true,
+          },
+        },
+      },
+      where: {
+        title: {
+          contains: params.title,
+        },
       },
     },
     {

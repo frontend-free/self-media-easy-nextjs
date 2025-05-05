@@ -54,13 +54,7 @@ function Add({ refCRUD }) {
 
   return (
     <>
-      <Modal
-        title="新增账号"
-        open={open}
-        onCancel={() => setOpen(false)}
-        destroyOnClose
-        footer={null}
-      >
+      <Modal title="账号" open={open} onCancel={() => setOpen(false)} destroyOnClose footer={null}>
         <div className="flex flex-row flex-wrap gap-4 p-10">
           {listPlatform.map((item) => (
             <div

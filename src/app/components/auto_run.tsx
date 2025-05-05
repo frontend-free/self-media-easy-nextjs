@@ -152,7 +152,7 @@ function AutoRunComponent() {
   }, []);
 
   return (
-    <div className="text-white w-[20px] h-[20px] absolute right-0 top-0 bg-red-500 rounded-full flex items-center justify-center overflow-hidden">
+    <div className="text-white w-[20px] h-[20px] bg-red-500 rounded-full flex items-center justify-center overflow-hidden">
       {count > 99 ? '99+' : count}
     </div>
   );
