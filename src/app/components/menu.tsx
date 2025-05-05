@@ -13,7 +13,7 @@ function AppMenu({ items }: { items: MenuProps['items'] }) {
 
   return (
     <Menu
-      className="!bg-transparent h-full !border-r-0"
+      className="!bg-transparent !border-r-0"
       selectedKeys={selectedKeys}
       items={items}
       onClick={(e) => {

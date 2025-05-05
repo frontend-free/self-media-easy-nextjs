@@ -16,6 +16,7 @@ import {
   ProFormTextArea,
 } from '@ant-design/pro-components';
 import { Alert, Button } from 'antd';
+import { Resource } from '../components/resource';
 
 interface FilesProps {
   value?: string;
@@ -71,9 +72,12 @@ function Page() {
       title="发布"
       columns={[
         {
-          title: '资源',
+          title: '视频',
           dataIndex: 'resourceOfVideo',
           search: false,
+          render: (value) => (
+            <Resource resourceType={PublishResourceType.VIDEO} resourceOfVideo={value as string} />
+          ),
         },
         {
           title: '发布类型',

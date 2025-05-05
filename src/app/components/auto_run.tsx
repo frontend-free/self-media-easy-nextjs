@@ -2,17 +2,24 @@
 
 import { electronApi, EnumPlatformPublishCode } from '@/electron';
 import { AccountStatus, TaskStatus } from '@/generated/prisma';
-import { message } from 'antd';
-import { useEffect, useState } from 'react';
+import { App } from 'antd';
+import { useCallback, useEffect, useState } from 'react';
 import * as AccountAction from '../actions/account_action';
 import * as TaskAction from '../actions/task_action';
 
 const maxRunCount = 2;
 let runningTaskIds: string[] = [];
 const interval = 5 * 1000;
-const timeout = 5 * 60 * 1000;
 
-async function publishTask(id: string) {
+async function publishTask({
+  id,
+  onSuccess,
+  onError,
+}: {
+  id: string;
+  onSuccess?: () => void;
+  onError?: () => void;
+}) {
   const task = await TaskAction.getTaskById(id);
 
   // @ts-expect-error 先忽略
@@ -51,6 +58,8 @@ async function publishTask(id: string) {
       logs: JSON.stringify(res.data?.logs || []),
       endAt: new Date(),
     });
+
+    onSuccess?.();
   }
   // 失败更新任务
   else {
@@ -70,70 +79,83 @@ async function publishTask(id: string) {
       logs: JSON.stringify(res.data?.logs || []),
       endAt: new Date(),
     });
-  }
-}
 
-async function doPublishTask(id: string) {
-  try {
-    await publishTask(id);
-
-    // 超时
-    setTimeout(() => {
-      throw new Error('任务运行超时');
-    }, timeout);
-  } catch (error) {
-    console.error(error);
-  }
-}
-
-async function runTask(setCount: (count: number) => void) {
-  console.log('autoRunTask', maxRunCount, runningTaskIds);
-
-  if (runningTaskIds.length >= maxRunCount) {
-    return;
-  }
-
-  const waitTasks = await TaskAction.pageTasks({
-    current: 1,
-    pageSize: 100,
-    status: TaskStatus.PENDING,
-  });
-
-  setCount(waitTasks.data.length);
-
-  for (const task of waitTasks.data) {
-    // @ts-expect-error 先忽略
-    message.info(`运行任务 ${task.publish?.resourceOfVideo}`);
-
-    runningTaskIds.push(task.id);
-
-    console.log('autoRunTask run task', task.id);
-
-    // 运行，只会成功
-    await doPublishTask(task.id);
-
-    runningTaskIds = runningTaskIds.filter((id) => id !== task.id);
-
-    // 刷新列表数据
-    // @ts-expect-error 先忽略
-    window._refreshTask?.();
+    onError?.();
   }
 }
 
 // 初始化自动运行任务
 function AutoRunComponent() {
   const [count, setCount] = useState(0);
+  const { notification } = App.useApp();
 
-  useEffect(() => {
+  const doPublishTask = useCallback(
+    async (task) => {
+      const resourceName = task.publish?.resourceOfVideo.split('/').pop();
+      const accountName = task.account?.platformName;
+
+      notification.info({
+        message: `自动运行任务 ${accountName} - ${resourceName}`,
+      });
+
+      await publishTask({
+        id: task.id,
+        onSuccess: () => {
+          notification.success({
+            message: `自动运行任务 ${accountName} - ${resourceName} 成功`,
+          });
+        },
+        onError: () => {
+          notification.error({
+            message: `自动运行任务 ${accountName} - ${resourceName} 失败`,
+          });
+        },
+      });
+    },
+    [notification],
+  );
+
+  const autoRunTask = useCallback(async () => {
     // 5s 检查是否有任务需要运行
     setInterval(async () => {
-      runTask((c) => {
-        setCount(c);
+      console.log('autoRunTask', maxRunCount, runningTaskIds);
+
+      if (runningTaskIds.length >= maxRunCount) {
+        return;
+      }
+
+      const waitTasks = await TaskAction.pageTasks({
+        current: 1,
+        pageSize: 100,
+        status: TaskStatus.PENDING,
       });
+
+      setCount(waitTasks.data.length);
+
+      for (const task of waitTasks.data) {
+        runningTaskIds.push(task.id);
+
+        // 运行，只会成功
+        await doPublishTask(task);
+
+        runningTaskIds = runningTaskIds.filter((id) => id !== task.id);
+
+        // 刷新列表数据
+        // @ts-expect-error 先忽略
+        window._refreshTask?.();
+      }
     }, interval);
+  }, [doPublishTask]);
+
+  useEffect(() => {
+    autoRunTask();
   }, []);
 
-  return <span>{count > 99 ? '99+' : count}</span>;
+  return (
+    <div className="text-white w-[20px] h-[20px] absolute right-0 top-0 bg-red-500 rounded-full flex items-center justify-center overflow-hidden">
+      {count > 99 ? '99+' : count}
+    </div>
+  );
 }
 
 export { AutoRunComponent, publishTask };

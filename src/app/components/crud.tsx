@@ -1,6 +1,5 @@
 'use client';
 
-import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import type { ActionType, ProColumns, ProFormInstance } from '@ant-design/pro-components';
 import { ModalForm } from '@ant-design/pro-components';
 import { App, Button } from 'antd';
@@ -125,7 +124,11 @@ function Update<T>({
       title="修改"
       formRef={formRef}
       autoFocusFirstInput
-      trigger={<Button type="link" icon={<EditOutlined />} />}
+      trigger={
+        <Button type="link" className="!px-0">
+          修改
+        </Button>
+      }
       onFinish={handleFinish(async (values) => {
         await requestUpdate!(values as Partial<T> & { id: string });
 
@@ -185,7 +188,7 @@ function CRUD<T extends Record<string, any>>({
               key="edit"
               type="link"
               danger
-              icon={<DeleteOutlined />}
+              className="!px-0"
               onClick={() => {
                 modal.confirm({
                   title: '确定删除吗？',
@@ -196,7 +199,9 @@ function CRUD<T extends Record<string, any>>({
                   },
                 });
               }}
-            />
+            >
+              删除
+            </Button>
           ),
           !disabledUpdate && (
             <Update

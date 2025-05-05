@@ -2,7 +2,6 @@
 
 import { valueEnumPlatform, valueEnumTaskStatus } from '@/generated/enums';
 import { PublishResourceType, Task } from '@/generated/prisma';
-import { SendOutlined } from '@ant-design/icons';
 import { Button } from 'antd';
 import { useEffect, useRef } from 'react';
 import * as TaskAction from '../actions/task_action';
@@ -22,7 +21,7 @@ function Page() {
 
   const handlePublishTask = async (task: Task) => {
     try {
-      await publishTask(task.id);
+      await publishTask({ id: task.id });
     } finally {
       refCRUD?.current?.reload();
     }
@@ -48,6 +47,7 @@ function Page() {
           render: (value) => (
             <Resource resourceType={PublishResourceType.VIDEO} resourceOfVideo={value as string} />
           ),
+          search: false,
         },
         {
           title: '状态',
@@ -58,6 +58,7 @@ function Page() {
           title: '发布时间',
           dataIndex: 'endAt',
           valueType: 'dateTime',
+          search: false,
         },
         {
           title: '创建时间',
@@ -78,7 +79,6 @@ function Page() {
         return (
           <Button
             type="link"
-            icon={<SendOutlined />}
             onClick={async () => {
               handlePublishTask(record);
             }}

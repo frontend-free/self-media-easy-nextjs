@@ -38,7 +38,7 @@ function Add({ refCRUD }) {
         authInfo: res.data.authInfo || null,
         authedAt: new Date(),
         logs: JSON.stringify(res.data.logs || []),
-      });
+      } as AccountAction.CreateAccountInput);
 
       message.success('授权成功');
     } else {
@@ -75,7 +75,7 @@ function Add({ refCRUD }) {
           ))}
         </div>
       </Modal>
-      <Button type="primary" onClick={() => setOpen(true)}>
+      <Button type="primary" id="authBtn" onClick={() => setOpen(true)}>
         新增
       </Button>
     </>
@@ -159,6 +159,23 @@ function Page() {
         await AccountAction.updateAccount(values as AccountAction.UpdateAccountInput);
       }}
       toolBarRenderPre={<Add refCRUD={refCRUD} />}
+      renderOperate={({ record }) => {
+        if (record.status !== EnumAccountStatus.AUTHED) {
+          return (
+            <Button
+              type="link"
+              className="!px-0"
+              onClick={() => {
+                (document.querySelector('#authBtn') as HTMLButtonElement)?.click();
+              }}
+            >
+              重新授权
+            </Button>
+          );
+        }
+
+        return null;
+      }}
     />
   );
 }

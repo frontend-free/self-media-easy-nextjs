@@ -51,14 +51,17 @@ export const valueEnumAccountStatus = {
   [EnumAccountStatus.UNAUTHED]: {
     text: '未授权',
     value: 'UNAUTHED',
+    color: 'default',
   },
   [EnumAccountStatus.AUTHED]: {
     text: '已授权',
     value: 'AUTHED',
+    color: 'green',
   },
   [EnumAccountStatus.INVALID]: {
     text: '已失效',
     value: 'INVALID',
+    color: 'red',
   },
 };
 
@@ -181,22 +184,27 @@ export const valueEnumTaskStatus = {
   [EnumTaskStatus.PENDING]: {
     text: '等待发布',
     value: 'PENDING',
+    color: 'default',
   },
   [EnumTaskStatus.PUBLISHING]: {
     text: '发布中',
     value: 'PUBLISHING',
+    color: 'blue',
   },
   [EnumTaskStatus.SUCCESS]: {
     text: '发布成功',
     value: 'SUCCESS',
+    color: 'green',
   },
   [EnumTaskStatus.FAILED]: {
     text: '发布失败',
     value: 'FAILED',
+    color: 'red',
   },
   [EnumTaskStatus.CANCELLED]: {
     text: '已取消',
     value: 'CANCELLED',
+    color: 'gray',
   },
 };
 

@@ -78,9 +78,8 @@ const menuItems = [
       <div className="flex items-center gap-2">
         <UnorderedListOutlined />
         <div>任务</div>
-        <div className="text-white w-[20px] h-[20px] absolute right-0 top-0 bg-red-500 rounded-full flex items-center justify-center overflow-hidden">
-          <AutoRunComponent />
-        </div>
+
+        <AutoRunComponent />
       </div>
     ),
   },
