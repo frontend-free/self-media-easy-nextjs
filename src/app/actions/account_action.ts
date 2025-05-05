@@ -1,6 +1,6 @@
 'use server';
 
-import { Account, Prisma } from '@/generated/prisma';
+import { Account, AccountStatus, Prisma } from '@/generated/prisma';
 import {
   createModel,
   deleteModel,
@@ -35,6 +35,7 @@ export async function pageAccounts(params: {
   current: number;
   platformName?: string;
   platform?: string;
+  status?: AccountStatus;
   tagCoachId?: string;
 }) {
   return pageModel<Prisma.AccountDelegate, Account>(
@@ -44,6 +45,7 @@ export async function pageAccounts(params: {
       where: {
         platformName: { contains: params.platformName },
         platform: params.platform,
+        status: params.status,
         tagCoachId: params.tagCoachId,
       },
       include: {

@@ -116,13 +116,6 @@ function Page() {
           // @ts-expect-error 暂时不知道如何解决
           render: (_, record: Account) => record.tagCoach?.name,
         },
-        {
-          title: '创建时间',
-          dataIndex: 'createdAt',
-          key: 'createdAt',
-          valueType: 'dateTime',
-          search: false,
-        },
       ]}
       detailForm={() => (
         <div>

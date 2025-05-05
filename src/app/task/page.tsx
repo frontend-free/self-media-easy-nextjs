@@ -36,10 +36,12 @@ function Page() {
           title: '平台',
           dataIndex: ['account', 'platform'],
           valueEnum: valueEnumPlatform,
+          search: false,
         },
         {
-          title: '账号',
+          title: '平台账号',
           dataIndex: ['account', 'platformName'],
+          search: false,
         },
         {
           title: '视频',
@@ -79,6 +81,7 @@ function Page() {
         return (
           <Button
             type="link"
+            className="!px-0"
             onClick={async () => {
               handlePublishTask(record);
             }}
