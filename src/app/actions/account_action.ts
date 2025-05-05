@@ -1,6 +1,6 @@
 'use server';
 
-import { Account } from '@/generated/prisma';
+import { Account, Prisma } from '@/generated/prisma';
 import {
   createModel,
   deleteModel,
@@ -11,9 +11,17 @@ import {
   updateModel,
 } from './helper';
 
-export type CreateAccountInput = Omit<
+export type CreateAccountInput = Pick<
   Account,
-  'id' | 'userId' | 'tagCoachId' | 'createdAt' | 'updatedAt'
+  | 'platform'
+  | 'platformName'
+  | 'platformAvatar'
+  | 'platformId'
+  | 'authInfo'
+  | 'status'
+  | 'authedAt'
+  | 'logs'
+  | 'tagCoachId'
 >;
 
 export type UpdateAccountInput = Partial<
@@ -21,6 +29,32 @@ export type UpdateAccountInput = Partial<
 > & {
   id: string;
 };
+
+export async function pageAccounts(params: {
+  pageSize: number;
+  current: number;
+  platformName?: string;
+  platform?: string;
+  tagCoachId?: string;
+}) {
+  return pageModel<Prisma.AccountDelegate, Account>(
+    {
+      model: prisma.account,
+      params,
+      where: {
+        platformName: { contains: params.platformName },
+        platform: params.platform,
+        tagCoachId: params.tagCoachId,
+      },
+      include: {
+        tagCoach: true,
+      },
+    },
+    {
+      withUser: true,
+    },
+  );
+}
 
 export async function createAccount(data: CreateAccountInput) {
   const { sessionUser } = await needAuth();
@@ -45,75 +79,53 @@ export async function createAccount(data: CreateAccountInput) {
   }
 
   // 不存在则创建
-  return createModel<Account, CreateAccountInput & { userId: string }>({
-    model: prisma.account,
-    data: {
-      ...data,
-      userId: sessionUser.id,
+  return createModel<Prisma.AccountDelegate, Account>(
+    {
+      model: prisma.account,
+      data,
     },
-  });
-}
-
-export async function pageAccounts(params: {
-  pageSize: number;
-  current: number;
-  platformName?: string;
-  platform?: string;
-  tagCoachId?: string;
-}) {
-  const { sessionUser } = await needAuth();
-
-  return pageModel<Account>({
-    model: prisma.account,
-    params,
-    where: {
-      platformName: { contains: params.platformName },
-      platform: params.platform,
-      tagCoachId: params.tagCoachId,
-      userId: sessionUser.id,
+    {
+      withUser: true,
     },
-    include: {
-      tagCoach: true,
-    },
-  });
+  );
 }
 
 export async function getAccountById(id: string) {
-  const { sessionUser } = await needAuth();
-
-  return getModelById<Account>({
-    model: prisma.account,
-    id,
-    where: {
-      userId: sessionUser.id,
+  return getModelById<Prisma.AccountDelegate, Account>(
+    {
+      model: prisma.account,
+      id,
+      include: {
+        user: true,
+        tagCoach: true,
+      },
     },
-    include: {
-      user: true,
-      tagCoach: true,
+    {
+      withUser: true,
     },
-  });
+  );
 }
 
 export async function updateAccount(data: UpdateAccountInput) {
-  const { sessionUser } = await needAuth();
-
-  return updateModel<UpdateAccountInput>({
-    model: prisma.account,
-    data,
-    where: {
-      userId: sessionUser.id,
+  return updateModel<Prisma.AccountDelegate, Account, UpdateAccountInput>(
+    {
+      model: prisma.account,
+      data,
     },
-  });
+    {
+      withUser: true,
+    },
+  );
 }
 
 export async function deleteAccount(id: string) {
-  const { sessionUser } = await needAuth();
-
-  return deleteModel({
-    model: prisma.account,
-    id,
-    where: {
-      userId: sessionUser.id,
+  return deleteModel<Prisma.AccountDelegate>(
+    {
+      model: prisma.account,
+      id,
     },
-  });
+    {
+      withUser: true,
+    },
+  );
 }

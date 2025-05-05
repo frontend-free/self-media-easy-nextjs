@@ -1,8 +1,8 @@
 'use server';
 
-import { Publish } from '@/generated/prisma';
+import { Prisma, Publish } from '@/generated/prisma';
 import { omit } from 'lodash-es';
-import { createModel, deleteModel, needAuth, pageModel, prisma } from './helper';
+import { createModel, deleteModel, pageModel, prisma } from './helper';
 import * as TaskAction from './task_action';
 
 export type CreatePublishInput = Pick<
@@ -10,22 +10,48 @@ export type CreatePublishInput = Pick<
   'resourceType' | 'resourceOfVideo' | 'title' | 'description' | 'publishType'
 > & { accountIds: string[] };
 
-export async function createPublish(data: CreatePublishInput) {
-  const { sessionUser } = await needAuth();
-
-  const publish = await createModel<
-    Publish,
-    CreatePublishInput & { accounts: { connect: { id: string }[] }; userId: string }
-  >({
-    model: prisma.publish,
-    data: {
-      ...omit(data, 'accountIds'),
-      accounts: {
-        connect: data.accountIds.map((id) => ({ id })),
+export async function pagePublishes(params: { pageSize: number; current: number }) {
+  return pageModel<Prisma.PublishDelegate, Publish>(
+    {
+      model: prisma.publish,
+      params,
+      include: {
+        tasks: true,
       },
-      userId: sessionUser.id,
     },
-  });
+    {
+      withUser: true,
+    },
+  );
+}
+
+export async function deletePublish(id: string) {
+  return deleteModel<Prisma.PublishDelegate>(
+    {
+      model: prisma.publish,
+      id,
+    },
+    {
+      withUser: true,
+    },
+  );
+}
+
+export async function createPublish(data: CreatePublishInput) {
+  const publish = await createModel<Prisma.PublishDelegate, Publish>(
+    {
+      model: prisma.publish,
+      data: {
+        ...omit(data, 'accountIds'),
+        accounts: {
+          connect: data.accountIds.map((id) => ({ id })),
+        },
+      },
+    },
+    {
+      withUser: true,
+    },
+  );
 
   const publishId = publish.id;
 
@@ -37,31 +63,4 @@ export async function createPublish(data: CreatePublishInput) {
   }
 
   return publish;
-}
-
-export async function pagePublishes(params: { pageSize: number; current: number }) {
-  const { sessionUser } = await needAuth();
-
-  return pageModel<Publish>({
-    model: prisma.publish,
-    params,
-    where: {
-      userId: sessionUser.id,
-    },
-    include: {
-      tasks: true,
-    },
-  });
-}
-
-export async function deletePublish(id: string) {
-  const { sessionUser } = await needAuth();
-
-  return deleteModel({
-    model: prisma.publish,
-    id,
-    where: {
-      userId: sessionUser.id,
-    },
-  });
 }

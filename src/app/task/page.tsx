@@ -95,8 +95,6 @@ function Page() {
       ]}
       request={async (params) => {
         const res = await TaskAction.pageTasks(params);
-
-        console.log('res', res);
         return res;
       }}
       disabledCreate

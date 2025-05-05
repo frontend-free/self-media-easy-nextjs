@@ -1,16 +1,8 @@
 'use server';
 
 import { electronApi } from '@/electron';
-import { Task, TaskStatus } from '@/generated/prisma';
-import {
-  createModel,
-  deleteModel,
-  getModelById,
-  needAuth,
-  pageModel,
-  prisma,
-  updateModel,
-} from './helper';
+import { Prisma, Task, TaskStatus } from '@/generated/prisma';
+import { createModel, deleteModel, getModelById, pageModel, prisma, updateModel } from './helper';
 
 export type CreateTaskInput = Pick<Task, 'accountId' | 'publishId'>;
 export type UpdateTaskInput = Partial<
@@ -19,101 +11,83 @@ export type UpdateTaskInput = Partial<
   id: string;
 };
 
-// 创建任务
-export async function createTasksForPublish(data: CreateTaskInput) {
-  const { sessionUser } = await needAuth();
-
-  return createModel<Task, CreateTaskInput & { userId: string }>({
-    model: prisma.task,
-    data: {
-      ...data,
-      userId: sessionUser.id,
-    },
-  });
-}
-
 export async function pageTasks(params: { pageSize: number; current: number }) {
-  const { sessionUser } = await needAuth();
-
-  return pageModel<Task>({
-    model: prisma.task,
-    params,
-    where: {
-      userId: sessionUser.id,
+  return pageModel<Prisma.TaskDelegate, Task>(
+    {
+      model: prisma.task,
+      params,
+      include: {
+        account: true,
+        publish: true,
+      },
     },
-    include: {
-      account: true,
-      publish: true,
+    {
+      withUser: true,
     },
-  });
+  );
 }
 
-export async function deleteTask(id: string) {
-  const { sessionUser } = await needAuth();
-
-  return deleteModel({
-    model: prisma.task,
-    id,
-    where: {
-      userId: sessionUser.id,
+export async function createTasksForPublish(data: CreateTaskInput) {
+  return createModel<Prisma.TaskDelegate, Task>(
+    {
+      model: prisma.task,
+      data,
     },
-  });
+    {
+      withUser: true,
+    },
+  );
 }
 
 export async function getTaskById(id: string) {
-  const { sessionUser } = await needAuth();
-
-  return getModelById<Task>({
-    model: prisma.task,
-    id,
-    where: {
-      userId: sessionUser.id,
+  return getModelById<Prisma.TaskDelegate, Task>(
+    {
+      model: prisma.task,
+      id,
+      include: {
+        account: true,
+        publish: true,
+      },
     },
-    include: {
-      account: true,
-      publish: true,
+    {
+      withUser: true,
     },
-  });
+  );
 }
 
 export async function updateTask(data: UpdateTaskInput) {
-  const { sessionUser } = await needAuth();
-
-  return updateModel({
-    model: prisma.task,
-    data,
-    where: {
-      id: data.id,
-      userId: sessionUser.id,
+  return updateModel<Prisma.TaskDelegate, Task, UpdateTaskInput>(
+    {
+      model: prisma.task,
+      data,
     },
-  });
+    {
+      withUser: true,
+    },
+  );
+}
+
+export async function deleteTask(id: string) {
+  return deleteModel<Prisma.TaskDelegate>(
+    {
+      model: prisma.task,
+      id,
+    },
+    {
+      withUser: true,
+    },
+  );
 }
 
 /** 发布任务 */
-export async function publishTask(
-  id: string,
-  options?: {
-    /** 强制发布 */
-    force?: boolean;
-  },
-) {
+export async function publishTask(id: string) {
   // 获取信息
   const task = await getTaskById(id);
 
-  // 如果非强制发布，则检查任务状态
-  if (!options?.force) {
-    // 检查任务状态
-    if (task.status !== TaskStatus.PENDING) {
-      throw new Error('任务正在发布中，请稍后再试');
-    }
+  // 检查任务状态
+  if (task.status !== TaskStatus.PENDING) {
+    throw new Error('任务正在发布中，请稍后再试');
   }
-
-  // 更新任务状态
-  updateTask({
-    id: task.id,
-    status: TaskStatus.PUBLISHING,
-    startAt: new Date(),
-  });
 
   // @ts-expect-error 先忽略
   const platform = task.account?.platform;
@@ -126,6 +100,13 @@ export async function publishTask(
   if (!platform || !authInfo || !resourceOfVideo) {
     throw new Error('参数错误，请检查');
   }
+
+  // 更新任务状态为 发布中
+  updateTask({
+    id: task.id,
+    status: TaskStatus.PUBLISHING,
+    startAt: new Date(),
+  });
 
   // 发布
   const res = await electronApi.platformPublish({

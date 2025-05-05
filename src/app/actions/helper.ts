@@ -1,5 +1,6 @@
 import { auth } from '@/auth';
-import { PrismaClient } from '@/generated/prisma';
+import { Prisma, PrismaClient } from '@/generated/prisma';
+import { Operation } from '@prisma/client/runtime/library';
 import { Session } from 'next-auth';
 
 // 创建一个装饰器函数来检查用户认证
@@ -51,26 +52,40 @@ export const prisma = new PrismaClient({
   },
 });
 
-interface CommonArgs {
-  where?: any;
-  include?: any;
-  omit?: any;
-  select?: any;
+interface CommonArgs<D, M extends Operation> {
+  where?: Prisma.Args<D, M>['where'];
+  include?: Prisma.Args<D, M>['include'];
+  omit?: Prisma.Args<D, M>['omit'];
+  select?: Prisma.Args<D, M>['select'];
+}
+
+interface CommonOptions {
+  withUser?: boolean;
 }
 
 /** 封装通用分页查询 */
-export async function pageModel<T>({
-  model,
-  params,
-  where,
-  include,
-  omit,
-  select,
-}: {
-  model: any;
-  params: PageParams;
-} & CommonArgs): Promise<PageResult<T>> {
-  await needAuth();
+export async function pageModel<D, R>(
+  {
+    model,
+    params,
+    where: argsWhere,
+    include,
+    omit,
+    select,
+  }: {
+    model: any;
+    params: PageParams;
+  } & CommonArgs<D, 'findMany'>,
+  options?: CommonOptions,
+): Promise<PageResult<R>> {
+  const { sessionUser } = await needAuth();
+
+  const where = { ...argsWhere };
+
+  if (options?.withUser) {
+    // @ts-expect-error 暂时不知道如何处理，先这样
+    where.userId = sessionUser.id;
+  }
 
   const { pageSize, current } = params;
   const skip = (current - 1) * pageSize;
@@ -98,57 +113,56 @@ export async function pageModel<T>({
 }
 
 /** 封装常用 create */
-export async function createModel<T, C>({
-  model,
-  data,
-}: {
-  model: any;
-  data: C;
-} & CommonArgs) {
-  await needAuth();
+export async function createModel<D, M>(
+  {
+    model,
+    data: argsData,
+  }: {
+    model: any;
+    data: Omit<Prisma.Args<D, 'create'>['data'], 'userId'>;
+    options?: {
+      withUser?: boolean;
+    };
+  },
+  options?: CommonOptions,
+) {
+  const data = { ...argsData };
+  const { sessionUser } = await needAuth();
+
+  if (options?.withUser) {
+    // @ts-expect-error 暂时不知道如何处理，先这样
+    data.userId = sessionUser.id;
+  }
 
   const result = await model.create({
     data,
   });
 
-  return result as T;
-}
-
-/** 封装常用 update */
-export async function updateModel<T>({
-  model,
-  data,
-}: {
-  model: any;
-  data: T & { id: string };
-} & CommonArgs) {
-  await needId(data.id);
-  await needAuth();
-
-  const result = await model.update({
-    where: { id: data.id },
-    data,
-  });
-
-  if (!result) {
-    throw new Error(`${model.toString()} 不存在`);
-  }
-
-  return result as T;
+  return result as M;
 }
 
 /** 封装常用 get */
-export async function getModelById<T>({
-  model,
-  id,
-  where,
-  include,
-}: {
-  model: any;
-  id: string;
-} & CommonArgs) {
+export async function getModelById<D, R>(
+  {
+    model,
+    id,
+    where: argsWhere,
+    include,
+  }: {
+    model: any;
+    id: string;
+  } & CommonArgs<D, 'findUnique'>,
+  options?: CommonOptions,
+) {
   await needId(id);
-  await needAuth();
+  const { sessionUser } = await needAuth();
+
+  const where = { ...argsWhere };
+
+  if (options?.withUser) {
+    // @ts-expect-error 暂时不知道如何处理，先这样
+    where.userId = sessionUser.id;
+  }
 
   const result = await model.findUnique({
     where: { id, ...where },
@@ -159,13 +173,64 @@ export async function getModelById<T>({
     throw new Error(`${model.toString()} 不存在`);
   }
 
-  return result as T;
+  return result as R;
+}
+
+/** 封装常用 update */
+export async function updateModel<D, R, U extends { id: string }>(
+  {
+    model,
+    data,
+    where: argsWhere,
+  }: {
+    model: any;
+    data: U;
+  } & CommonArgs<D, 'update'>,
+  options?: CommonOptions,
+) {
+  await needId(data.id);
+  const { sessionUser } = await needAuth();
+
+  const where = { ...argsWhere };
+
+  if (options?.withUser) {
+    // @ts-expect-error 暂时不知道如何处理，先这样
+    where.userId = sessionUser.id;
+  }
+
+  const result = await model.update({
+    where: { id: data.id, ...where },
+    data,
+  });
+
+  if (!result) {
+    throw new Error(`${model.toString()} 不存在`);
+  }
+
+  return result as R;
 }
 
 /** 封装常用 delete */
-export async function deleteModel({ model, id, where }: { model: any; id: string } & CommonArgs) {
+export async function deleteModel<D>(
+  {
+    model,
+    id,
+    where: argsWhere,
+  }: {
+    model: any;
+    id: string;
+  } & CommonArgs<D, 'delete'>,
+  options?: CommonOptions,
+) {
   await needId(id);
-  await needAuth();
+  const { sessionUser } = await needAuth();
+
+  const where = { ...argsWhere };
+
+  if (options?.withUser) {
+    // @ts-expect-error 暂时不知道如何处理，先这样
+    where.userId = sessionUser.id;
+  }
 
   const result = await model.delete({
     where: { id, ...where },

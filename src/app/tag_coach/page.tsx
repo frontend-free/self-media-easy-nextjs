@@ -2,7 +2,7 @@
 
 import * as TagCoachAction from '@/app/actions/tag_coach_action';
 import { CRUD } from '@/app/components/crud';
-import { ProFormText } from '@ant-design/pro-components';
+import { ProFormSelect, ProFormText } from '@ant-design/pro-components';
 
 function Page() {
   return (
@@ -23,7 +23,7 @@ function Page() {
       ]}
       detailForm={() => (
         <div>
-          {/* <ProFormSelect name="id" label="账号" hidden /> */}
+          <ProFormSelect name="id" label="账号" hidden />
           <ProFormText name="name" label="名字" required rules={[{ required: true }]} />
         </div>
       )}
