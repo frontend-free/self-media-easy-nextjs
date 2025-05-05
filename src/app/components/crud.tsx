@@ -5,7 +5,15 @@ import type { ActionType, ProColumns, ProFormInstance } from '@ant-design/pro-co
 import { ModalForm } from '@ant-design/pro-components';
 import { App, Button } from 'antd';
 import dynamic from 'next/dynamic';
-import { ReactNode, RefObject, useCallback, useImperativeHandle, useMemo, useRef } from 'react';
+import {
+  Fragment,
+  ReactNode,
+  RefObject,
+  useCallback,
+  useImperativeHandle,
+  useMemo,
+  useRef,
+} from 'react';
 
 function handleFinish(onFinish) {
   return async (formData) => {
@@ -171,7 +179,7 @@ function CRUD<T extends Record<string, any>>({
         key: 'action',
         valueType: 'option',
         render: (_, record) => [
-          renderOperate?.({ record }),
+          <Fragment key="customOperate">{renderOperate?.({ record })}</Fragment>,
           !disabledDelete && (
             <Button
               key="edit"

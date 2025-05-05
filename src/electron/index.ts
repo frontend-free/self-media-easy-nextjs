@@ -85,4 +85,4 @@ const electronApi = {
   },
 };
 
-export { electronApi };
+export { electronApi, EnumPlatformPublishCode };

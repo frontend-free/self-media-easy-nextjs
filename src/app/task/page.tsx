@@ -1,62 +1,33 @@
 'use client';
 
-import { electronApi } from '@/electron';
 import { valueEnumPlatform, valueEnumTaskStatus } from '@/generated/enums';
-import { Task, TaskStatus } from '@/generated/prisma';
+import { PublishResourceType, Task } from '@/generated/prisma';
 import { SendOutlined } from '@ant-design/icons';
 import { Button } from 'antd';
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import * as TaskAction from '../actions/task_action';
+import { publishTask } from '../components/auto_run';
 import { CRUD } from '../components/crud';
+import { Resource } from '../components/resource';
 
 function Page() {
   const refCRUD = useRef<any | undefined>(undefined);
 
+  useEffect(() => {
+    // @ts-expect-error 先忽略
+    window._refreshTask = () => {
+      refCRUD?.current?.reload();
+    };
+  }, []);
+
   const handlePublishTask = async (task: Task) => {
     try {
-      // 更新任务状态
-      TaskAction.updateTask({
-        id: task.id,
-        status: TaskStatus.PUBLISHING,
-        startAt: new Date(),
-      });
-
-      // @ts-expect-error 先忽略
-      const platform = task.account?.platform;
-      // @ts-expect-error 先忽略
-      const authInfo = task.account?.authInfo;
-      // @ts-expect-error 先忽略
-      const resourceOfVideo = task.publish?.resourceOfVideo;
-
-      // 发布
-      const res = await electronApi.platformPublish({
-        platform,
-        authInfo,
-        resourceOfVideo,
-      });
-
-      // 成功更新任务
-      if (res.success) {
-        TaskAction.updateTask({
-          id: task.id,
-          status: TaskStatus.SUCCESS,
-          logs: JSON.stringify(res.data?.logs || []),
-          endAt: new Date(),
-        });
-      }
-      // 失败更新任务
-      else {
-        TaskAction.updateTask({
-          id: task.id,
-          status: TaskStatus.FAILED,
-          logs: JSON.stringify(res.data?.logs || []),
-          endAt: new Date(),
-        });
-      }
+      await publishTask(task.id);
     } finally {
       refCRUD?.current?.reload();
     }
   };
+
   return (
     <CRUD<Task>
       ref={refCRUD}
@@ -74,6 +45,9 @@ function Page() {
         {
           title: '视频',
           dataIndex: ['publish', 'resourceOfVideo'],
+          render: (value) => (
+            <Resource resourceType={PublishResourceType.VIDEO} resourceOfVideo={value as string} />
+          ),
         },
         {
           title: '状态',
@@ -109,7 +83,7 @@ function Page() {
               handlePublishTask(record);
             }}
           >
-            发布Debug
+            手动发布
           </Button>
         );
       }}
