@@ -1,13 +1,16 @@
 import * as AuthAction from '@/app/actions/auth_action';
-import { AdminComponent, AuthComponent } from '@/app/components/auth_component';
+import { AuthComponent } from '@/app/components/auth';
 import { AutoRunComponent } from '@/app/components/auto_run';
 import { UserAvatar } from '@/app/components/avatar';
 import { AppMenu } from '@/app/components/menu';
+import { AdminPathComponent, AuthPathComponent } from '@/app/components/path';
 import { UserDropdown } from '@/app/components/user_dropdown';
 import { ErrorComponent } from '@/app/lib/error';
 import { initDatabase } from '@/app/lib/init_db';
+
 import '@ant-design/v5-patch-for-react-19';
 
+import { User } from '@/generated/prisma';
 import {
   HomeOutlined,
   RightOutlined,
@@ -16,10 +19,10 @@ import {
   UserOutlined,
 } from '@ant-design/icons';
 import { AntdRegistry } from '@ant-design/nextjs-registry';
-
 import { App, ConfigProvider } from 'antd';
 import zhCN from 'antd/locale/zh_CN';
 import type { Metadata } from 'next';
+import { SessionProvider } from 'next-auth/react';
 import Link from 'next/link';
 import { Version } from './components/version';
 import './globals.css';
@@ -28,12 +31,18 @@ import './globals.css';
 initDatabase().catch(console.error);
 
 export const metadata: Metadata = {
-  title: '驾K先锋',
-  description: '驾K先锋',
+  title: '驾K先锋-多媒体',
+  description: '',
 };
 
 const Icon = async () => {
-  const user = await AuthAction.getUser();
+  let user: User | null = null;
+
+  try {
+    user = await AuthAction.getUser();
+  } catch (error) {
+    console.error(error);
+  }
 
   return (
     <div className="p-2 pl-4">
@@ -79,8 +88,9 @@ const menuItems = [
       <div className="flex items-center gap-2">
         <UnorderedListOutlined />
         <div>任务</div>
-
-        <AutoRunComponent />
+        <AuthComponent>
+          <AutoRunComponent />
+        </AuthComponent>
       </div>
     ),
   },
@@ -92,30 +102,32 @@ function RootLayout({ children }: { children: React.ReactNode }) {
       <body>
         <AntdRegistry>
           <ConfigProvider locale={zhCN}>
-            <App>
-              <ErrorComponent />
-              <AdminComponent element={children}>
-                <AuthComponent element={children}>
-                  <div className="h-screen w-screen flex bg-gray-200">
-                    <div className="w-[220px] h-full flex flex-col gap-2">
-                      <div className="h-5"></div>
-                      <Icon />
-                      <div className="flex-1 flex flex-col">
-                        <div className="flex-1">
-                          <AppMenu items={menuItems} />
+            <SessionProvider>
+              <App>
+                <ErrorComponent />
+                <AdminPathComponent element={children}>
+                  <AuthPathComponent element={children}>
+                    <div className="h-screen w-screen flex bg-gray-200">
+                      <div className="w-[220px] h-full flex flex-col gap-2">
+                        <div className="h-5"></div>
+                        <Icon />
+                        <div className="flex-1 flex flex-col">
+                          <div className="flex-1">
+                            <AppMenu items={menuItems} />
+                          </div>
+                          <Version />
                         </div>
-                        <Version />
+                        <div></div>
                       </div>
-                      <div></div>
-                    </div>
 
-                    <div className="flex-1 p-2 flex flex-col">
-                      <div className="bg-white rounded-md flex-1 p-4">{children}</div>
+                      <div className="flex-1 p-2 flex flex-col">
+                        <div className="bg-white rounded-md flex-1 p-4">{children}</div>
+                      </div>
                     </div>
-                  </div>
-                </AuthComponent>
-              </AdminComponent>
-            </App>
+                  </AuthPathComponent>
+                </AdminPathComponent>
+              </App>
+            </SessionProvider>
           </ConfigProvider>
         </AntdRegistry>
       </body>

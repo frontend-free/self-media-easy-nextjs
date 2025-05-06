@@ -1,12 +1,6 @@
 import { AppMenu } from '@/app/components/menu';
 import { UserOutlined } from '@ant-design/icons';
 import '@ant-design/v5-patch-for-react-19';
-import type { Metadata } from 'next';
-
-export const metadata: Metadata = {
-  title: '驾K先锋',
-  description: '驾K先锋',
-};
 
 const menuItems = [
   {

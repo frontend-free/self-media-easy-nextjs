@@ -3,7 +3,13 @@
 import { usePathname } from 'next/navigation';
 import { ReactNode } from 'react';
 
-function AuthComponent({ element, children }: { element: ReactNode; children: React.ReactNode }) {
+function AuthPathComponent({
+  element,
+  children,
+}: {
+  element: ReactNode;
+  children: React.ReactNode;
+}) {
   const pathname = usePathname();
 
   // 如果路径以 /auth/ 开头，返回 null
@@ -14,7 +20,7 @@ function AuthComponent({ element, children }: { element: ReactNode; children: Re
   return children;
 }
 
-function AdminComponent({ element, children }: { element: ReactNode; children: ReactNode }) {
+function AdminPathComponent({ element, children }: { element: ReactNode; children: ReactNode }) {
   const pathname = usePathname();
 
   // 如果路径以 /admin/ 开头，返回 null
@@ -25,4 +31,4 @@ function AdminComponent({ element, children }: { element: ReactNode; children: R
   return children;
 }
 
-export { AdminComponent, AuthComponent };
+export { AdminPathComponent, AuthPathComponent };
