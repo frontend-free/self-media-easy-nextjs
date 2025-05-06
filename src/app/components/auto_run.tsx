@@ -152,8 +152,8 @@ function AutoRunComponent() {
   }, []);
 
   return (
-    <div className="text-white w-[20px] h-[20px] bg-red-500 rounded-full flex items-center justify-center overflow-hidden">
-      {count > 99 ? '99+' : count}
+    <div className="text-white min-w-[20px] h-[20px] bg-red-500 rounded-full flex items-center justify-center overflow-hidden px-2">
+      {count > 99 ? '99+' : count} 待发布
     </div>
   );
 }
