@@ -15,7 +15,7 @@ export async function login({ name, password }: { name: string; password: string
 
 export async function logout() {
   await signOut({
-    redirectTo: '/auth/login',
+    redirect: false,
   });
 }
 

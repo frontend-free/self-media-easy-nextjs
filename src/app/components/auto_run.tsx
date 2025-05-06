@@ -22,11 +22,8 @@ async function publishTask({
 }) {
   const task = await TaskAction.getTaskById(id);
 
-  // @ts-expect-error 先忽略
   const platform = task.account?.platform;
-  // @ts-expect-error 先忽略
   const authInfo = task.account?.authInfo;
-  // @ts-expect-error 先忽略
   const resourceOfVideo = task.publish?.resourceOfVideo;
 
   // 检查下参数

@@ -1,6 +1,7 @@
 'use client';
 
 import { EnumPlatform } from '@/generated/enums';
+import { Platform } from '@/generated/prisma';
 
 interface PlatformAuthResult {
   success: boolean;
@@ -16,7 +17,7 @@ interface PlatformAuthResult {
 }
 
 interface PlatformPublishParams {
-  platform: EnumPlatform;
+  platform: Platform;
   authInfo: string;
   resourceOfVideo: string;
 }
@@ -28,7 +29,7 @@ enum EnumPlatformPublishCode {
 interface PlatformPublishResult {
   success: boolean;
   data?: {
-    platform: EnumPlatform;
+    platform: Platform;
     code: EnumPlatformPublishCode;
     logs?: string[];
   };
@@ -60,6 +61,7 @@ const electronApi = {
       getElectron();
       return true;
     } catch (err) {
+      console.error('isElectron error', err);
       // nothing
       return false;
     }

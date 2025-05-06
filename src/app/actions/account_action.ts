@@ -1,6 +1,6 @@
 'use server';
 
-import { Account, AccountStatus, Prisma } from '@/generated/prisma';
+import { Account, AccountStatus, Platform, Prisma } from '@/generated/prisma';
 import {
   createModel,
   deleteModel,
@@ -34,7 +34,7 @@ export async function pageAccounts(params: {
   pageSize: number;
   current: number;
   platformName?: string;
-  platform?: string;
+  platform?: Platform;
   status?: AccountStatus;
   tagCoachId?: string;
 }) {

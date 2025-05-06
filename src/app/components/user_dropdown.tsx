@@ -10,7 +10,8 @@ function UserDropdown({ children }: { children: React.ReactNode }) {
 
   const handleLogout = async () => {
     await AuthAction.logout();
-    router.refresh();
+
+    router.push('/auth/login');
   };
 
   return (

@@ -23,7 +23,6 @@ import { App, ConfigProvider } from 'antd';
 import zhCN from 'antd/locale/zh_CN';
 import type { Metadata } from 'next';
 import { SessionProvider } from 'next-auth/react';
-import Link from 'next/link';
 import { Version } from './components/version';
 import './globals.css';
 
@@ -46,17 +45,17 @@ const UserInfo = async () => {
 
   return (
     <div className="p-2 pl-4">
-      <div className="flex gap-2 items-center cursor-pointer">
-        <Link href="/" className="flex flex-1 gap-2 items-center">
-          <UserAvatar size={30} src={user?.avatar || undefined} />
-          <div className="flex-1 text-black">{user?.nickname || user?.name}</div>
-        </Link>
-        <UserDropdown>
+      <UserDropdown>
+        <div className="flex gap-2 items-center cursor-pointer">
+          <div className="flex flex-1 gap-2 items-center">
+            <UserAvatar size={30} src={user?.avatar || undefined} />
+            <div className="flex-1 text-black">{user?.nickname || user?.name}</div>
+          </div>
           <div>
             <RightOutlined className="text-xs" />
           </div>
-        </UserDropdown>
-      </div>
+        </div>
+      </UserDropdown>
     </div>
   );
 };
