@@ -272,5 +272,5 @@ function CRUD<T extends Record<string, any>>({
   );
 }
 
-export { CRUD };
+export { CRUD, handleFinish };
 export type { CRUDProps };
