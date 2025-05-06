@@ -2,9 +2,9 @@
 
 ## 开发
 
-准备db
+准备db。创建 `.env` 文件并添加以下内容：
 
-```bash
+```text
 DATABASE_URL="file:./prisma/dev.db"
 ```
 
@@ -22,9 +22,9 @@ pnpm dev
 
 ## 部署
 
-准备 db
+准备 db。创建 `.env` 文件并添加以下内容：
 
-```bash
+```text
 DATABASE_URL="file:./prisma/prod.db"
 ```
 
@@ -37,6 +37,7 @@ npx auth secret
 构建启动
 
 ```bash
+npx prisma migrate deploy
 pnpm build
 pnpm start
 ```
