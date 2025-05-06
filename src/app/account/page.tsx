@@ -6,6 +6,7 @@ import {
   EnumPlatform,
   listPlatform,
   valueEnumAccountStatus,
+  valueEnumPlatform,
 } from '@/generated/enums';
 import { Account } from '@/generated/prisma';
 import { ProFormSelect, ProFormText } from '@ant-design/pro-components';
@@ -86,8 +87,16 @@ function Page() {
       title="账号"
       columns={[
         {
+          title: '平台',
+          dataIndex: 'platform',
+          hidden: true,
+          valueEnum: valueEnumPlatform,
+          search: true,
+        },
+        {
           title: '平台账号',
           dataIndex: 'platformName',
+          search: true,
           render: (_, record: Account) => (
             <PlatformWithName
               name={record.platformName || ''}
@@ -99,12 +108,12 @@ function Page() {
           title: '状态',
           dataIndex: 'status',
           valueEnum: valueEnumAccountStatus,
+          search: true,
         },
         {
           title: '授权时间',
           dataIndex: 'authedAt',
           valueType: 'dateTime',
-          search: false,
         },
         {
           title: '所属教练',

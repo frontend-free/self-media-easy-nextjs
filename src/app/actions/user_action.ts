@@ -9,11 +9,21 @@ export type UpdateUserInput = Partial<
   Pick<User, 'password' | 'avatar' | 'mobile' | 'nickname' | 'isAdmin'>
 > & { id: string };
 
-export async function pageUsers(params: { pageSize: number; current: number; name?: string }) {
+export async function pageUsers(params: {
+  pageSize: number;
+  current: number;
+  name?: string;
+  nickname?: string;
+  mobile?: string;
+}) {
   return pageModel<Prisma.UserDelegate, UserDetail>({
     model: prisma.user,
     params,
-    where: { name: { contains: params.name } },
+    where: {
+      name: { contains: params.name },
+      nickname: { contains: params.nickname },
+      mobile: { contains: params.mobile },
+    },
   });
 }
 

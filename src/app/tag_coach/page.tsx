@@ -12,13 +12,13 @@ function Page() {
         {
           title: '名字',
           dataIndex: 'name',
+          search: true,
         },
         {
           title: '创建时间',
           dataIndex: 'createdAt',
           key: 'createdAt',
           valueType: 'dateTime',
-          search: false,
         },
       ]}
       detailForm={() => (

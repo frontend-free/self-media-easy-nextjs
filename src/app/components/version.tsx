@@ -16,7 +16,7 @@ function Version() {
     });
   }, []);
 
-  return <div className="p-2">版本：V{version}</div>;
+  return <div className="px-4 py-2">版本 v{version}</div>;
 }
 
 export { Version };

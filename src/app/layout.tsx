@@ -35,7 +35,7 @@ export const metadata: Metadata = {
   description: '',
 };
 
-const Icon = async () => {
+const UserInfo = async () => {
   let user: User | null = null;
 
   try {
@@ -109,8 +109,8 @@ function RootLayout({ children }: { children: React.ReactNode }) {
                   <AuthPathComponent element={children}>
                     <div className="h-screen w-screen flex bg-gray-200">
                       <div className="w-[220px] h-full flex flex-col gap-2">
-                        <div className="h-5"></div>
-                        <Icon />
+                        <div></div>
+                        <UserInfo />
                         <div className="flex-1 flex flex-col">
                           <div className="flex-1">
                             <AppMenu items={menuItems} />

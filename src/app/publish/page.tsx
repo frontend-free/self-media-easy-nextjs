@@ -87,11 +87,12 @@ function Page() {
         {
           title: '标题',
           dataIndex: 'title',
+          search: true,
         },
         {
           title: '视频',
           dataIndex: 'resourceOfVideo',
-          search: false,
+
           render: (value) => (
             <Resource resourceType={PublishResourceType.VIDEO} resourceOfVideo={value as string} />
           ),
@@ -100,7 +101,6 @@ function Page() {
           title: '发布类型',
           dataIndex: 'publishType',
           valueEnum: valueEnumPublishType,
-          search: false,
         },
         {
           title: '账号发布状态',
@@ -132,7 +132,6 @@ function Page() {
           title: '创建时间',
           dataIndex: 'createdAt',
           valueType: 'dateTime',
-          search: false,
         },
       ]}
       detailForm={() => (

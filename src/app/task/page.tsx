@@ -1,6 +1,6 @@
 'use client';
 
-import { EnumPlatform, valueEnumTaskStatus } from '@/generated/enums';
+import { EnumPlatform, valueEnumPlatform, valueEnumTaskStatus } from '@/generated/enums';
 import { PublishResourceType, Task } from '@/generated/prisma';
 import { Button } from 'antd';
 import { useEffect, useRef } from 'react';
@@ -34,9 +34,16 @@ function Page() {
       title="任务"
       columns={[
         {
+          title: '平台',
+          dataIndex: ['account', 'platform'],
+          hidden: true,
+          valueEnum: valueEnumPlatform,
+          search: true,
+        },
+        {
           title: '平台账号',
-          dataIndex: ['account'],
-          search: false,
+          dataIndex: ['account', 'platformName'],
+          search: true,
           render: (_, record: Task) => (
             <PlatformWithName
               name={record.account.platformName || ''}
@@ -45,30 +52,33 @@ function Page() {
           ),
         },
         {
+          title: '标题',
+          dataIndex: ['publish', 'title'],
+          search: true,
+        },
+        {
           title: '视频',
           dataIndex: ['publish', 'resourceOfVideo'],
           render: (value) => (
             <Resource resourceType={PublishResourceType.VIDEO} resourceOfVideo={value as string} />
           ),
-          search: false,
         },
         {
           title: '状态',
           dataIndex: 'status',
           valueEnum: valueEnumTaskStatus,
+          search: true,
         },
         {
           title: '发布时间',
           dataIndex: 'endAt',
           valueType: 'dateTime',
-          search: false,
         },
         {
           title: '创建时间',
           dataIndex: 'createdAt',
           key: 'createdAt',
           valueType: 'dateTime',
-          search: false,
         },
       ]}
       request={async (params) => {

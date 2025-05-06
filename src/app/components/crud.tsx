@@ -176,7 +176,10 @@ function CRUD<T extends Record<string, any>>({
 
   const newColumns: ProColumns<T>[] = useMemo(() => {
     return [
-      ...columns,
+      ...columns.map((column) => ({
+        search: false,
+        ...column,
+      })),
       (!disabledDelete || !disabledUpdate || renderOperate) && {
         title: '操作',
         key: 'action',
@@ -263,6 +266,7 @@ function CRUD<T extends Record<string, any>>({
       options={false}
       search={{
         labelWidth: 'auto',
+        defaultCollapsed: false,
       }}
     />
   );

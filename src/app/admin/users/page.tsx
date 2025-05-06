@@ -14,18 +14,19 @@ function UsersList() {
           title: '用户名',
           dataIndex: 'name',
           key: 'name',
+          search: true,
         },
         {
           title: '昵称',
           dataIndex: 'nickname',
           key: 'nickname',
-          search: false,
+          search: true,
         },
         {
           title: '手机号',
           dataIndex: 'mobile',
           key: 'mobile',
-          search: false,
+          search: true,
         },
         {
           title: '管理员',
@@ -36,14 +37,12 @@ function UsersList() {
             checkedChildren: '是',
             unCheckedChildren: '',
           },
-          search: false,
         },
         {
           title: '创建时间',
           dataIndex: 'createdAt',
           key: 'createdAt',
           valueType: 'dateTime',
-          search: false,
         },
       ]}
       detailForm={({ type }) => (
