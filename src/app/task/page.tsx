@@ -1,7 +1,7 @@
 'use client';
 
 import { EnumPlatform, valueEnumPlatform, valueEnumTaskStatus } from '@/generated/enums';
-import { PublishResourceType, Task } from '@/generated/prisma';
+import { PublishResourceType } from '@/generated/prisma';
 import { Button } from 'antd';
 import { useEffect, useRef } from 'react';
 import * as TaskAction from '../actions/task_action';
@@ -20,7 +20,7 @@ function Page() {
     };
   }, []);
 
-  const handlePublishTask = async (task: Task) => {
+  const handlePublishTask = async (task: TaskAction.TaskWithRelations) => {
     try {
       await publishTask({ id: task.id });
     } finally {
@@ -29,7 +29,7 @@ function Page() {
   };
 
   return (
-    <CRUD<Task>
+    <CRUD<TaskAction.TaskWithRelations>
       ref={refCRUD}
       title="任务"
       columns={[
@@ -44,7 +44,7 @@ function Page() {
           title: '平台账号',
           dataIndex: ['account', 'platformName'],
           search: true,
-          render: (_, record: Task) => (
+          render: (_, record: TaskAction.TaskWithRelations) => (
             <PlatformWithName
               name={record.account.platformName || ''}
               value={record.account.platform as EnumPlatform}

@@ -14,6 +14,11 @@ datasource db {
   url      = "file:./dev.db"
 }
 
+enum Platform {
+  // 抖音
+  TIKTOK
+}
+
 enum AccountStatus {
   // 未授权
   UNAUTHED
@@ -85,7 +90,7 @@ model TagCoach {
 // 账号
 model Account {
   id             String         @id @default(uuid())
-  platform       String // 平台
+  platform       Platform // 平台
   platformName   String? // 平台名称
   platformAvatar String? // 平台头像
   platformId     String? // 平台ID

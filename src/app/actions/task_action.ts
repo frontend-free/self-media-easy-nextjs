@@ -1,7 +1,7 @@
 'use server';
 
 import { EnumPlatform } from '@/generated/enums';
-import { Prisma, Task, TaskStatus } from '@/generated/prisma';
+import { Account, Prisma, Publish, Task, TaskStatus } from '@/generated/prisma';
 import { createModel, deleteModel, getModelById, pageModel, prisma, updateModel } from './helper';
 
 export type CreateTaskInput = Pick<Task, 'accountId' | 'publishId'>;
@@ -9,6 +9,12 @@ export type UpdateTaskInput = Partial<
   Pick<Task, 'id' | 'status' | 'logs' | 'startAt' | 'endAt'>
 > & {
   id: string;
+};
+
+// 定义包含关联数据的 Task 类型
+export type TaskWithRelations = Task & {
+  account: Account;
+  publish: Publish;
 };
 
 export async function pageTasks(params: {
@@ -23,7 +29,7 @@ export async function pageTasks(params: {
   };
   status?: TaskStatus;
 }) {
-  return pageModel<Prisma.TaskDelegate, Task>(
+  return pageModel<Prisma.TaskDelegate, TaskWithRelations>(
     {
       model: prisma.task,
       params,
@@ -61,7 +67,7 @@ export async function createTasksForPublish(data: CreateTaskInput) {
 }
 
 export async function getTaskById(id: string) {
-  return getModelById<Prisma.TaskDelegate, Task>(
+  return getModelById<Prisma.TaskDelegate, TaskWithRelations>(
     {
       model: prisma.task,
       id,

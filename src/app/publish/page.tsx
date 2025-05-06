@@ -5,11 +5,12 @@ import * as PublishAction from '@/app/actions/publish_action';
 import { CRUD } from '@/app/components/crud';
 import { electronApi } from '@/electron';
 import {
+  EnumPlatform,
   TagTaskStatus,
   valueEnumPublishResourceType,
   valueEnumPublishType,
 } from '@/generated/enums';
-import { PublishResourceType, PublishType, Task } from '@/generated/prisma';
+import { PublishResourceType, PublishType } from '@/generated/prisma';
 import { DeleteOutlined } from '@ant-design/icons';
 import {
   ProForm,
@@ -20,6 +21,7 @@ import {
   ProFormTextArea,
 } from '@ant-design/pro-components';
 import { Alert, Button } from 'antd';
+import { TaskWithRelations } from '../actions/task_action';
 import { PlatformWithName } from '../components/platform';
 import { Resource } from '../components/resource';
 
@@ -111,15 +113,15 @@ function Page() {
               return null;
             }
 
-            const tasks = value as Task[];
+            const tasks = value as TaskWithRelations[];
 
             return (
               <div>
                 {tasks.map((item) => (
                   <div key={item.id} className="flex flex-row items-center gap-2">
                     <PlatformWithName
-                      name={item.account.platformName}
-                      value={item.account.platform}
+                      name={item.account.platformName || ''}
+                      value={item.account.platform as EnumPlatform}
                     />
                     <TagTaskStatus value={item.status} />
                   </div>
