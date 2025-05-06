@@ -3,13 +3,18 @@
 import * as AuthActions from '@/app/actions/auth_action';
 import { handleFinish } from '@/app/components/crud';
 import { LoginForm, ProFormText } from '@ant-design/pro-components';
+import { useRouter } from 'next/navigation';
 
 export default function LoginPage() {
+  const router = useRouter();
+
   const onFinish = async (values: { name: string; password: string }) => {
     await AuthActions.login({
       name: values.name,
       password: values.password,
     });
+
+    router.push('/');
   };
 
   return (

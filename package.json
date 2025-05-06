@@ -4,6 +4,8 @@
   "electronAppVersion": "1.0.0",
   "private": true,
   "scripts": {
+    "deploy-init": "npx auth secret",
+    "deploy": "npx prisma migrate deploy",
     "build:enums": "free-scripts build-code -i ./enums/enums.config.js -o ./src/generated -t antd && prettier ./src/generated --write",
     "build": "next build",
     "start": "next start",

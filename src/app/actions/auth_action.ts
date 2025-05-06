@@ -10,7 +10,7 @@ export async function login({ name, password }: { name: string; password: string
     await signIn('credentials', {
       name,
       password,
-      redirectTo: '/',
+      redirect: false,
     });
   } catch (error) {
     console.error('signIn', error);
