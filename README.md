@@ -26,6 +26,7 @@ pnpm dev
 
 ```text
 DATABASE_URL="file:./prisma/prod.db"
+NEXT_PUBLIC_DOWNLOAD_SERVER="http://110.41.47.50:3001/auto-updates"
 ```
 
 准备 auth 密钥

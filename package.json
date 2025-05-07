@@ -1,6 +1,7 @@
 {
   "name": "subject-media-nextjs",
   "version": "1.0.0",
+  "latestAppVersion": "1.0.0",
   "private": true,
   "scripts": {
     "build:enums": "free-scripts build-code -i ./enums/enums.config.js -o ./src/generated -t antd && prettier ./src/generated --write",
@@ -29,7 +30,8 @@
     "prisma": "^6.6.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "react-player": "^2.16.0"
+    "react-player": "^2.16.0",
+    "semver": "^7.7.1"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

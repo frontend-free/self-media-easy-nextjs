@@ -73,11 +73,6 @@ const electronApi = {
 
     return res;
   },
-  checkForUpdatesAndNotify: async (): Promise<void> => {
-    const electron = getElectron();
-
-    await electron.ipcRenderer.invoke('checkForUpdatesAndNotify');
-  },
   platformAuth: async ({ platform }: { platform: EnumPlatform }): Promise<PlatformAuthResult> => {
     const electron = getElectron();
 
