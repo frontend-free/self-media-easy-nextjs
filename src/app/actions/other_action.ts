@@ -1,7 +1,7 @@
-import { latestAppVersion } from '../../../package.json';
+import packageJSON from '../../../package.json';
 
 async function getLatestAppVersion() {
-  return latestAppVersion;
+  return packageJSON.latestAppVersion;
 }
 
 export { getLatestAppVersion };
