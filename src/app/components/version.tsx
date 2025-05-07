@@ -4,7 +4,7 @@ import { electronApi } from '@/electron';
 import { App, Button } from 'antd';
 import { useEffect, useState } from 'react';
 import semver from 'semver';
-import { latestAppVersion } from '../../../package.json';
+import * as OtherAction from '../actions/other_action';
 
 function getDownLoadURL({ version }: { version: string }) {
   const prefix = `${process.env.NEXT_PUBLIC_DOWNLOAD_SERVER}/subject-media-electron-${version}`;
@@ -18,12 +18,15 @@ function getDownLoadURL({ version }: { version: string }) {
 async function checkVersionAndUpdate({ modal, silent = true }) {
   const nowAppVersion = await electronApi.getVersion();
 
+  const latestAppVersion = await OtherAction.getLatestAppVersion();
+
   const res = semver.compare(latestAppVersion, nowAppVersion);
 
   // 需要更新
   if (res === 1) {
     modal.confirm({
-      title: `发现新版本 ${latestAppVersion}，请升级！`,
+      title: `发现新版本`,
+      content: `当前版本: v${nowAppVersion}，最新版本: v${latestAppVersion}，请升级！`,
       okText: '升级',
       onOk: () => {
         window.open(getDownLoadURL({ version: latestAppVersion }));
