@@ -38,6 +38,7 @@ npx auth secret
 
 ```bash
 npx prisma migrate deploy
+npx prisma generate
 pnpm build
 pnpm start
 ```

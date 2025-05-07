@@ -3,6 +3,7 @@
 import * as UserAction from '@/app/actions/user_action';
 import { signIn, signOut } from '@/auth';
 import { User } from '@/generated/prisma';
+import { revalidatePath } from 'next/cache';
 import { needAuth, prisma } from './helper';
 
 export async function login({ name, password }: { name: string; password: string }) {
@@ -12,6 +13,9 @@ export async function login({ name, password }: { name: string; password: string
       password,
       redirect: false,
     });
+
+    // 清理缓存
+    revalidatePath('/', 'layout');
   } catch (error) {
     console.error('signIn', error);
     throw new Error('用户名或密码错误');
