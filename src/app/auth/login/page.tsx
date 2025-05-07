@@ -15,6 +15,7 @@ export default function LoginPage() {
     });
 
     router.push('/');
+    window.location.reload();
   };
 
   return (

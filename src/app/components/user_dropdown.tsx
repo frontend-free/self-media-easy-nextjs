@@ -12,6 +12,7 @@ function UserDropdown({ children }: { children: React.ReactNode }) {
     await AuthAction.logout();
 
     router.push('/auth/login');
+    window.location.reload();
   };
 
   return (
