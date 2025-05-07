@@ -16,6 +16,7 @@ export async function login({ name, password }: { name: string; password: string
 
     // 清理缓存
     revalidatePath('/', 'layout');
+    revalidatePath('/home');
   } catch (error) {
     console.error('signIn', error);
     throw new Error('用户名或密码错误');

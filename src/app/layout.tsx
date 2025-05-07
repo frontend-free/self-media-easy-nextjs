@@ -97,6 +97,28 @@ const menuItems = [
 
 function RootLayout({ children }: { children: React.ReactNode }) {
   return (
+    <div className="h-screen w-screen flex bg-gray-200">
+      <div className="w-[220px] h-full flex flex-col gap-2">
+        <div></div>
+        <UserInfo />
+        <div className="flex-1 flex flex-col">
+          <div className="flex-1">
+            <AppMenu items={menuItems} />
+          </div>
+          <Version />
+        </div>
+        <div></div>
+      </div>
+
+      <div className="flex-1 p-2 flex flex-col">
+        <div className="bg-white rounded-md flex-1 p-4">{children}</div>
+      </div>
+    </div>
+  );
+}
+
+function WrapRootLayout({ children }: { children: React.ReactNode }) {
+  return (
     <html lang="zh-CN">
       <body>
         <AntdRegistry>
@@ -106,23 +128,7 @@ function RootLayout({ children }: { children: React.ReactNode }) {
                 <ErrorComponent />
                 <AdminPathComponent element={children}>
                   <AuthPathComponent element={children}>
-                    <div className="h-screen w-screen flex bg-gray-200">
-                      <div className="w-[220px] h-full flex flex-col gap-2">
-                        <div></div>
-                        <UserInfo />
-                        <div className="flex-1 flex flex-col">
-                          <div className="flex-1">
-                            <AppMenu items={menuItems} />
-                          </div>
-                          <Version />
-                        </div>
-                        <div></div>
-                      </div>
-
-                      <div className="flex-1 p-2 flex flex-col">
-                        <div className="bg-white rounded-md flex-1 p-4">{children}</div>
-                      </div>
-                    </div>
+                    <RootLayout>{children}</RootLayout>
                   </AuthPathComponent>
                 </AdminPathComponent>
               </App>
@@ -134,4 +140,4 @@ function RootLayout({ children }: { children: React.ReactNode }) {
   );
 }
 
-export default RootLayout;
+export default WrapRootLayout;
