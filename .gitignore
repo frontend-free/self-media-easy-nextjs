@@ -48,6 +48,3 @@ next-env.d.ts
 
 # generated prisma
 /src/generated/prisma
-
-# public
-/public/auto-updates/
