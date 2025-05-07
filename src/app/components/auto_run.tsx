@@ -3,6 +3,7 @@
 import { electronApi, EnumPlatformPublishCode } from '@/electron';
 import { AccountStatus, TaskStatus } from '@/generated/prisma';
 import { App } from 'antd';
+import { useSession } from 'next-auth/react';
 import { useCallback, useEffect, useState } from 'react';
 import * as AccountAction from '../actions/account_action';
 import * as TaskAction from '../actions/task_action';
@@ -85,6 +86,7 @@ async function publishTask({
 function AutoRunComponent() {
   const [count, setCount] = useState(0);
   const { notification } = App.useApp();
+  const { data: session } = useSession();
 
   const doPublishTask = useCallback(
     async (task) => {
@@ -112,9 +114,9 @@ function AutoRunComponent() {
     [notification],
   );
 
-  const autoRunTask = useCallback(async () => {
+  const autoRunTask = useCallback(() => {
     // 5s 检查是否有任务需要运行
-    setInterval(async () => {
+    return setInterval(async () => {
       console.log('autoRunTask', maxRunCount, runningTaskIds);
 
       if (runningTaskIds.length >= maxRunCount) {
@@ -145,7 +147,10 @@ function AutoRunComponent() {
   }, [doPublishTask]);
 
   useEffect(() => {
-    autoRunTask();
+    const timer = autoRunTask() as any;
+    return () => {
+      clearInterval(timer);
+    };
   }, []);
 
   return (
