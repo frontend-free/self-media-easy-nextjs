@@ -186,6 +186,16 @@ function CRUD<T extends Record<string, any>>({
         valueType: 'option',
         render: (_, record) => [
           <Fragment key="customOperate">{renderOperate?.({ record })}</Fragment>,
+          !disabledUpdate && (
+            <Update
+              key="update"
+              data={record}
+              actionRef={actionRef}
+              requestDetail={requestDetail}
+              requestUpdate={requestUpdate}
+              detailForm={detailForm}
+            />
+          ),
           !disabledDelete && (
             <Button
               key="edit"
@@ -205,16 +215,6 @@ function CRUD<T extends Record<string, any>>({
             >
               删除
             </Button>
-          ),
-          !disabledUpdate && (
-            <Update
-              key="update"
-              data={record}
-              actionRef={actionRef}
-              requestDetail={requestDetail}
-              requestUpdate={requestUpdate}
-              detailForm={detailForm}
-            />
           ),
         ],
       },
