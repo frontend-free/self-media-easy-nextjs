@@ -101,6 +101,16 @@ const electronApi = {
 
     return res;
   },
+  checkPlaywrightBrowser: async (): Promise<void> => {
+    const electron = getElectron();
+
+    await electron.ipcRenderer.invoke('checkPlaywrightBrowser');
+  },
+  installPlaywrightBrowser: async (): Promise<void> => {
+    const electron = getElectron();
+
+    await electron.ipcRenderer.invoke('installPlaywrightBrowser');
+  },
 };
 
 export { electronApi, EnumPlatformPublishCode };
