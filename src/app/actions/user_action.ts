@@ -1,13 +1,14 @@
 'use server';
 
-import { Prisma, User } from '@/generated/prisma';
+import { Prisma, PrismaClient, User } from '@/generated/prisma';
+import { omit } from 'lodash-es';
 import { createModel, deleteModel, getModelById, pageModel, prisma, updateModel } from './helper';
 
 export type UserDetail = Omit<User, 'password'>;
 export type CreateUserInput = Pick<User, 'name' | 'password'>;
 export type UpdateUserInput = Partial<
   Pick<User, 'password' | 'avatar' | 'mobile' | 'nickname' | 'isAdmin'>
-> & { id: string };
+> & { id: string; oldPassword?: string };
 
 export async function pageUsers(params: {
   pageSize: number;
@@ -42,10 +43,26 @@ export async function getUserById(id: string) {
   return getModelById<Prisma.UserDelegate, UserDetail>({ model: prisma.user, id });
 }
 
+async function getUserPassword(id: string): Promise<string | undefined> {
+  const prisma = new PrismaClient();
+  const user = await prisma.user.findUnique({
+    where: { id },
+  });
+  return user?.password;
+}
+
 export async function updateUser(data: UpdateUserInput) {
+  // 如果包含密码，则校验密码
+  if (data.password) {
+    const pw = await getUserPassword(data.id);
+    if (pw !== data.oldPassword) {
+      throw new Error('旧密码错误');
+    }
+  }
+
   return updateModel<Prisma.UserDelegate, UserDetail, UpdateUserInput>({
     model: prisma.user,
-    data,
+    data: omit(data, 'oldPassword'),
   });
 }
 

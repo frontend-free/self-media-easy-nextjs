@@ -2,7 +2,7 @@ import { AuthComponent } from '@/app/components/auth';
 import { AutoRunComponent } from '@/app/components/auto_run';
 import { AppMenu } from '@/app/components/menu';
 import { AdminPathComponent, AuthPathComponent } from '@/app/components/path';
-import { UserInfo } from '@/app/components/user_dropdown';
+import { UserInfo } from '@/app/components/user_info';
 import { ErrorComponent } from '@/app/lib/error';
 import { initDatabase } from '@/app/lib/init_db';
 
