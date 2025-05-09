@@ -2,6 +2,7 @@
 
 import { EnumPlatform, valueEnumPlatform, valueEnumTaskStatus } from '@/generated/enums';
 import { PublishResourceType } from '@/generated/prisma';
+import { App } from 'antd';
 import { useEffect, useRef } from 'react';
 import * as TaskAction from '../actions/task_action';
 import { publishTask } from '../components/auto_run';
@@ -13,6 +14,8 @@ import { Resource } from '../components/resource';
 function Page() {
   const refCRUD = useRef<any | undefined>(undefined);
 
+  const { notification } = App.useApp();
+
   useEffect(() => {
     // @ts-expect-error 先忽略
     window._refreshTask = () => {
@@ -22,7 +25,19 @@ function Page() {
 
   const handlePublishTask = async (task: TaskAction.TaskWithRelations) => {
     try {
+      notification.info({
+        key: task.id,
+        message: '发布中',
+        duration: 0,
+      });
+
       await publishTask({ id: task.id });
+
+      notification.success({
+        key: task.id,
+        message: '发布成功',
+        duration: 4.5,
+      });
     } finally {
       refCRUD?.current?.reload();
     }
@@ -94,7 +109,7 @@ function Page() {
             type="link"
             className="!px-0"
             onClick={async () => {
-              handlePublishTask(record);
+              await handlePublishTask(record);
             }}
           >
             手动发布
