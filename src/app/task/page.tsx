@@ -14,7 +14,7 @@ import { Resource } from '../components/resource';
 function Page() {
   const refCRUD = useRef<any | undefined>(undefined);
 
-  const { notification } = App.useApp();
+  const { notification, modal } = App.useApp();
 
   useEffect(() => {
     // @ts-expect-error 先忽略
@@ -109,7 +109,12 @@ function Page() {
             type="link"
             className="!px-0"
             onClick={async () => {
-              await handlePublishTask(record);
+              modal.confirm({
+                title: '确定手动发布吗？',
+                onOk: async () => {
+                  await handlePublishTask(record);
+                },
+              });
             }}
           >
             手动发布
