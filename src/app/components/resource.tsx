@@ -7,12 +7,12 @@ function ResourceVideo({ resourceOfVideo }: { resourceOfVideo?: string }) {
     return <div>-</div>;
   }
 
-  // 从路径中提取文件名
-  const fileName = resourceOfVideo.split('/').pop() || resourceOfVideo;
+  // 从路径中提取文件名，同时支持 Windows 和 Unix 风格的路径分隔符
+  const fileName = resourceOfVideo.split(/[\/\\]/).pop() || resourceOfVideo;
 
   return (
     <Tooltip title={resourceOfVideo}>
-      <div>{fileName}</div>
+      <div className="max-w-[150px] whitespace-normal break-words">{fileName}</div>
     </Tooltip>
   );
 }
