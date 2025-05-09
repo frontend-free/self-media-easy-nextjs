@@ -2,11 +2,11 @@
 
 import { EnumPlatform, valueEnumPlatform, valueEnumTaskStatus } from '@/generated/enums';
 import { PublishResourceType } from '@/generated/prisma';
-import { Button } from 'antd';
 import { useEffect, useRef } from 'react';
 import * as TaskAction from '../actions/task_action';
 import { publishTask } from '../components/auto_run';
 import { CRUD } from '../components/crud';
+import { LoadingButton } from '../components/loading_button';
 import { PlatformWithName } from '../components/platform';
 import { Resource } from '../components/resource';
 
@@ -90,7 +90,7 @@ function Page() {
       disabledUpdate
       renderOperate={({ record }) => {
         return (
-          <Button
+          <LoadingButton
             type="link"
             className="!px-0"
             onClick={async () => {
@@ -98,7 +98,7 @@ function Page() {
             }}
           >
             手动发布
-          </Button>
+          </LoadingButton>
         );
       }}
     />

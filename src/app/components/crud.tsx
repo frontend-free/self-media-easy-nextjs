@@ -13,6 +13,7 @@ import {
   useMemo,
   useRef,
 } from 'react';
+import { LoadingButton } from './loading_button';
 
 function handleFinish(onFinish) {
   return async (formData) => {
@@ -197,7 +198,7 @@ function CRUD<T extends Record<string, any>>({
             />
           ),
           !disabledDelete && (
-            <Button
+            <LoadingButton
               key="edit"
               type="link"
               danger
@@ -214,7 +215,7 @@ function CRUD<T extends Record<string, any>>({
               }}
             >
               删除
-            </Button>
+            </LoadingButton>
           ),
         ],
       },

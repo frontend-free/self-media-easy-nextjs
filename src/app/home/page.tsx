@@ -36,7 +36,7 @@ function InstallBrowser() {
                 const instance = modal.info({
                   title: '安装浏览器插件',
                   content: (
-                    <div className="flex flex-col items-center justify-center gap-2">
+                    <div className="flex flex-col items-center justify-center gap-2 p-4">
                       <Spin size="large"></Spin>
                       <div>请耐心等待</div>
                     </div>

@@ -1,15 +1,16 @@
 'use client';
 
 import { electronApi, EnumPlatformPublishCode } from '@/electron';
+import { valueEnumPlatform } from '@/generated/enums';
 import { AccountStatus, TaskStatus } from '@/generated/prisma';
-import { App } from 'antd';
+import { App, Result } from 'antd';
 import { useCallback, useEffect, useState } from 'react';
 import * as AccountAction from '../actions/account_action';
 import * as TaskAction from '../actions/task_action';
 
-const maxRunCount = 2;
+const maxRunCount = 1;
 let runningTaskIds: string[] = [];
-const INTERVAL = 5 * 1000;
+const INTERVAL = 10 * 1000;
 
 async function publishTask({
   id,
@@ -91,23 +92,55 @@ function AutoRunComponent() {
 
   const doPublishTask = useCallback(
     async (task) => {
-      const resourceName = task.publish?.resourceOfVideo.split('/').pop();
-      const accountName = task.account?.platformName;
+      const itemNode = (
+        <div>
+          <div>
+            {valueEnumPlatform[task.account?.platform]?.text} {task.account?.platformName}
+          </div>
+          <div>{task.publish?.title}</div>
+          <div>{task.publish?.resourceOfVideo.split('/').pop()}</div>
+        </div>
+      );
+
+      const key = task.id;
 
       notification.info({
-        message: `自动运行任务 ${accountName} - ${resourceName}`,
+        key,
+        message: (
+          <div>
+            <div>自动运行任务中</div>
+            {itemNode}
+          </div>
+        ),
+        duration: 0,
       });
 
       await publishTask({
         id: task.id,
         onSuccess: () => {
           notification.success({
-            message: `自动运行任务 ${accountName} - ${resourceName} 成功`,
+            key,
+            message: (
+              <div>
+                <div>自动运行任务-成功</div>
+                {itemNode}
+                <Result status="success" />
+              </div>
+            ),
+            duration: 4.5,
           });
         },
         onError: () => {
           notification.error({
-            message: `自动运行任务 ${accountName} - ${resourceName} 失败`,
+            key,
+            message: (
+              <div>
+                <div>自动运行任务-失败</div>
+                {itemNode}
+                <Result status="error" />
+              </div>
+            ),
+            duration: 4.5,
           });
         },
       });
@@ -148,6 +181,11 @@ function AutoRunComponent() {
   }, [doPublishTask]);
 
   useEffect(() => {
+    // 桌面端才自动运行
+    if (!electronApi.isElectron()) {
+      return;
+    }
+
     const timer = autoRunTask() as any;
     return () => {
       clearInterval(timer);
