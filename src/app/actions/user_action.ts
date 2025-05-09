@@ -1,7 +1,6 @@
 'use server';
 
 import { Prisma, PrismaClient, User } from '@/generated/prisma';
-import { omit } from 'lodash-es';
 import { createModel, deleteModel, getModelById, pageModel, prisma, updateModel } from './helper';
 
 export type UserDetail = Omit<User, 'password'>;
@@ -60,9 +59,12 @@ export async function updateUser(data: UpdateUserInput) {
     }
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { oldPassword, ...newData } = data;
+
   return updateModel<Prisma.UserDelegate, UserDetail, UpdateUserInput>({
     model: prisma.user,
-    data: omit(data, 'oldPassword'),
+    data: newData,
   });
 }
 

@@ -1,7 +1,6 @@
 'use server';
 
 import { Prisma, Publish } from '@/generated/prisma';
-import { omit } from 'lodash-es';
 import { createModel, deleteModel, pageModel, prisma } from './helper';
 import * as TaskAction from './task_action';
 
@@ -47,11 +46,14 @@ export async function deletePublish(id: string) {
 }
 
 export async function createPublish(data: CreatePublishInput) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { accountIds, ...rest } = data;
+
   const publish = await createModel<Prisma.PublishDelegate, Publish>(
     {
       model: prisma.publish,
       data: {
-        ...omit(data, 'accountIds'),
+        ...rest,
         accounts: {
           connect: data.accountIds.map((id) => ({ id })),
         },
