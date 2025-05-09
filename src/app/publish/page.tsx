@@ -83,113 +83,135 @@ function ProFormFiles(props) {
 
 function Page() {
   return (
-    <CRUD
-      title="发布"
-      columns={[
-        {
-          title: '标题',
-          dataIndex: 'title',
-          search: true,
-        },
-        {
-          title: '视频',
-          dataIndex: 'resourceOfVideo',
-
-          render: (value) => (
-            <Resource resourceType={PublishResourceType.VIDEO} resourceOfVideo={value as string} />
-          ),
-        },
-        {
-          title: '发布类型',
-          dataIndex: 'publishType',
-          valueEnum: valueEnumPublishType,
-        },
-        {
-          title: '账号发布状态',
-          dataIndex: 'tasks',
-          render: (value) => {
-            console.log(value);
-            if (!value) {
-              return null;
-            }
-
-            const tasks = value as TaskWithRelations[];
-
-            return (
-              <div>
-                {tasks.map((item) => (
-                  <div key={item.id} className="flex flex-row items-center gap-2">
-                    <PlatformWithName
-                      name={item.account.platformName || ''}
-                      value={item.account.platform as EnumPlatform}
-                    />
-                    <TagTaskStatus value={item.status} />
-                  </div>
-                ))}
-              </div>
-            );
+    <div className="flex flex-col gap-4">
+      <Alert
+        message={
+          <div>
+            <div>新建发布后</div>
+            <div>1 软件会自动运行发布任务，请不要关闭软件。</div>
+            <div>2 不要随意移动选中的资源，否则影响发布。</div>
+          </div>
+        }
+        type="info"
+        className="mb-4"
+      />
+      <CRUD
+        title="发布"
+        columns={[
+          {
+            title: '标题',
+            dataIndex: 'title',
+            search: true,
           },
-        },
-        {
-          title: '创建时间',
-          dataIndex: 'createdAt',
-          valueType: 'dateTime',
-        },
-      ]}
-      detailForm={() => (
-        <div>
-          <ProFormText name="id" label="ID" hidden />
+          {
+            title: '视频',
+            dataIndex: 'resourceOfVideo',
 
-          <ProFormField
-            name="resourceType"
-            label="资源类型"
-            valueEnum={valueEnumPublishResourceType}
-            initialValue={PublishResourceType.VIDEO}
-            disabled
-          />
-          <ProFormFiles name="resourceOfVideo" label="视频" required rules={[{ required: true }]} />
+            render: (value) => (
+              <Resource
+                resourceType={PublishResourceType.VIDEO}
+                resourceOfVideo={value as string}
+              />
+            ),
+          },
+          {
+            title: '发布类型',
+            dataIndex: 'publishType',
+            valueEnum: valueEnumPublishType,
+          },
+          {
+            title: '账号发布状态',
+            dataIndex: 'tasks',
+            render: (value) => {
+              console.log(value);
+              if (!value) {
+                return null;
+              }
 
-          <ProFormSelect
-            name="accountIds"
-            label="账号"
-            mode="multiple"
-            request={async () => {
-              const res = await AccountAction.pageAccounts({
-                pageSize: 100,
-                current: 1,
-              });
-              return res.data.map((item) => ({
-                label: item.platformName,
-                value: item.id,
-              }));
-            }}
-            required
-            rules={[{ required: true }]}
-          />
+              const tasks = value as TaskWithRelations[];
 
-          <ProFormText name="title" label="标题" />
-          <ProFormTextArea name="description" label="描述" />
+              return (
+                <div>
+                  {tasks.map((item) => (
+                    <div key={item.id} className="flex flex-row items-center gap-2">
+                      <PlatformWithName
+                        name={item.account.platformName || ''}
+                        value={item.account.platform as EnumPlatform}
+                      />
+                      <TagTaskStatus value={item.status} />
+                    </div>
+                  ))}
+                </div>
+              );
+            },
+          },
+          {
+            title: '创建时间',
+            dataIndex: 'createdAt',
+            valueType: 'dateTime',
+          },
+        ]}
+        detailForm={() => (
+          <div>
+            <ProFormText name="id" label="ID" hidden />
 
-          <ProFormRadio.Group
-            name="publishType"
-            label="发布类型"
-            valueEnum={valueEnumPublishType}
-            initialValue={PublishType.OFFICIAL}
-          />
-        </div>
-      )}
-      request={async (params) => {
-        const res = await PublishAction.pagePublishes(params);
-        return res;
-      }}
-      requestCreate={async (values) => {
-        await PublishAction.createPublish(values as PublishAction.CreatePublishInput);
-      }}
-      requestDelete={async (id) => {
-        await PublishAction.deletePublish(id);
-      }}
-      disabledUpdate
-    />
+            <ProFormField
+              name="resourceType"
+              label="资源类型"
+              valueEnum={valueEnumPublishResourceType}
+              initialValue={PublishResourceType.VIDEO}
+              disabled
+            />
+            <ProFormFiles
+              name="resourceOfVideo"
+              label="视频"
+              required
+              rules={[{ required: true }]}
+            />
+
+            <ProFormSelect
+              name="accountIds"
+              label="账号"
+              mode="multiple"
+              request={async () => {
+                const res = await AccountAction.pageAccounts({
+                  pageSize: 100,
+                  current: 1,
+                });
+                return res.data.map((item) => ({
+                  label: item.platformName,
+                  value: item.id,
+                }));
+              }}
+              required
+              rules={[{ required: true }]}
+            />
+
+            <ProFormText name="title" label="标题" />
+            {/* 先屏蔽 */}
+            <ProFormTextArea name="description" label="描述" hidden />
+
+            <ProFormRadio.Group
+              name="publishType"
+              label="发布类型"
+              valueEnum={valueEnumPublishType}
+              initialValue={PublishType.OFFICIAL}
+            />
+          </div>
+        )}
+        request={async (params) => {
+          const res = await PublishAction.pagePublishes(params);
+          return res;
+        }}
+        requestCreate={async (values) => {
+          await PublishAction.createPublish(values as PublishAction.CreatePublishInput);
+        }}
+        requestDelete={async (id) => {
+          await PublishAction.deletePublish(id);
+        }}
+        disabledUpdate
+      />
+    </div>
   );
 }
 

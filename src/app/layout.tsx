@@ -1,23 +1,14 @@
-import * as AuthAction from '@/app/actions/auth_action';
 import { AuthComponent } from '@/app/components/auth';
 import { AutoRunComponent } from '@/app/components/auto_run';
-import { UserAvatar } from '@/app/components/avatar';
 import { AppMenu } from '@/app/components/menu';
 import { AdminPathComponent, AuthPathComponent } from '@/app/components/path';
-import { UserDropdown } from '@/app/components/user_dropdown';
+import { UserInfo } from '@/app/components/user_dropdown';
 import { ErrorComponent } from '@/app/lib/error';
 import { initDatabase } from '@/app/lib/init_db';
 
 import '@ant-design/v5-patch-for-react-19';
 
-import { User } from '@/generated/prisma';
-import {
-  HomeOutlined,
-  RightOutlined,
-  SendOutlined,
-  UnorderedListOutlined,
-  UserOutlined,
-} from '@ant-design/icons';
+import { HomeOutlined, SendOutlined, UnorderedListOutlined, UserOutlined } from '@ant-design/icons';
 import { AntdRegistry } from '@ant-design/nextjs-registry';
 import { App, ConfigProvider } from 'antd';
 import zhCN from 'antd/locale/zh_CN';
@@ -32,32 +23,6 @@ initDatabase().catch(console.error);
 export const metadata: Metadata = {
   title: '驾K先锋-多媒体',
   description: '',
-};
-
-const UserInfo = async () => {
-  let user: User | null = null;
-
-  try {
-    user = await AuthAction.getUser();
-  } catch (error) {
-    console.error(error);
-  }
-
-  return (
-    <div className="p-2 pl-4">
-      <UserDropdown>
-        <div className="flex gap-2 items-center cursor-pointer">
-          <div className="flex flex-1 gap-2 items-center">
-            <UserAvatar size={30} src={user?.avatar || undefined} />
-            <div className="flex-1 text-black">{user?.nickname || user?.name}</div>
-          </div>
-          <div>
-            <RightOutlined className="text-xs" />
-          </div>
-        </div>
-      </UserDropdown>
-    </div>
-  );
 };
 
 const menuItems = [
