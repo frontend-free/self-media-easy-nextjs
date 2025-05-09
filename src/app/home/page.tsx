@@ -27,7 +27,7 @@ function InstallBrowser() {
           <div>
             {isInstalled
               ? '已安装插件。'
-              : '首次使用需要安装浏览器插件，点击安装（插件约 500MB，请耐心等待）。'}
+              : '首次使用需要安装浏览器插件，点击安装（插件约 250MB，请耐心等待）。'}
           </div>
           {!isInstalled && (
             <Button

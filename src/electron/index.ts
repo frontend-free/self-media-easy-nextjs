@@ -1,7 +1,7 @@
 'use client';
 
 import { EnumPlatform } from '@/generated/enums';
-import { Platform } from '@/generated/prisma';
+import { Platform, PublishType } from '@/generated/prisma';
 
 interface PlatformAuthResult {
   success: boolean;
@@ -20,6 +20,9 @@ interface PlatformPublishParams {
   platform: Platform;
   authInfo: string;
   resourceOfVideo: string;
+  title?: string;
+  description?: string;
+  publishType?: PublishType;
 }
 
 enum EnumPlatformPublishCode {
