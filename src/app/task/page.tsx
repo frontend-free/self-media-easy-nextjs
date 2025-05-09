@@ -2,7 +2,7 @@
 
 import { EnumPlatform, valueEnumPlatform, valueEnumTaskStatus } from '@/generated/enums';
 import { PublishResourceType } from '@/generated/prisma';
-import { App } from 'antd';
+import { App, Button } from 'antd';
 import { useEffect, useRef } from 'react';
 import * as TaskAction from '../actions/task_action';
 import { publishTask } from '../components/auto_run';
@@ -105,20 +105,44 @@ function Page() {
       disabledUpdate
       renderOperate={({ record }) => {
         return (
-          <LoadingButton
-            type="link"
-            className="!px-0"
-            onClick={async () => {
-              modal.confirm({
-                title: '确定手动发布吗？',
-                onOk: async () => {
-                  await handlePublishTask(record);
-                },
-              });
-            }}
-          >
-            手动发布
-          </LoadingButton>
+          <>
+            <LoadingButton
+              type="link"
+              className="!px-0"
+              onClick={async () => {
+                modal.confirm({
+                  title: '确定手动发布吗？',
+                  onOk: async () => {
+                    await handlePublishTask(record);
+                  },
+                });
+              }}
+            >
+              手动发布
+            </LoadingButton>
+            <Button
+              type="link"
+              className="!px-0"
+              onClick={() => {
+                modal.info({
+                  title: '日志',
+                  width: 800,
+                  content: (
+                    <div>
+                      <pre className="whitespace-pre-wrap">
+                        {JSON.stringify(JSON.parse(record.logs || ''), null, 2).replace(
+                          /\\n/g,
+                          '\n',
+                        )}
+                      </pre>
+                    </div>
+                  ),
+                });
+              }}
+            >
+              查看日志
+            </Button>
+          </>
         );
       }}
     />

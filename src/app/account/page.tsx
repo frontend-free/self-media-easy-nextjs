@@ -80,6 +80,7 @@ function Add({ refCRUD }) {
 
 function Page() {
   const refCRUD = useRef<any | undefined>(undefined);
+  const { modal } = App.useApp();
 
   return (
     <CRUD<Account>
@@ -158,21 +159,43 @@ function Page() {
       }}
       toolBarRenderPre={<Add refCRUD={refCRUD} />}
       renderOperate={({ record }) => {
-        if (record.status !== EnumAccountStatus.AUTHED) {
-          return (
+        return (
+          <>
+            {record.status !== EnumAccountStatus.AUTHED && (
+              <Button
+                type="link"
+                className="!px-0"
+                onClick={() => {
+                  (document.querySelector('#authBtn') as HTMLButtonElement)?.click();
+                }}
+              >
+                重新授权
+              </Button>
+            )}
             <Button
               type="link"
               className="!px-0"
               onClick={() => {
-                (document.querySelector('#authBtn') as HTMLButtonElement)?.click();
+                modal.info({
+                  title: '日志',
+                  width: 800,
+                  content: (
+                    <div>
+                      <pre className="whitespace-pre-wrap">
+                        {JSON.stringify(JSON.parse(record.logs || ''), null, 2).replace(
+                          /\\n/g,
+                          '\n',
+                        )}
+                      </pre>
+                    </div>
+                  ),
+                });
               }}
             >
-              重新授权
+              查看日志
             </Button>
-          );
-        }
-
-        return null;
+          </>
+        );
       }}
     />
   );
