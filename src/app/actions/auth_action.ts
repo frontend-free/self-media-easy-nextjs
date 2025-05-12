@@ -6,16 +6,11 @@ import { User } from '@/generated/prisma';
 import { needAuth, prisma } from './helper';
 
 export async function login({ name, password }: { name: string; password: string }) {
-  try {
-    await signIn('credentials', {
-      name,
-      password,
-      redirect: false,
-    });
-  } catch (error) {
-    console.error('signIn', error);
-    throw new Error('用户名或密码错误');
-  }
+  await signIn('credentials', {
+    name,
+    password,
+    redirect: false,
+  });
 }
 
 export async function logout() {

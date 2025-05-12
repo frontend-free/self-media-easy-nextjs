@@ -9,13 +9,17 @@ export default function LoginPage() {
   const router = useRouter();
 
   const onFinish = async (values: { name: string; password: string }) => {
-    await AuthActions.login({
-      name: values.name,
-      password: values.password,
-    });
-
-    router.push('/');
-    window.location.reload();
+    try {
+      await AuthActions.login({
+        name: values.name,
+        password: values.password,
+      });
+      router.push('/');
+      window.location.reload();
+    } catch (error) {
+      console.error(error);
+      throw new Error('用户名或密码错误');
+    }
   };
 
   return (
