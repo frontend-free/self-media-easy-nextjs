@@ -25,7 +25,11 @@ export default function LoginPage() {
   return (
     <div className="h-screen w-screen items-center justify-center flex bg-gray-50">
       <div className="p-8 bg-white rounded-lg shadow">
-        <LoginForm title="驾K先锋" subTitle="多媒体" onFinish={handleFinish(onFinish)}>
+        <LoginForm
+          title="驾K先锋-多媒体"
+          subTitle={<div>每年给驾校/教练带来10-100倍招生广告效果！</div>}
+          onFinish={handleFinish(onFinish)}
+        >
           <ProFormText name="name" required rules={[{ required: true }]} />
           <ProFormText.Password name="password" required rules={[{ required: true }]} />
         </LoginForm>
