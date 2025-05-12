@@ -4,6 +4,7 @@ import { Account, AccountStatus, Platform, Prisma } from '@/generated/prisma';
 import {
   createModel,
   deleteModel,
+  findFirstModel,
   getModelById,
   needAuth,
   pageModel,
@@ -63,13 +64,19 @@ export async function createAccount(data: CreateAccountInput) {
 
   // 如果有 平台 id 则先检查是否存在
   if (data.platform && data.platformId) {
-    const account = await prisma.account.findFirst({
-      where: {
-        platform: data.platform,
-        platformId: data.platformId,
-        userId: sessionUser.id,
+    const account = await findFirstModel<Prisma.AccountDelegate, Account>(
+      {
+        model: prisma.account,
+        where: {
+          platform: data.platform,
+          platformId: data.platformId,
+          userId: sessionUser.id,
+        },
       },
-    });
+      {
+        withUser: true,
+      },
+    );
 
     // 存在则更新
     if (account) {

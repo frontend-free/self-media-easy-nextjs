@@ -179,6 +179,33 @@ export async function getModelById<D, R>(
   return result as R;
 }
 
+/** 封装常用 findFirst */
+export async function findFirstModel<D, R>(
+  {
+    model,
+    where: argsWhere,
+  }: {
+    model: any;
+  } & CommonArgs<D, 'findFirst'>,
+  options?: CommonOptions,
+) {
+  const { sessionUser } = await needAuth();
+
+  const where = { ...argsWhere, deletedAt: null };
+
+  // 如果需要归属当前用户，则添加 userId
+  if (options?.withUser) {
+    // @ts-expect-error 暂时不知道如何处理，先这样
+    where.userId = sessionUser.id;
+  }
+
+  const result = await model.findFirst({
+    where: { ...where },
+  });
+
+  return result as R;
+}
+
 /** 封装常用 update */
 export async function updateModel<D, R, U extends { id: string }>(
   {
@@ -229,6 +256,8 @@ export async function deleteModel<D>(
 ) {
   await needId(id);
   const { sessionUser } = await needAuth();
+
+  // 就不加 deleteAt 了，直接删除
   const where = { ...argsWhere };
 
   // 如果需要归属当前用户，则添加 userId
