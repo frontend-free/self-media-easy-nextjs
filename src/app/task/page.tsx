@@ -31,12 +31,22 @@ function Page() {
         duration: 0,
       });
 
-      await publishTask({ id: task.id });
-
-      notification.success({
-        key: task.id,
-        message: '发布成功',
-        duration: 4.5,
+      await publishTask({
+        id: task.id,
+        onSuccess: () => {
+          notification.success({
+            key: task.id,
+            message: '发布成功',
+            duration: 4.5,
+          });
+        },
+        onError: () => {
+          notification.error({
+            key: task.id,
+            message: '发布失败',
+            duration: 4.5,
+          });
+        },
       });
     } finally {
       refCRUD?.current?.reload();
