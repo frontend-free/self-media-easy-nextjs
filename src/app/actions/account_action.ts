@@ -26,7 +26,7 @@ export type CreateAccountInput = Pick<
 >;
 
 export type UpdateAccountInput = Partial<
-  Pick<Account, 'platformName' | 'platformAvatar' | 'status' | 'authInfo' | 'authedAt'>
+  Pick<Account, 'platformName' | 'platformAvatar' | 'status' | 'authInfo' | 'authedAt' | 'logs'>
 > & {
   id: string;
 };

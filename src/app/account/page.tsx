@@ -62,6 +62,7 @@ function useAuth() {
         await AccountAction.updateAccount({
           id,
           status: EnumAccountStatus.INVALID,
+          logs: JSON.stringify(res.data?.logs || []),
         });
       }
     }
@@ -194,6 +195,7 @@ function Page() {
                 className="!px-0"
                 onClick={async () => {
                   await onAuth({ platform: record.platform });
+                  refCRUD.current?.reload();
                 }}
               >
                 重新授权
@@ -209,6 +211,7 @@ function Page() {
                     authInfo: record.authInfo,
                     status: record.status,
                   });
+                  refCRUD.current?.reload();
                 }}
               >
                 检查授权
