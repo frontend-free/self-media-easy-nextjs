@@ -5,6 +5,7 @@ import * as PublishAction from '@/app/actions/publish_action';
 import { CRUD } from '@/app/components/crud';
 import { electronApi } from '@/electron';
 import {
+  EnumAccountStatus,
   EnumPlatform,
   TagTaskStatus,
   valueEnumPublishResourceType,
@@ -177,6 +178,7 @@ function Page() {
                 const res = await AccountAction.pageAccounts({
                   pageSize: 100,
                   current: 1,
+                  status: EnumAccountStatus.AUTHED,
                 });
                 return res.data.map((item) => ({
                   label: item.platformName,
