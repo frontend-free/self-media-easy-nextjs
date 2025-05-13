@@ -7,6 +7,7 @@ import { App, Result } from 'antd';
 import { useCallback, useEffect, useState } from 'react';
 import * as AccountAction from '../actions/account_action';
 import * as TaskAction from '../actions/task_action';
+import { useIsDebug } from './debug';
 
 const maxRunCount = 1;
 let runningTaskIds: string[] = [];
@@ -16,10 +17,12 @@ async function publishTask({
   id,
   onSuccess,
   onError,
+  isDebug,
 }: {
   id: string;
   onSuccess?: () => void;
   onError?: () => void;
+  isDebug?: boolean;
 }) {
   const task = await TaskAction.getTaskById(id);
 
@@ -47,6 +50,7 @@ async function publishTask({
     title: task.publish?.title || undefined,
     description: task.publish?.description || undefined,
     publishType: task.publish?.publishType || undefined,
+    isDebug,
   });
 
   console.log('publishTask res', res);
@@ -89,6 +93,7 @@ async function publishTask({
 function AutoRunComponent() {
   const [count, setCount] = useState(0);
   const { notification } = App.useApp();
+  const { isDebug } = useIsDebug();
 
   const doPublishTask = useCallback(
     async (task) => {
@@ -117,6 +122,7 @@ function AutoRunComponent() {
 
       await publishTask({
         id: task.id,
+        isDebug,
         onSuccess: () => {
           notification.success({
             key,

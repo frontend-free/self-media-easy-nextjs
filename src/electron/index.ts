@@ -3,6 +3,10 @@
 import { EnumPlatform } from '@/generated/enums';
 import { Platform, PublishType } from '@/generated/prisma';
 
+interface PlatformAuthParams {
+  platform: EnumPlatform;
+  isDebug?: boolean;
+}
 interface PlatformAuthResult {
   success: boolean;
   data?: {
@@ -23,6 +27,7 @@ interface PlatformPublishParams {
   title?: string;
   description?: string;
   publishType?: PublishType;
+  isDebug?: boolean;
 }
 enum EnumPlatformPublishCode {
   ERROR_AUTH_INFO_INVALID = 'ERROR_AUTH_INFO_INVALID',
@@ -40,6 +45,7 @@ interface PlatformPublishResult {
 interface PlatformAuthCheckParams {
   platform: EnumPlatform;
   authInfo: string;
+  isDebug?: boolean;
 }
 interface PlatformAuthCheckResult {
   success: boolean;
@@ -87,10 +93,10 @@ const electronApi = {
 
     return res;
   },
-  platformAuth: async ({ platform }: { platform: EnumPlatform }): Promise<PlatformAuthResult> => {
+  platformAuth: async (params: PlatformAuthParams): Promise<PlatformAuthResult> => {
     const electron = getElectron();
 
-    const res: PlatformAuthResult = await electron.ipcRenderer.invoke('platformAuth', { platform });
+    const res: PlatformAuthResult = await electron.ipcRenderer.invoke('platformAuth', params);
 
     console.log('platformAuth res', res);
     return res;

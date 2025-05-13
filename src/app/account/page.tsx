@@ -15,14 +15,16 @@ import { useRef, useState } from 'react';
 import * as AccountAction from '../actions/account_action';
 import * as TagCoachAction from '../actions/tag_coach_action';
 import { CRUD } from '../components/crud';
+import { useIsDebug } from '../components/debug';
 import { LoadingButton } from '../components/loading_button';
 import { Platform, PlatformWithName } from '../components/platform';
 
 function useAuth() {
   const { modal, message } = App.useApp();
+  const { isDebug } = useIsDebug();
 
   const onAuth = async ({ platform }) => {
-    const res = await electronApi.platformAuth({ platform });
+    const res = await electronApi.platformAuth({ platform, isDebug });
 
     if (res.success && res.data) {
       await AccountAction.createAccount({
@@ -52,7 +54,7 @@ function useAuth() {
   };
 
   const onAuthCheck = async ({ id, platform, authInfo, status }) => {
-    const res = await electronApi.platformAuthCheck({ platform, authInfo });
+    const res = await electronApi.platformAuthCheck({ platform, authInfo, isDebug });
 
     if (res.success) {
       message.success('账号授权信息有效');

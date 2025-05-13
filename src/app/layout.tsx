@@ -51,7 +51,7 @@ const menuItems = [
     label: (
       <div className="flex items-center gap-2">
         <UnorderedListOutlined />
-        <div>自动任务</div>
+        <div>发布任务</div>
         <AuthComponent>
           <AutoRunComponent />
         </AuthComponent>

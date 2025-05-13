@@ -7,14 +7,15 @@ import { useEffect, useRef } from 'react';
 import * as TaskAction from '../actions/task_action';
 import { publishTask } from '../components/auto_run';
 import { CRUD } from '../components/crud';
+import { useIsDebug } from '../components/debug';
 import { LoadingButton } from '../components/loading_button';
 import { PlatformWithName } from '../components/platform';
 import { Resource } from '../components/resource';
-
 function Page() {
   const refCRUD = useRef<any | undefined>(undefined);
 
   const { notification, modal } = App.useApp();
+  const { isDebug } = useIsDebug();
 
   useEffect(() => {
     // @ts-expect-error 先忽略
@@ -33,6 +34,7 @@ function Page() {
 
       await publishTask({
         id: task.id,
+        isDebug,
         onSuccess: () => {
           notification.success({
             key: task.id,

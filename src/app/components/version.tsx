@@ -5,6 +5,7 @@ import { App, Button } from 'antd';
 import { useEffect, useState } from 'react';
 import semver from 'semver';
 import * as OtherAction from '../actions/other_action';
+import { DebugWrapVersion } from './debug';
 
 function getDownLoadURL({ version }: { version: string }) {
   const prefix = `${process.env.NEXT_PUBLIC_DOWNLOAD_SERVER}/subject-media-electron-${version}`;
@@ -61,15 +62,19 @@ function Version() {
   }, []);
 
   return (
-    <div className="px-2 py-2 flex items-center justify-between gap-1">
-      <div>版本 v{version}</div>
-      <Button
-        type="text"
-        // className="!px-0"
-        onClick={() => checkVersionAndUpdate({ modal, silent: false })}
-      >
-        检查更新
-      </Button>
+    <div>
+      <div className="px-2 py-2 flex items-center justify-between gap-1">
+        <DebugWrapVersion>
+          <div>版本 v{version}</div>
+        </DebugWrapVersion>
+        <Button
+          type="text"
+          // className="!px-0"
+          onClick={() => checkVersionAndUpdate({ modal, silent: false })}
+        >
+          检查更新
+        </Button>
+      </div>
     </div>
   );
 }
