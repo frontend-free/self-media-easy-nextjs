@@ -26,6 +26,12 @@ async function publishTask({
 }) {
   const task = await TaskAction.getTaskById(id);
 
+  console.log('publishTask task', task);
+
+  if (task.account.deletedAt) {
+    throw new Error('账号已删除');
+  }
+
   const platform = task.account?.platform;
   const authInfo = task.account?.authInfo;
   const resourceOfVideo = task.publish?.resourceOfVideo;
