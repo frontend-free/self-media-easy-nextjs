@@ -70,11 +70,16 @@ async function publishTask({
   else {
     // 授权信息错误
     if (res.data?.code === EnumPlatformPublishCode.ERROR_AUTH_INFO_INVALID) {
-      // 更新账号状态
-      await AccountAction.updateAccount({
-        id: task.accountId,
-        status: AccountStatus.INVALID,
-      });
+      // 可能账号被删除，try catch 下
+      try {
+        // 更新账号状态
+        await AccountAction.updateAccount({
+          id: task.accountId,
+          status: AccountStatus.INVALID,
+        });
+      } catch (error) {
+        console.error('更新账号状态失败', error);
+      }
     }
 
     // 更新任务状态
