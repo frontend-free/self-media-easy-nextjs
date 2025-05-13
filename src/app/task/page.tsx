@@ -124,8 +124,8 @@ function Page() {
               onClick={async () => {
                 modal.confirm({
                   title: '确定手动发布吗？',
-                  onOk: async () => {
-                    await handlePublishTask(record);
+                  onOk: () => {
+                    handlePublishTask(record);
                   },
                 });
               }}
