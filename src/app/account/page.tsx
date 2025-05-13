@@ -45,7 +45,12 @@ function Add({ refCRUD }) {
     } else {
       modal.error({
         title: '授权失败',
-        content: res.message || '未知错误',
+        content: (
+          <div>
+            <div>{res.message || '未知错误'}</div>
+            <pre className="whitespace-pre-wrap">{JSON.stringify(res.data, null, 2)}</pre>
+          </div>
+        ),
       });
     }
 
