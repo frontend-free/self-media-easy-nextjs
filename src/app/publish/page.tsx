@@ -190,14 +190,16 @@ function Page() {
             />
 
             <ProFormText name="title" label="标题" />
+
             {/* 先屏蔽 */}
             <ProFormTextArea name="description" label="描述" hidden />
-
+            {/* 先屏蔽 */}
             <ProFormRadio.Group
               name="publishType"
               label="发布类型"
               valueEnum={valueEnumPublishType}
               initialValue={PublishType.OFFICIAL}
+              hidden
             />
           </div>
         )}

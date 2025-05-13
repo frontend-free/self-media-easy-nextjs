@@ -24,16 +24,27 @@ interface PlatformPublishParams {
   description?: string;
   publishType?: PublishType;
 }
-
 enum EnumPlatformPublishCode {
   ERROR_AUTH_INFO_INVALID = 'ERROR_AUTH_INFO_INVALID',
 }
-
 interface PlatformPublishResult {
   success: boolean;
   data?: {
     platform: Platform;
     code: EnumPlatformPublishCode;
+    logs?: string[];
+  };
+  message?: string;
+}
+
+interface PlatformAuthCheckParams {
+  platform: EnumPlatform;
+  authInfo: string;
+}
+interface PlatformAuthCheckResult {
+  success: boolean;
+  data?: {
+    platform: EnumPlatform;
     logs?: string[];
   };
   message?: string;
@@ -82,6 +93,16 @@ const electronApi = {
     const res: PlatformAuthResult = await electron.ipcRenderer.invoke('platformAuth', { platform });
 
     console.log('platformAuth res', res);
+    return res;
+  },
+  platformAuthCheck: async (params: PlatformAuthCheckParams): Promise<PlatformAuthCheckResult> => {
+    const electron = getElectron();
+
+    const res: PlatformAuthCheckResult = await electron.ipcRenderer.invoke(
+      'platformAuthCheck',
+      params,
+    );
+
     return res;
   },
   platformPublish: async (params: PlatformPublishParams): Promise<PlatformPublishResult> => {

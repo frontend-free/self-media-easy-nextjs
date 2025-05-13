@@ -10,26 +10,22 @@ import {
 } from '@/generated/enums';
 import { Account } from '@/generated/prisma';
 import { ProFormSelect, ProFormText } from '@ant-design/pro-components';
-import { App, Button, Modal } from 'antd';
+import { Alert, App, Button, Modal } from 'antd';
 import { useRef, useState } from 'react';
 import * as AccountAction from '../actions/account_action';
-import { createAccount } from '../actions/account_action';
 import * as TagCoachAction from '../actions/tag_coach_action';
 import { CRUD } from '../components/crud';
+import { LoadingButton } from '../components/loading_button';
 import { Platform, PlatformWithName } from '../components/platform';
 
-function Add({ refCRUD }) {
-  const [open, setOpen] = useState(false);
-
+function useAuth() {
   const { modal, message } = App.useApp();
 
-  const handleAuth = async (item) => {
-    const platform = item.value;
-
+  const onAuth = async ({ platform }) => {
     const res = await electronApi.platformAuth({ platform });
 
     if (res.success && res.data) {
-      await createAccount({
+      await AccountAction.createAccount({
         platform,
         platformId: res.data.platformId || null,
         platformName: res.data.platformName || null,
@@ -53,21 +49,45 @@ function Add({ refCRUD }) {
         ),
       });
     }
-
-    setOpen(false);
-    refCRUD.current?.reload();
   };
+
+  const onAuthCheck = async ({ id, platform, authInfo, status }) => {
+    const res = await electronApi.platformAuthCheck({ platform, authInfo });
+
+    if (res.success) {
+      message.success('账号授权信息有效');
+    } else {
+      message.error('账号授权信息无效');
+      if (status === EnumAccountStatus.AUTHED) {
+        await AccountAction.updateAccount({
+          id,
+          status: EnumAccountStatus.INVALID,
+        });
+      }
+    }
+  };
+
+  return { onAuth, onAuthCheck };
+}
+
+function Add({ refCRUD }) {
+  const [open, setOpen] = useState(false);
+
+  const { onAuth } = useAuth();
 
   return (
     <>
       <Modal title="账号" open={open} onCancel={() => setOpen(false)} destroyOnClose footer={null}>
+        <Alert message="不要异地登录，容易掉线！" type="warning" />
         <div className="flex flex-row flex-wrap gap-4 p-10">
           {listPlatform.map((item) => (
             <div
               key={item.value}
               className="flex flex-col items-center cursor-pointer gap-1"
-              onClick={() => {
-                handleAuth(item);
+              onClick={async () => {
+                await onAuth({ platform: item.value });
+                setOpen(false);
+                refCRUD.current?.reload();
               }}
             >
               <Platform value={item.value} />
@@ -76,7 +96,7 @@ function Add({ refCRUD }) {
           ))}
         </div>
       </Modal>
-      <Button type="primary" id="authBtn" onClick={() => setOpen(true)}>
+      <Button type="primary" onClick={() => setOpen(true)}>
         新增
       </Button>
     </>
@@ -86,6 +106,8 @@ function Add({ refCRUD }) {
 function Page() {
   const refCRUD = useRef<any | undefined>(undefined);
   const { modal } = App.useApp();
+
+  const { onAuth, onAuthCheck } = useAuth();
 
   return (
     <CRUD<Account>
@@ -166,16 +188,31 @@ function Page() {
       renderOperate={({ record }) => {
         return (
           <>
-            {record.status !== EnumAccountStatus.AUTHED && (
-              <Button
+            {record.status !== EnumAccountStatus.AUTHED ? (
+              <LoadingButton
                 type="link"
                 className="!px-0"
-                onClick={() => {
-                  (document.querySelector('#authBtn') as HTMLButtonElement)?.click();
+                onClick={async () => {
+                  await onAuth({ platform: record.platform });
                 }}
               >
                 重新授权
-              </Button>
+              </LoadingButton>
+            ) : (
+              <LoadingButton
+                type="link"
+                className="!px-0"
+                onClick={async () => {
+                  await onAuthCheck({
+                    id: record.id,
+                    platform: record.platform,
+                    authInfo: record.authInfo,
+                    status: record.status,
+                  });
+                }}
+              >
+                检查授权
+              </LoadingButton>
             )}
             <Button
               type="link"
