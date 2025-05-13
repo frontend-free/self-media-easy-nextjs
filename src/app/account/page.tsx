@@ -182,9 +182,7 @@ function Page() {
         const res = await AccountAction.getAccountById(id);
         return res;
       }}
-      requestUpdate={async (values) => {
-        await AccountAction.updateAccount(values as AccountAction.UpdateAccountInput);
-      }}
+      disabledUpdate
       toolBarRenderPre={<Add refCRUD={refCRUD} />}
       renderOperate={({ record }) => {
         return (

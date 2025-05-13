@@ -41,11 +41,11 @@ const menuItems = [
     label: '账号',
     icon: <UserOutlined />,
   },
-  {
-    key: '/tag_coach',
-    label: '教练',
-    icon: <UserOutlined />,
-  },
+  // {
+  //   key: '/tag_coach',
+  //   label: '教练',
+  //   icon: <UserOutlined />,
+  // },
   {
     key: '/task',
     label: (
