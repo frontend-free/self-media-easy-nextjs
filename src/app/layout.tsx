@@ -35,20 +35,6 @@ const menuItems = [
     key: '/publish',
     label: '发布',
     icon: <SendOutlined />,
-    children: [
-      {
-        key: '/task',
-        label: (
-          <div className="flex items-center gap-2">
-            <UnorderedListOutlined />
-            <div>自动任务</div>
-            <AuthComponent>
-              <AutoRunComponent />
-            </AuthComponent>
-          </div>
-        ),
-      },
-    ],
   },
   {
     key: '/account',
@@ -59,6 +45,18 @@ const menuItems = [
     key: '/tag_coach',
     label: '教练',
     icon: <UserOutlined />,
+  },
+  {
+    key: '/task',
+    label: (
+      <div className="flex items-center gap-2">
+        <UnorderedListOutlined />
+        <div>自动任务</div>
+        <AuthComponent>
+          <AutoRunComponent />
+        </AuthComponent>
+      </div>
+    ),
   },
 ];
 

@@ -20,7 +20,6 @@ function AppMenu({ items }: { items: MenuProps['items'] }) {
         router.push(e.key);
       }}
       mode="inline"
-      defaultOpenKeys={['/publish']}
     />
   );
 }
