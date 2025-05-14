@@ -11,7 +11,7 @@ import {
   valueEnumPublishResourceType,
   valueEnumPublishType,
 } from '@/generated/enums';
-import { PublishResourceType, PublishType } from '@/generated/prisma';
+import { AccountStatus, PublishResourceType, PublishType } from '@/generated/prisma';
 import { DeleteOutlined } from '@ant-design/icons';
 import {
   ProForm,
@@ -138,6 +138,7 @@ function Page() {
                       <PlatformWithName
                         name={item.account.platformName || ''}
                         value={item.account.platform as EnumPlatform}
+                        status={item.account.status as AccountStatus}
                       />
                       <TagTaskStatus value={item.status} />
                     </div>

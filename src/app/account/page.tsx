@@ -8,7 +8,7 @@ import {
   valueEnumAccountStatus,
   valueEnumPlatform,
 } from '@/generated/enums';
-import { Account } from '@/generated/prisma';
+import { Account, AccountStatus } from '@/generated/prisma';
 import { ProFormSelect, ProFormText } from '@ant-design/pro-components';
 import { Alert, App, Button, Modal } from 'antd';
 import { useRef, useState } from 'react';
@@ -132,6 +132,7 @@ function Page() {
             <PlatformWithName
               name={record.platformName || ''}
               value={record.platform as EnumPlatform}
+              status={record.status as AccountStatus}
             />
           ),
         },

@@ -1,4 +1,6 @@
-import { EnumPlatform, valueEnumPlatform } from '@/generated/enums';
+import { EnumPlatform, TagAccountStatus, valueEnumPlatform } from '@/generated/enums';
+import { AccountStatus } from '@/generated/prisma';
+import cn from 'classnames';
 import Image from 'next/image';
 
 function Platform({ value, size = 50 }: { value?: EnumPlatform; size?: number }) {
@@ -14,16 +16,25 @@ function Platform({ value, size = 50 }: { value?: EnumPlatform; size?: number })
 function PlatformWithName({
   name,
   value,
+  status,
   size = 20,
 }: {
   name?: string;
   value?: EnumPlatform;
+  status?: AccountStatus;
   size?: number;
 }) {
   return (
-    <div className="flex flex-row items-center gap-1">
+    <div
+      className={cn('flex flex-row items-center gap-1', {
+        'opacity-50': status === AccountStatus.INVALID,
+      })}
+    >
       <Platform value={value} size={size} />
-      {name}
+      <div>
+        <div>{name}</div>
+        <TagAccountStatus value={status} />
+      </div>
     </div>
   );
 }

@@ -1,7 +1,7 @@
 'use client';
 
 import { EnumPlatform, valueEnumPlatform, valueEnumTaskStatus } from '@/generated/enums';
-import { PublishResourceType } from '@/generated/prisma';
+import { AccountStatus, PublishResourceType } from '@/generated/prisma';
 import { App, Button } from 'antd';
 import { useEffect, useRef } from 'react';
 import * as TaskAction from '../actions/task_action';
@@ -75,6 +75,7 @@ function Page() {
             <PlatformWithName
               name={record.account.platformName || ''}
               value={record.account.platform as EnumPlatform}
+              status={record.account.status as AccountStatus}
             />
           ),
         },
