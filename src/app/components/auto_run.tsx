@@ -1,6 +1,6 @@
 'use client';
 
-import { electronApi, EnumPlatformPublishCode } from '@/electron';
+import { electronApi, EnumCode } from '@/electron';
 import { valueEnumPlatform } from '@/generated/enums';
 import { AccountStatus, TaskStatus } from '@/generated/prisma';
 import { App, Result } from 'antd';
@@ -82,7 +82,7 @@ async function publishTask({
   // 失败更新任务
   else {
     // 授权信息错误
-    if (res.data?.code === EnumPlatformPublishCode.ERROR_AUTH_INFO_INVALID) {
+    if (res.data?.code === EnumCode.ERROR_AUTH_INFO_INVALID) {
       // 可能账号被删除，try catch 下
       try {
         // 更新账号状态
@@ -131,7 +131,7 @@ function AutoRunComponent() {
         key,
         message: (
           <div>
-            <div>自动运行任务中</div>
+            <div>任务运行中</div>
             {itemNode}
           </div>
         ),
@@ -146,7 +146,7 @@ function AutoRunComponent() {
             key,
             message: (
               <div>
-                <div>自动运行任务-成功</div>
+                <div>任务运行成功</div>
                 {itemNode}
                 <Result status="success" />
               </div>
@@ -159,7 +159,7 @@ function AutoRunComponent() {
             key,
             message: (
               <div>
-                <div>自动运行任务-失败 {error.message}</div>
+                <div>任务运行失败 {error.message}</div>
                 {itemNode}
                 <Result status="error" />
               </div>

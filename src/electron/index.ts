@@ -3,6 +3,13 @@
 import { EnumPlatform } from '@/generated/enums';
 import { Platform, PublishType } from '@/generated/prisma';
 
+enum EnumCode {
+  /** 浏览器被关闭了 */
+  ERROR_CLOSED = 'ERROR_CLOSED',
+  /** 授权信息无效 */
+  ERROR_AUTH_INFO_INVALID = 'ERROR_AUTH_INFO_INVALID',
+}
+
 interface PlatformAuthParams {
   platform: EnumPlatform;
   isDebug?: boolean;
@@ -10,11 +17,27 @@ interface PlatformAuthParams {
 interface PlatformAuthResult {
   success: boolean;
   data?: {
+    code: EnumCode;
     platform: string;
     platformName?: string;
     platformAvatar?: string;
     platformId?: string;
     authInfo?: string;
+    logs?: string[];
+  };
+  message?: string;
+}
+
+interface PlatformAuthCheckParams {
+  platform: EnumPlatform;
+  authInfo: string;
+  isDebug?: boolean;
+}
+interface PlatformAuthCheckResult {
+  success: boolean;
+  data?: {
+    code: EnumCode;
+    platform: EnumPlatform;
     logs?: string[];
   };
   message?: string;
@@ -29,28 +52,11 @@ interface PlatformPublishParams {
   publishType?: PublishType;
   isDebug?: boolean;
 }
-enum EnumPlatformPublishCode {
-  ERROR_AUTH_INFO_INVALID = 'ERROR_AUTH_INFO_INVALID',
-}
 interface PlatformPublishResult {
   success: boolean;
   data?: {
+    code: EnumCode;
     platform: Platform;
-    code: EnumPlatformPublishCode;
-    logs?: string[];
-  };
-  message?: string;
-}
-
-interface PlatformAuthCheckParams {
-  platform: EnumPlatform;
-  authInfo: string;
-  isDebug?: boolean;
-}
-interface PlatformAuthCheckResult {
-  success: boolean;
-  data?: {
-    platform: EnumPlatform;
     logs?: string[];
   };
   message?: string;
@@ -143,4 +149,4 @@ const electronApi = {
   },
 };
 
-export { electronApi, EnumPlatformPublishCode };
+export { electronApi, EnumCode };
