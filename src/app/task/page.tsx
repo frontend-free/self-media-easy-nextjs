@@ -42,10 +42,10 @@ function Page() {
             duration: 4.5,
           });
         },
-        onError: () => {
+        onError: (error) => {
           notification.error({
             key: task.id,
-            message: '发布失败',
+            message: `发布失败 ${error.message}`,
             duration: 4.5,
           });
         },

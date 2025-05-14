@@ -21,7 +21,7 @@ async function publishTask({
 }: {
   id: string;
   onSuccess?: () => void;
-  onError?: () => void;
+  onError?: (error: Error) => void;
   isDebug?: boolean;
 }) {
   const task = await TaskAction.getTaskById(id);
@@ -29,7 +29,13 @@ async function publishTask({
   console.log('publishTask task', task);
 
   if (task.account.deletedAt) {
-    throw new Error('账号已删除');
+    onError?.(new Error('账号已删除'));
+    return;
+  }
+
+  if (task.account.status !== AccountStatus.AUTHED) {
+    onError?.(new Error('账号未授权'));
+    return;
   }
 
   const platform = task.account?.platform;
@@ -38,7 +44,8 @@ async function publishTask({
 
   // 检查下参数
   if (!platform || !authInfo || !resourceOfVideo) {
-    throw new Error('参数错误，请检查');
+    onError?.(new Error('参数错误，请检查'));
+    return;
   }
 
   // 更新任务状态
@@ -96,7 +103,7 @@ async function publishTask({
       endAt: new Date(),
     });
 
-    onError?.();
+    onError?.(new Error('发布失败'));
   }
 }
 
@@ -147,12 +154,12 @@ function AutoRunComponent() {
             duration: 4.5,
           });
         },
-        onError: () => {
+        onError: (error) => {
           notification.error({
             key,
             message: (
               <div>
-                <div>自动运行任务-失败</div>
+                <div>自动运行任务-失败 {error.message}</div>
                 {itemNode}
                 <Result status="error" />
               </div>
@@ -162,7 +169,7 @@ function AutoRunComponent() {
         },
       });
     },
-    [notification],
+    [isDebug, notification],
   );
 
   const autoRunTask = useCallback(() => {
