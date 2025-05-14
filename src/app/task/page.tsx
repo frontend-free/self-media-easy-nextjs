@@ -122,6 +122,7 @@ function Page() {
             <LoadingButton
               type="link"
               className="!px-0"
+              disabled={record.account.status !== AccountStatus.AUTHED}
               onClick={async () => {
                 modal.confirm({
                   title: '确定手动发布吗？',
