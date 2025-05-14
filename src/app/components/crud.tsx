@@ -1,6 +1,11 @@
 'use client';
 
-import type { ActionType, ProColumns, ProFormInstance } from '@ant-design/pro-components';
+import type {
+  ActionType,
+  ProColumns,
+  ProFormInstance,
+  ProTableProps,
+} from '@ant-design/pro-components';
 import { ModalForm } from '@ant-design/pro-components';
 import { App, Button } from 'antd';
 import dynamic from 'next/dynamic';
@@ -26,6 +31,18 @@ function handleFinish(onFinish) {
       }, 0);
     }
   };
+}
+
+function getTableScroll(columns: ProTableProps<any, any>['columns'], defaultWidth = 120) {
+  const scroll = { x: 0, y: undefined };
+
+  columns?.forEach((column) => {
+    if (!column.hideInTable && !column.hidden) {
+      scroll.x += Number(column.width) || defaultWidth;
+    }
+  });
+
+  return scroll;
 }
 
 const ProTable = dynamic(
@@ -269,6 +286,7 @@ function CRUD<T extends Record<string, any>>({
         labelWidth: 'auto',
         defaultCollapsed: false,
       }}
+      scroll={getTableScroll(newColumns)}
     />
   );
 }

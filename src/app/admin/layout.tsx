@@ -22,7 +22,7 @@ function AdminLayout({ children }: { children: React.ReactNode }) {
         <div></div>
       </div>
 
-      <div className="flex-1 p-2 flex flex-col">
+      <div className="flex-1 p-2 flex flex-col overflow-y-auto">
         <div className="bg-white rounded-md flex-1 p-4">{children}</div>
       </div>
     </div>
