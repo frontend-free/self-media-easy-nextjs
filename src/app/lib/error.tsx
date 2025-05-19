@@ -4,24 +4,29 @@ import { App } from 'antd';
 import { useEffect } from 'react';
 
 function ErrorComponent() {
-  const { message } = App.useApp();
+  const { message, modal } = App.useApp();
 
   useEffect(() => {
     function handleError(event) {
       console.log('handleError', event);
 
-      if (event.reason) {
-        if (event.reason.message || event.reason.reason) {
-          message.error(event.reason.message || event.reason.reason);
-          return;
-        }
-      }
+      if (event.reason?.message || event.reason?.reason) {
+        const msg = (event.reason.message || event.reason.reason) as string;
 
-      if (event.error) {
-        if (event.error.message || event.error.reason) {
-          message.error(event.error.message || event.error.reason);
+        if (msg.includes('Unsupported chromium channel')) {
+          modal.confirm({
+            title: '请先安装 Chrome 浏览器',
+            onOk: () => {
+              window.open('https://www.google.cn/intl/zh-CN/chrome/', '_blank');
+            },
+          });
+
           return;
         }
+
+        message.error(msg);
+
+        return;
       }
 
       // unknown error
