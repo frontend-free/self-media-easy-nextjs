@@ -6,6 +6,13 @@ const enums = {
         icon: '/platform/tiktok.png',
       },
     },
+    WEIXIN_VIDEO: {
+      text: '视频号',
+      data: {
+        icon: '/platform/weixin_video.png',
+        desc: '微信风控原因，24小时内必掉线',
+      },
+    },
   },
   AccountStatus: {
     UNAUTHED: {

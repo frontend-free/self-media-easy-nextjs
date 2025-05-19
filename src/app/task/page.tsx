@@ -76,6 +76,7 @@ function Page() {
               name={record.account.platformName || ''}
               value={record.account.platform as EnumPlatform}
               status={record.account.status as AccountStatus}
+              deletedAt={record.account.deletedAt || undefined}
             />
           ),
         },
@@ -122,7 +123,9 @@ function Page() {
             <LoadingButton
               type="link"
               className="!px-0"
-              disabled={record.account.status !== AccountStatus.AUTHED}
+              disabled={
+                record.account.status !== AccountStatus.AUTHED || record.account.deletedAt !== null
+              }
               onClick={async () => {
                 modal.confirm({
                   title: '确定手动发布吗？',

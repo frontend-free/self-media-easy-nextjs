@@ -5,6 +5,7 @@ import { Tag } from 'antd';
 
 export enum EnumPlatform {
   TIKTOK = 'TIKTOK',
+  WEIXIN_VIDEO = 'WEIXIN_VIDEO',
 }
 
 export const valueEnumPlatform = {
@@ -12,6 +13,11 @@ export const valueEnumPlatform = {
     text: '抖音',
     value: 'TIKTOK',
     data: { icon: '/platform/tiktok.png' },
+  },
+  [EnumPlatform.WEIXIN_VIDEO]: {
+    text: '视频号',
+    value: 'WEIXIN_VIDEO',
+    data: { icon: '/platform/weixin_video.png', desc: '微信风控原因，24小时内必掉线' },
   },
 };
 

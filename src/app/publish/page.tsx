@@ -61,7 +61,8 @@ function Files(props: FilesProps) {
         <Alert
           message={
             <div>
-              <div>1. 视频文件大小不超过16G，时长在60分钟以内。否则可能影响发布。</div>
+              {/* 抖音 16G 1h; 视频号 4G 2h; */}
+              <div>1. 视频文件大小不超过4G，时长在60分钟以内。否则可能影响发布。</div>
               <div>2. 请不要随意移动选中的资源，否则影响发布。</div>
             </div>
           }
@@ -190,7 +191,19 @@ function Page() {
               rules={[{ required: true }]}
             />
 
-            <ProFormText name="title" label="标题" />
+            <ProFormText
+              name="title"
+              label="标题"
+              fieldProps={{
+                minLength: 6,
+              }}
+              rules={[
+                {
+                  min: 6,
+                  message: '标题至少需要6个字',
+                },
+              ]}
+            />
 
             {/* 先屏蔽 */}
             <ProFormTextArea name="description" label="描述" hidden />

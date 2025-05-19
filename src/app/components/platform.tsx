@@ -17,23 +17,25 @@ function PlatformWithName({
   name,
   value,
   status,
+  deletedAt,
   size = 20,
 }: {
   name?: string;
   value?: EnumPlatform;
   status?: AccountStatus;
   size?: number;
+  deletedAt?: Date;
 }) {
   return (
     <div
       className={cn('flex flex-row items-center gap-1', {
-        'opacity-50': status === AccountStatus.INVALID,
+        'opacity-50': status === AccountStatus.INVALID || deletedAt,
       })}
     >
       <Platform value={value} size={size} />
       <div>
         <div>{name}</div>
-        <TagAccountStatus value={status} />
+        {deletedAt ? <div>账号已删除</div> : <TagAccountStatus value={status} />}
       </div>
     </div>
   );

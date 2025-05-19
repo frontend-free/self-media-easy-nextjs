@@ -17,6 +17,8 @@ datasource db {
 enum Platform {
   // 抖音
   TIKTOK
+  // 视频号
+  WEIXIN_VIDEO
 }
 
 enum AccountStatus {

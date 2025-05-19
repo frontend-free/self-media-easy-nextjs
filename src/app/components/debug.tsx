@@ -1,6 +1,5 @@
 'use client';
 
-import localforage from 'localforage';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 
@@ -8,14 +7,13 @@ function useIsDebug() {
   const [isDebug, setIsDebug] = useState<boolean>(false);
 
   useEffect(() => {
-    localforage.getItem('isDebug').then((v) => {
-      setIsDebug(!!v);
-    });
+    const v = localStorage.getItem('isDebug');
+    setIsDebug(v === 'true');
   }, []);
 
   const handleSetIsDebug = (value: boolean) => {
     setIsDebug(value);
-    localforage.setItem('isDebug', value);
+    localStorage.setItem('isDebug', value ? 'true' : 'false');
   };
 
   return {

@@ -82,11 +82,11 @@ function Add({ refCRUD }) {
     <>
       <Modal title="账号" open={open} onCancel={() => setOpen(false)} destroyOnClose footer={null}>
         <Alert message="不要异地登录，容易掉线！" type="warning" />
-        <div className="flex flex-row flex-wrap gap-4 p-10">
+        <div className="flex flex-row flex-wrap gap-2 p-10 ">
           {listPlatform.map((item) => (
             <div
               key={item.value}
-              className="flex flex-col items-center cursor-pointer gap-1"
+              className="flex flex-col items-center cursor-pointer gap-2 w-[100px]"
               onClick={async () => {
                 await onAuth({ platform: item.value });
                 setOpen(false);
@@ -94,7 +94,8 @@ function Add({ refCRUD }) {
               }}
             >
               <Platform value={item.value} />
-              {item.label}
+              <div>{item.label}</div>
+              <div className="text-sm text-gray-500">{item.originData.desc}</div>
             </div>
           ))}
         </div>
