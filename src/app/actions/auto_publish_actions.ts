@@ -28,7 +28,6 @@ export async function getAutoPublishSetting() {
       await prisma.autoPublishSetting.create({
         data: {
           id: sessionUser.id,
-          lastRunAt: new Date(),
         },
       });
 
