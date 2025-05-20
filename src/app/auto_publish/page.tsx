@@ -3,6 +3,7 @@
 import { electronApi } from '@/electron';
 import { ProForm, ProFormText } from '@ant-design/pro-components';
 import { Alert, App, Button, Divider } from 'antd';
+import dayjs from 'dayjs';
 import { useCallback, useEffect, useState } from 'react';
 import * as AutoPublishActions from '../actions/auto_publish_actions';
 import { AutoPublishSettingWithRelations } from '../actions/auto_publish_actions';
@@ -41,6 +42,7 @@ function ProFormDirectory(props) {
 }
 
 function Page() {
+  const { notification } = App.useApp();
   const [form] = ProForm.useForm();
   const [data, setData] = useState<
     (AutoPublishSettingWithRelations & { accountIds: string[] }) | undefined
@@ -68,11 +70,17 @@ function Page() {
   return (
     <div>
       <Alert message="每30分钟扫描目录，扫描出新的视频文件，并发布！" />
-      <div className="mt-4 flex flex-row justify-end">
+      <div className="mt-4 flex flex-row justify-end gap-2 items-center">
+        {data && (
+          <div>
+            上次运行时间:{' '}
+            {data.lastRunAt ? dayjs(data.lastRunAt).format('YYYY-MM-DD HH:mm:ss') : '未运行'}
+          </div>
+        )}
         <Button
           type="primary"
           onClick={() => {
-            runAutoPublish();
+            runAutoPublish({ notification });
           }}
         >
           手动触发扫描

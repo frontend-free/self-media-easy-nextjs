@@ -3,7 +3,7 @@
 import { electronApi, EnumCode } from '@/electron';
 import { valueEnumPlatform } from '@/generated/enums';
 import { AccountStatus, TaskStatus } from '@/generated/prisma';
-import { App, Result } from 'antd';
+import { App } from 'antd';
 import { useCallback, useEffect, useState } from 'react';
 import * as AccountActions from '../actions/account_actions';
 import * as TaskActions from '../actions/task_actions';
@@ -148,7 +148,6 @@ function AutoRunTaskComponent() {
               <div>
                 <div>任务运行成功</div>
                 {itemNode}
-                <Result status="success" />
               </div>
             ),
             duration: 4.5,
@@ -161,7 +160,6 @@ function AutoRunTaskComponent() {
               <div>
                 <div>任务运行失败 {error.message}</div>
                 {itemNode}
-                <Result status="error" />
               </div>
             ),
             duration: 4.5,

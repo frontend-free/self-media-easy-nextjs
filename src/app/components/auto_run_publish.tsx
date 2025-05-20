@@ -4,11 +4,12 @@ import * as AutoPublishActions from '@/app/actions/auto_publish_actions';
 import * as PublishActions from '@/app/actions/publish_actions';
 import { electronApi } from '@/electron';
 import { AccountStatus, PublishResourceType, PublishType } from '@/generated/prisma';
+import { App } from 'antd';
 import { useEffect } from 'react';
 
 const INTERVAL = 30 * 60 * 1000;
 
-async function runAutoPublish() {
+async function runAutoPublish({ notification }) {
   const { success, data: autoPublishSetting } = await AutoPublishActions.getAutoPublishSetting();
 
   console.log('autoPublishSetting', autoPublishSetting);
@@ -42,6 +43,10 @@ async function runAutoPublish() {
     return;
   }
 
+  notification.info({
+    message: `发现待发布视频文件 ${files.length} 个，自动创建发布`,
+  });
+
   // 创建发布
   for (const file of files) {
     await PublishActions.createPublish({
@@ -62,13 +67,15 @@ async function runAutoPublish() {
 }
 
 function AutoRunPublishComponent() {
+  const { notification } = App.useApp();
+
   useEffect(() => {
     if (!electronApi.isElectron()) {
       return;
     }
 
     const timer = setInterval(() => {
-      runAutoPublish();
+      runAutoPublish({ notification });
     }, INTERVAL);
 
     return () => {

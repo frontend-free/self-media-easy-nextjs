@@ -1,7 +1,7 @@
 {
   "name": "subject-media-nextjs",
   "version": "1.0.0",
-  "latestAppVersion": "1.0.5",
+  "latestAppVersion": "1.0.6",
   "private": true,
   "scripts": {
     "build-enums": "free-scripts build-code -i ./enums/enums.config.js -o ./src/generated -t antd && prettier ./src/generated --write",
@@ -23,6 +23,7 @@
     "antd": "^5.24.8",
     "bcryptjs": "^3.0.2",
     "classnames": "^2.5.1",
+    "dayjs": "^1.11.13",
     "jsonwebtoken": "^9.0.2",
     "lodash-es": "^4.17.21",
     "next": "15.3.1",
