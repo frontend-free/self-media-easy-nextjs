@@ -8,10 +8,9 @@ import { RightOutlined } from '@ant-design/icons';
 import { ModalForm, ProFormText } from '@ant-design/pro-components';
 import { App, Dropdown } from 'antd';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { UserAvatar } from './avatar';
 import { handleFinish } from './crud';
-import { useGlobalSWR } from './use_global_swr';
 
 function UserDropdown({
   children,
@@ -59,11 +58,19 @@ const UserInfo = () => {
   const [show, setShow] = useState(false);
   const { message } = App.useApp();
 
-  const { data: res, mutate } = useGlobalSWR('AuthActions.getUser', async () => {
-    return await AuthActions.getUser();
-  });
+  const [user, setUser] = useState<User | undefined>(undefined);
 
-  const user = res?.data as User | undefined;
+  async function getUser() {
+    const { data } = await AuthActions.getUser();
+
+    if (data) {
+      setUser(data);
+    }
+  }
+
+  useEffect(() => {
+    getUser();
+  }, []);
 
   return (
     <div className="p-2 pl-4">
@@ -89,7 +96,7 @@ const UserInfo = () => {
 
             message.success('修改成功');
 
-            mutate();
+            getUser();
 
             return true;
           })}

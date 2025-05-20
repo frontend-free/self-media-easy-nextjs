@@ -7,7 +7,6 @@ import semver from 'semver';
 import * as OtherActions from '../actions/other_actions';
 import { DebugWrapVersion } from './debug';
 import { LoadingButton } from './loading_button';
-import { useGlobalSWRMutation } from './use_global_swr';
 
 function getDownLoadURL({ version }: { version: string }) {
   const prefix = `${process.env.NEXT_PUBLIC_DOWNLOAD_SERVER}/subject-media-electron-${version}`;
@@ -20,16 +19,19 @@ function getDownLoadURL({ version }: { version: string }) {
 
 function Version() {
   const [version, setVersion] = useState<string | undefined>(undefined);
+  const [latestVersion, setLatestVersion] = useState<string | undefined>(undefined);
 
   const { modal } = App.useApp();
 
-  const { data: res, trigger } = useGlobalSWRMutation(
-    'OtherAction.getLatestAppVersion',
-    async () => {
-      return await OtherActions.getLatestAppVersion();
-    },
-  );
-  const latestVersion = res?.data;
+  async function getLatestVersion() {
+    const { data } = await OtherActions.getLatestAppVersion();
+
+    if (data) {
+      setLatestVersion(data);
+    }
+
+    return data;
+  }
 
   useEffect(() => {
     if (!electronApi.isElectron()) {
@@ -42,7 +44,7 @@ function Version() {
   }, []);
 
   useEffect(() => {
-    trigger();
+    getLatestVersion();
   }, []);
 
   useEffect(() => {
@@ -74,15 +76,13 @@ function Version() {
           type="text"
           // className="!px-0"
           onClick={async () => {
-            const data = await trigger();
+            const data = await getLatestVersion();
 
-            if (version && data.data === version) {
+            if (data && version && data === version) {
               modal.success({
                 title: '已是最新版本',
               });
             }
-
-            console.log(res);
           }}
         >
           检查更新
