@@ -4,7 +4,7 @@ import { electronApi } from '@/electron';
 import { App } from 'antd';
 import { useEffect, useState } from 'react';
 import semver from 'semver';
-import * as OtherAction from '../actions/other_action';
+import * as OtherActions from '../actions/other_actions';
 import { DebugWrapVersion } from './debug';
 import { LoadingButton } from './loading_button';
 import { useGlobalSWRMutation } from './use_global_swr';
@@ -26,7 +26,7 @@ function Version() {
   const { data: res, trigger } = useGlobalSWRMutation(
     'OtherAction.getLatestAppVersion',
     async () => {
-      return await OtherAction.getLatestAppVersion();
+      return await OtherActions.getLatestAppVersion();
     },
   );
   const latestVersion = res?.data;

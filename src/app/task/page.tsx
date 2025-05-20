@@ -4,7 +4,8 @@ import { EnumPlatform, valueEnumPlatform, valueEnumTaskStatus } from '@/generate
 import { AccountStatus, PublishResourceType } from '@/generated/prisma';
 import { App, Button } from 'antd';
 import { useEffect, useRef } from 'react';
-import * as TaskAction from '../actions/task_action';
+import type { TaskWithRelations } from '../actions/task_actions';
+import * as TaskActions from '../actions/task_actions';
 import { publishTask } from '../components/auto_run';
 import { CRUD } from '../components/crud';
 import { useIsDebug } from '../components/debug';
@@ -24,7 +25,7 @@ function Page() {
     };
   }, []);
 
-  const handlePublishTask = async (task: TaskAction.TaskWithRelations) => {
+  const handlePublishTask = async (task: TaskWithRelations) => {
     try {
       notification.info({
         key: task.id,
@@ -56,7 +57,7 @@ function Page() {
   };
 
   return (
-    <CRUD<TaskAction.TaskWithRelations>
+    <CRUD<TaskWithRelations>
       ref={refCRUD}
       title="任务"
       columns={[
@@ -71,7 +72,7 @@ function Page() {
           title: '平台账号',
           dataIndex: ['account', 'platformName'],
           search: true,
-          render: (_, record: TaskAction.TaskWithRelations) => (
+          render: (_, record: TaskWithRelations) => (
             <PlatformWithName
               name={record.account.platformName || ''}
               value={record.account.platform as EnumPlatform}
@@ -111,7 +112,7 @@ function Page() {
         },
       ]}
       request={async (params) => {
-        const res = await TaskAction.pageTasks(params);
+        const res = await TaskActions.pageTasks(params);
         return res;
       }}
       disabledCreate

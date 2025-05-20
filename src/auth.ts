@@ -1,4 +1,4 @@
-import * as AuthAction from '@/app/actions/auth_action';
+import * as AuthActions from '@/app/actions/auth_actions';
 import NextAuth, { DefaultSession } from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
 
@@ -23,14 +23,16 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         password: { label: '密码', type: 'password' },
       },
       authorize: async (credentials) => {
-        const user = await AuthAction.getUserByNamePassword({
+        const { success, data } = await AuthActions.getUserByNamePassword({
           name: credentials.name as string,
           password: credentials.password as string,
         });
 
-        if (!user) {
+        if (!success) {
           throw new Error('用户名或密码错误');
         }
+
+        const user = data!;
 
         return {
           id: user.id,

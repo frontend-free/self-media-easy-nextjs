@@ -2,7 +2,7 @@
 
 import { Prisma, Publish } from '@/generated/prisma';
 import { createModel, deleteModel, pageModel, prisma } from './helper';
-import * as TaskAction from './task_action';
+import * as TaskActions from './task_actions';
 
 export type CreatePublishInput = Pick<
   Publish,
@@ -67,7 +67,7 @@ export async function createPublish(data: CreatePublishInput) {
   const publishId = publish.id;
 
   for (const accountId of data.accountIds) {
-    await TaskAction.createTasksForPublish({
+    await TaskActions.createTasksForPublish({
       publishId,
       accountId,
     });

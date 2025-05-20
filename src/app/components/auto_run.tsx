@@ -5,8 +5,8 @@ import { valueEnumPlatform } from '@/generated/enums';
 import { AccountStatus, TaskStatus } from '@/generated/prisma';
 import { App, Result } from 'antd';
 import { useCallback, useEffect, useState } from 'react';
-import * as AccountAction from '../actions/account_action';
-import * as TaskAction from '../actions/task_action';
+import * as AccountActions from '../actions/account_actions';
+import * as TaskActions from '../actions/task_actions';
 import { useIsDebug } from './debug';
 
 const maxRunCount = 1;
@@ -24,7 +24,7 @@ async function publishTask({
   onError?: (error: Error) => void;
   isDebug?: boolean;
 }) {
-  const task = await TaskAction.getTaskById(id);
+  const task = await TaskActions.getTaskById(id);
 
   console.log('publishTask task', task);
 
@@ -49,7 +49,7 @@ async function publishTask({
   }
 
   // 更新任务状态
-  await TaskAction.updateTask({
+  await TaskActions.updateTask({
     id: task.id,
     status: TaskStatus.PUBLISHING,
     startAt: new Date(),
@@ -70,7 +70,7 @@ async function publishTask({
 
   // 成功更新任务
   if (res.success) {
-    await TaskAction.updateTask({
+    await TaskActions.updateTask({
       id: task.id,
       status: TaskStatus.SUCCESS,
       logs: JSON.stringify(res.data?.logs || []),
@@ -86,7 +86,7 @@ async function publishTask({
       // 可能账号被删除，try catch 下
       try {
         // 更新账号状态
-        await AccountAction.updateAccount({
+        await AccountActions.updateAccount({
           id: task.accountId,
           status: AccountStatus.INVALID,
         });
@@ -96,7 +96,7 @@ async function publishTask({
     }
 
     // 更新任务状态
-    await TaskAction.updateTask({
+    await TaskActions.updateTask({
       id: task.id,
       status: TaskStatus.FAILED,
       logs: JSON.stringify(res.data?.logs || []),
@@ -181,7 +181,7 @@ function AutoRunComponent() {
         return;
       }
 
-      const waitTasks = await TaskAction.pageTasks({
+      const waitTasks = await TaskActions.pageTasks({
         current: 1,
         pageSize: 100,
         status: TaskStatus.PENDING,

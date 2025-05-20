@@ -12,8 +12,8 @@ import { Account, AccountStatus } from '@/generated/prisma';
 import { ProFormSelect, ProFormText } from '@ant-design/pro-components';
 import { Alert, App, Button, Modal } from 'antd';
 import { useRef, useState } from 'react';
-import * as AccountAction from '../actions/account_action';
-import * as TagCoachAction from '../actions/tag_coach_action';
+import * as AccountActions from '../actions/account_actions';
+import * as TagCoachActions from '../actions/tag_coach_actions';
 import { CRUD } from '../components/crud';
 import { useIsDebug } from '../components/debug';
 import { LoadingButton } from '../components/loading_button';
@@ -27,7 +27,7 @@ function useAuth() {
     const res = await electronApi.platformAuth({ platform, isDebug });
 
     if (res.success && res.data) {
-      await AccountAction.createAccount({
+      await AccountActions.createAccount({
         platform,
         platformId: res.data.platformId || null,
         platformName: res.data.platformName || null,
@@ -37,7 +37,7 @@ function useAuth() {
         authInfo: res.data.authInfo || null,
         authedAt: new Date(),
         logs: JSON.stringify(res.data.logs || []),
-      } as AccountAction.CreateAccountInput);
+      } as AccountActions.CreateAccountInput);
 
       message.success('授权成功');
     } else {
@@ -61,7 +61,7 @@ function useAuth() {
     } else {
       message.error('账号授权信息无效');
       if (status === EnumAccountStatus.AUTHED) {
-        await AccountAction.updateAccount({
+        await AccountActions.updateAccount({
           id,
           status: EnumAccountStatus.INVALID,
           logs: JSON.stringify(res.data?.logs || []),
@@ -162,7 +162,7 @@ function Page() {
             name="tagCoachId"
             label="所属教练"
             request={async () => {
-              const res = await TagCoachAction.pageTagCoaches({
+              const res = await TagCoachActions.pageTagCoaches({
                 pageSize: 100,
                 current: 1,
               });
@@ -175,15 +175,15 @@ function Page() {
         </div>
       )}
       request={async (params) => {
-        const res = await AccountAction.pageAccounts(params);
+        const res = await AccountActions.pageAccounts(params);
         return res;
       }}
       disabledCreate
       requestDelete={async (id) => {
-        await AccountAction.deleteAccount(id);
+        await AccountActions.deleteAccount(id);
       }}
       requestDetail={async (id) => {
-        const res = await AccountAction.getAccountById(id);
+        const res = await AccountActions.getAccountById(id);
         return res;
       }}
       disabledUpdate

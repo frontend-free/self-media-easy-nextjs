@@ -9,6 +9,22 @@ export interface ServerActionResult<T> {
   message?: string;
 }
 
+export async function wrapServerAction<T>(fn: () => Promise<T>): Promise<ServerActionResult<T>> {
+  try {
+    const data = await fn();
+
+    return {
+      success: true,
+      data,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: error instanceof Error ? error.message : '未知错误',
+    };
+  }
+}
+
 /** 检查登录态 */
 export async function needAuth(): Promise<{ sessionUser: Session['user'] }> {
   const session = await auth();

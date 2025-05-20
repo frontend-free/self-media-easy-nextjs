@@ -10,8 +10,10 @@ function ErrorComponent() {
     function handleError(event) {
       console.log('handleError', event);
 
-      if (event.reason?.message || event.reason?.reason) {
-        const msg = (event.reason.message || event.reason.reason) as string;
+      if (event?.reason?.message || event.message) {
+        let msg = (event.reason?.message || event.message) as string;
+
+        msg = msg.replace('Uncaught Error: ', '');
 
         if (msg.includes('Unsupported chromium channel')) {
           modal.confirm({

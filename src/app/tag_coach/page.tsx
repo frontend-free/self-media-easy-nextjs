@@ -1,6 +1,6 @@
 'use client';
 
-import * as TagCoachAction from '@/app/actions/tag_coach_action';
+import * as TagCoachActions from '@/app/actions/tag_coach_actions';
 import { CRUD } from '@/app/components/crud';
 import { ProFormText } from '@ant-design/pro-components';
 
@@ -28,7 +28,7 @@ function Page() {
         </div>
       )}
       request={async (params) => {
-        const res = await TagCoachAction.pageTagCoaches(params);
+        const res = await TagCoachActions.pageTagCoaches(params);
         return {
           data: res.data,
           total: res.total,
@@ -36,17 +36,17 @@ function Page() {
         };
       }}
       requestCreate={async (values) => {
-        await TagCoachAction.createTagCoach(values as TagCoachAction.CreateTagCoachInput);
+        await TagCoachActions.createTagCoach(values as TagCoachActions.CreateTagCoachInput);
       }}
       requestDelete={async (id) => {
-        await TagCoachAction.deleteTagCoach(id);
+        await TagCoachActions.deleteTagCoach(id);
       }}
       requestDetail={async (id) => {
-        const res = await TagCoachAction.getTagCoachById(id);
+        const res = await TagCoachActions.getTagCoachById(id);
         return res;
       }}
       requestUpdate={async (values) => {
-        await TagCoachAction.updateTagCoach(values as TagCoachAction.UpdateTagCoachInput);
+        await TagCoachActions.updateTagCoach(values as TagCoachActions.UpdateTagCoachInput);
       }}
     />
   );

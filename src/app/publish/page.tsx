@@ -1,7 +1,7 @@
 'use client';
 
-import * as AccountAction from '@/app/actions/account_action';
-import * as PublishAction from '@/app/actions/publish_action';
+import * as AccountActions from '@/app/actions/account_actions';
+import * as PublishActions from '@/app/actions/publish_actions';
 import { CRUD } from '@/app/components/crud';
 import { electronApi } from '@/electron';
 import {
@@ -22,7 +22,7 @@ import {
   ProFormTextArea,
 } from '@ant-design/pro-components';
 import { Alert, Button } from 'antd';
-import { TaskWithRelations } from '../actions/task_action';
+import { TaskWithRelations } from '../actions/task_actions';
 import { PlatformWithName } from '../components/platform';
 import { Resource } from '../components/resource';
 
@@ -176,7 +176,7 @@ function Page() {
               label="账号"
               mode="multiple"
               request={async () => {
-                const res = await AccountAction.pageAccounts({
+                const res = await AccountActions.pageAccounts({
                   pageSize: 100,
                   current: 1,
                   status: EnumAccountStatus.AUTHED,
@@ -230,14 +230,14 @@ function Page() {
           </div>
         )}
         request={async (params) => {
-          const res = await PublishAction.pagePublishes(params);
+          const res = await PublishActions.pagePublishes(params);
           return res;
         }}
         requestCreate={async (values) => {
-          await PublishAction.createPublish(values as PublishAction.CreatePublishInput);
+          await PublishActions.createPublish(values as PublishActions.CreatePublishInput);
         }}
         requestDelete={async (id) => {
-          await PublishAction.deletePublish(id);
+          await PublishActions.deletePublish(id);
         }}
         disabledUpdate
       />

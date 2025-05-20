@@ -1,16 +1,17 @@
 'use client';
 
-import * as AuthAction from '@/app/actions/auth_action';
-import * as UserAction from '@/app/actions/user_action';
+import * as AuthActions from '@/app/actions/auth_actions';
+import * as UserActions from '@/app/actions/user_actions';
 import { User } from '@/generated/prisma';
 
 import { RightOutlined } from '@ant-design/icons';
 import { ModalForm, ProFormText } from '@ant-design/pro-components';
 import { App, Dropdown } from 'antd';
 import { useRouter } from 'next/navigation';
-import { useCallback, useEffect, useState } from 'react';
+import { useState } from 'react';
 import { UserAvatar } from './avatar';
 import { handleFinish } from './crud';
+import { useGlobalSWR } from './use_global_swr';
 
 function UserDropdown({
   children,
@@ -22,7 +23,7 @@ function UserDropdown({
   const router = useRouter();
 
   const handleLogout = async () => {
-    await AuthAction.logout();
+    await AuthActions.logout();
 
     router.push('/auth/login');
     window.location.reload();
@@ -55,18 +56,14 @@ function UserDropdown({
 }
 
 const UserInfo = () => {
-  const [user, setUser] = useState<User | null>(null);
   const [show, setShow] = useState(false);
   const { message } = App.useApp();
 
-  const handleUser = useCallback(async () => {
-    const user = await AuthAction.getUser();
-    setUser(user);
-  }, []);
+  const { data: res, mutate } = useGlobalSWR('AuthActions.getUser', async () => {
+    return await AuthActions.getUser();
+  });
 
-  useEffect(() => {
-    handleUser();
-  }, []);
+  const user = res?.data as User | undefined;
 
   return (
     <div className="p-2 pl-4">
@@ -88,11 +85,11 @@ const UserInfo = () => {
           onOpenChange={setShow}
           initialValues={user || {}}
           onFinish={handleFinish(async (values) => {
-            await UserAction.updateUser(values);
+            await UserActions.updateUser(values);
 
             message.success('修改成功');
 
-            handleUser();
+            mutate();
 
             return true;
           })}

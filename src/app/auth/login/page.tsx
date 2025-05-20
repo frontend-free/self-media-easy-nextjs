@@ -1,6 +1,6 @@
 'use client';
 
-import * as AuthActions from '@/app/actions/auth_action';
+import * as AuthActions from '@/app/actions/auth_actions';
 import { handleFinish } from '@/app/components/crud';
 import { LoginForm, ProFormText } from '@ant-design/pro-components';
 import { useRouter } from 'next/navigation';
@@ -9,17 +9,17 @@ export default function LoginPage() {
   const router = useRouter();
 
   const onFinish = async (values: { name: string; password: string }) => {
-    try {
-      await AuthActions.login({
-        name: values.name,
-        password: values.password,
-      });
-      router.push('/');
-      window.location.reload();
-    } catch (error) {
-      console.error(error);
+    const { success } = await AuthActions.login({
+      name: values.name,
+      password: values.password,
+    });
+
+    if (!success) {
       throw new Error('用户名或密码错误');
     }
+
+    router.push('/');
+    window.location.reload();
   };
 
   return (

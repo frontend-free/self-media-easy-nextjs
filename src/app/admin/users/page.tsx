@@ -1,7 +1,7 @@
 'use client';
 
-import type { UserDetail } from '@/app/actions/user_action';
-import * as UserAction from '@/app/actions/user_action';
+import type { UserDetail } from '@/app/actions/user_actions';
+import * as UserActions from '@/app/actions/user_actions';
 import { CRUD } from '@/app/components/crud';
 import { ProFormSwitch, ProFormText } from '@ant-design/pro-components';
 
@@ -61,7 +61,7 @@ function UsersList() {
         </>
       )}
       request={async (params) => {
-        const res = await UserAction.pageUsers(params);
+        const res = await UserActions.pageUsers(params);
         return {
           data: res.data,
           total: res.total,
@@ -69,17 +69,17 @@ function UsersList() {
         };
       }}
       requestCreate={async (values) => {
-        await UserAction.createUser(values as UserAction.CreateUserInput);
+        await UserActions.createUser(values as UserActions.CreateUserInput);
       }}
       requestDelete={async (id) => {
-        await UserAction.deleteUser(id);
+        await UserActions.deleteUser(id);
       }}
       requestDetail={async (id) => {
-        const res = await UserAction.getUserById(id);
+        const res = await UserActions.getUserById(id);
         return res;
       }}
       requestUpdate={async (values) => {
-        await UserAction.updateUser(values as UserAction.UpdateUserInput);
+        await UserActions.updateUser(values as UserActions.UpdateUserInput);
       }}
     />
   );
