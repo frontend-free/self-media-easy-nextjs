@@ -1,3 +1,5 @@
+'use client';
+
 import useSWR from 'swr';
 import useSWRMutation from 'swr/mutation';
 import { ServerActionResult } from '../actions/helper';
@@ -13,16 +15,23 @@ export function useGlobalSWR<T>(key: string, fetcher: () => Promise<ServerAction
   });
 }
 
-export function useGlobalSWRMutation<T>(
+export function useGlobalSWRMutation<T, P>(
   key: string,
-  fetcher: () => Promise<ServerActionResult<T>>,
+  fetcher: (key: string, params?: P) => Promise<ServerActionResult<T>>,
 ) {
-  return useSWRMutation(key, fetcher, {
-    onSuccess: (data) => {
-      // 直接抛出错误
-      if (!data.success) {
-        throw new Error(data.message);
-      }
+  return useSWRMutation(
+    key,
+    (key, params) => {
+      console.log('fetcher', key, params);
+      return fetcher(key, params);
     },
-  });
+    {
+      onSuccess: (data) => {
+        // 直接抛出错误
+        if (!data.success) {
+          throw new Error(data.message);
+        }
+      },
+    },
+  );
 }

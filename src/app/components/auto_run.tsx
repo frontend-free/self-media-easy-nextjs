@@ -13,7 +13,7 @@ const maxRunCount = 1;
 let runningTaskIds: string[] = [];
 const INTERVAL = 10 * 1000;
 
-async function publishTask({
+async function runAutoTask({
   id,
   onSuccess,
   onError,
@@ -26,7 +26,7 @@ async function publishTask({
 }) {
   const task = await TaskActions.getTaskById(id);
 
-  console.log('publishTask task', task);
+  console.log('runAutoTask task', task);
 
   if (task.account.deletedAt) {
     onError?.(new Error('账号已删除'));
@@ -66,7 +66,7 @@ async function publishTask({
     isDebug,
   });
 
-  console.log('publishTask res', res);
+  console.log('runAutoTask res', res);
 
   // 成功更新任务
   if (res.success) {
@@ -108,7 +108,7 @@ async function publishTask({
 }
 
 // 初始化自动运行任务
-function AutoRunComponent() {
+function AutoRunTaskComponent() {
   const [count, setCount] = useState(0);
   const { notification } = App.useApp();
   const { isDebug } = useIsDebug();
@@ -138,7 +138,7 @@ function AutoRunComponent() {
         duration: 0,
       });
 
-      await publishTask({
+      await runAutoTask({
         id: task.id,
         isDebug,
         onSuccess: () => {
@@ -223,4 +223,4 @@ function AutoRunComponent() {
   );
 }
 
-export { AutoRunComponent, publishTask };
+export { AutoRunTaskComponent, runAutoTask };

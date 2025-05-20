@@ -1,5 +1,6 @@
 import { AuthComponent } from '@/app/components/auth';
-import { AutoRunComponent } from '@/app/components/auto_run';
+import { AutoRunTaskComponent } from '@/app/components/auto_run';
+import { AutoRunPublishComponent } from '@/app/components/auto_run_publish';
 import { AppMenu } from '@/app/components/menu';
 import { AdminPathComponent, AuthPathComponent } from '@/app/components/path';
 import { UserInfo } from '@/app/components/user_info';
@@ -59,15 +60,22 @@ const menuItems = [
         <UnorderedListOutlined />
         <div>发布任务</div>
         <AuthComponent>
-          <AutoRunComponent />
+          <AutoRunTaskComponent />
         </AuthComponent>
       </div>
     ),
   },
   {
     key: '/auto_publish',
-    label: '自动发布设置',
-    icon: <SettingOutlined />,
+    label: (
+      <div className="flex items-center gap-2">
+        <SettingOutlined />
+        <div>自动发布设置</div>
+        <AuthComponent>
+          <AutoRunPublishComponent />
+        </AuthComponent>
+      </div>
+    ),
   },
 ];
 

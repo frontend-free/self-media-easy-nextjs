@@ -1,28 +1,26 @@
 'use client';
 
-import * as AccountActions from '@/app/actions/account_actions';
 import * as PublishActions from '@/app/actions/publish_actions';
 import { CRUD } from '@/app/components/crud';
 import { electronApi } from '@/electron';
 import {
-  EnumAccountStatus,
   EnumPlatform,
   TagTaskStatus,
   valueEnumPublishResourceType,
   valueEnumPublishType,
 } from '@/generated/enums';
-import { Account, AccountStatus, PublishResourceType, PublishType } from '@/generated/prisma';
+import { AccountStatus, PublishResourceType, PublishType } from '@/generated/prisma';
 import { DeleteOutlined } from '@ant-design/icons';
 import {
   ProForm,
   ProFormField,
   ProFormRadio,
-  ProFormSelect,
   ProFormText,
   ProFormTextArea,
 } from '@ant-design/pro-components';
 import { Alert, Button } from 'antd';
 import { TaskWithRelations } from '../actions/task_actions';
+import { ProFormSelectAccounts } from '../components/form/pro_form_select_accounts';
 import { PlatformWithName } from '../components/platform';
 import { Resource } from '../components/resource';
 
@@ -171,44 +169,16 @@ function Page() {
               rules={[{ required: true }]}
             />
 
-            <ProFormSelect
+            <ProFormSelectAccounts
               name="accountIds"
               label="账号"
-              mode="multiple"
-              request={async () => {
-                const res = await AccountActions.pageAccounts({
-                  pageSize: 100,
-                  current: 1,
-                  status: EnumAccountStatus.AUTHED,
-                });
-                return res.data.map((item) => ({
-                  label: item.platformName,
-                  value: item.id,
-                  originData: item,
-                }));
-              }}
               required
               rules={[{ required: true }]}
-              fieldProps={{
-                optionRender: (option) => {
-                  const account = option.data.originData as Account;
-                  return (
-                    <PlatformWithName
-                      name={account.platformName || ''}
-                      value={account.platform as EnumPlatform}
-                      status={account.status as AccountStatus}
-                    />
-                  );
-                },
-              }}
             />
 
             <ProFormText
               name="title"
               label="标题"
-              fieldProps={{
-                minLength: 6,
-              }}
               rules={[
                 {
                   min: 6,

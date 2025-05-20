@@ -70,6 +70,26 @@ interface ShowOpenDialogOfOpenFileResult {
   message?: string;
 }
 
+interface ShowOpenDialogOfOpenDirectoryResult {
+  success: boolean;
+  data?: {
+    filePaths: string[];
+  };
+  message?: string;
+}
+
+interface GetDirectoryVideoFilesParams {
+  directory: string;
+  lastRunAt?: Date;
+}
+interface GetDirectoryVideoFilesResult {
+  success: boolean;
+  data?: {
+    filePaths: string[];
+  };
+  message?: string;
+}
+
 function getElectron(): any {
   // @ts-expect-error 先忽略
   if (typeof window !== 'undefined' && window.electron) {
@@ -102,6 +122,7 @@ const electronApi = {
   platformAuth: async (params: PlatformAuthParams): Promise<PlatformAuthResult> => {
     const electron = getElectron();
 
+    console.log('platformAuth params', params);
     const res: PlatformAuthResult = await electron.ipcRenderer.invoke('platformAuth', params);
 
     console.log('platformAuth res', res);
@@ -110,6 +131,7 @@ const electronApi = {
   platformAuthCheck: async (params: PlatformAuthCheckParams): Promise<PlatformAuthCheckResult> => {
     const electron = getElectron();
 
+    console.log('platformAuthCheck params', params);
     const res: PlatformAuthCheckResult = await electron.ipcRenderer.invoke(
       'platformAuthCheck',
       params,
@@ -120,6 +142,7 @@ const electronApi = {
   platformPublish: async (params: PlatformPublishParams): Promise<PlatformPublishResult> => {
     const electron = getElectron();
 
+    console.log('platformPublish params', params);
     const res: PlatformPublishResult = await electron.ipcRenderer.invoke('platformPublish', params);
 
     console.log('platformPublish res', res);
@@ -134,6 +157,32 @@ const electronApi = {
     );
 
     console.log('showOpenDialogOfOpenFile res', res);
+
+    return res;
+  },
+  showOpenDialogOfOpenDirectory: async (): Promise<ShowOpenDialogOfOpenDirectoryResult> => {
+    const electron = getElectron();
+
+    const res: ShowOpenDialogOfOpenDirectoryResult = await electron.ipcRenderer.invoke(
+      'showOpenDialogOfOpenDirectory',
+    );
+
+    console.log('showOpenDialogOfOpenDirectory res', res);
+
+    return res;
+  },
+  getDirectoryVideoFiles: async (
+    params: GetDirectoryVideoFilesParams,
+  ): Promise<GetDirectoryVideoFilesResult> => {
+    const electron = getElectron();
+
+    console.log('getDirectoryVideoFiles params', params);
+    const res: GetDirectoryVideoFilesResult = await electron.ipcRenderer.invoke(
+      'getDirectoryVideoFiles',
+      params,
+    );
+
+    console.log('getDirectoryVideoFiles res', res);
 
     return res;
   },

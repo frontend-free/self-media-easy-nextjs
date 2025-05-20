@@ -6,7 +6,7 @@ import { App, Button } from 'antd';
 import { useEffect, useRef } from 'react';
 import type { TaskWithRelations } from '../actions/task_actions';
 import * as TaskActions from '../actions/task_actions';
-import { publishTask } from '../components/auto_run';
+import { runAutoTask } from '../components/auto_run';
 import { CRUD } from '../components/crud';
 import { useIsDebug } from '../components/debug';
 import { LoadingButton } from '../components/loading_button';
@@ -33,7 +33,7 @@ function Page() {
         duration: 0,
       });
 
-      await publishTask({
+      await runAutoTask({
         id: task.id,
         isDebug,
         onSuccess: () => {

@@ -73,6 +73,7 @@ model User {
   Account      Account[]
   publishes    Publish[]
   tasks        Task[]
+  autoPublishSetting AutoPublishSetting[]
 }
 
 // 标签-教练
@@ -101,8 +102,8 @@ model Account {
   authedAt       DateTime // 授权时间
   logs           String? // 授权日志 JSON
 
-  tagCoach   TagCoach? @relation(fields: [tagCoachId], references: [id])
   tagCoachId String?
+  tagCoach   TagCoach? @relation(fields: [tagCoachId], references: [id])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -112,6 +113,9 @@ model Account {
   user   User   @relation(fields: [userId], references: [id])
   tasks  Task[]
   publishes Publish[]
+
+  autoPublishSettingId String?
+  autoPublishSetting AutoPublishSetting? @relation(fields: [autoPublishSettingId], references: [id])
 }
 
 // 发布
@@ -154,4 +158,19 @@ model Task {
 
   publishId String
   publish   Publish @relation(fields: [publishId], references: [id])
+}
+
+// 自动发布设置
+model AutoPublishSetting {
+  id String @id // 使用 userId 作为主键
+
+  resourceVideoDir String? // 视频资源目录
+  title String? // 标题
+  accounts Account[]
+  lastRunAt DateTime? // 上次运行时间
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [id], references: [id])
 }
