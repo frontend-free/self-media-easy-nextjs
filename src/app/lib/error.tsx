@@ -19,7 +19,7 @@ function ErrorComponent() {
           // mac
           msg.includes('Unsupported chromium channel') ||
           // windows
-          msg.includes('Chromium distribution "chrome" is not found')
+          msg.includes(`Chromium distribution 'chrome' is not found`)
         ) {
           modal.confirm({
             title: '请先安装 Chrome 浏览器',
