@@ -19,37 +19,14 @@ function getDownLoadURL({ version }: { version: string }) {
 
 function Version() {
   const [version, setVersion] = useState<string | undefined>(undefined);
-  const [latestVersion, setLatestVersion] = useState<string | undefined>(undefined);
 
   const { modal } = App.useApp();
 
-  async function getLatestVersion() {
-    const { data } = await OtherActions.getLatestAppVersion();
+  async function getLatestVersion({ silent }: { silent: boolean }) {
+    const { data: latestVersion, message } = await OtherActions.getLatestAppVersion();
 
-    if (data) {
-      setLatestVersion(data);
-    }
-
-    return data;
-  }
-
-  useEffect(() => {
-    if (!electronApi.isElectron()) {
-      return;
-    }
-
-    electronApi.getVersion().then((version) => {
-      setVersion(version);
-    });
-  }, []);
-
-  useEffect(() => {
-    getLatestVersion();
-  }, []);
-
-  useEffect(() => {
-    if (!latestVersion || !version) {
-      return;
+    if (!latestVersion) {
+      throw new Error(message);
     }
 
     const res = semver.compare(latestVersion, version);
@@ -63,8 +40,32 @@ function Version() {
           window.open(getDownLoadURL({ version: latestVersion }));
         },
       });
+    } else {
+      if (!silent) {
+        modal.success({
+          title: '已是最新版本',
+        });
+      }
     }
-  }, [latestVersion, modal, version]);
+  }
+
+  useEffect(() => {
+    if (!electronApi.isElectron()) {
+      return;
+    }
+
+    electronApi.getVersion().then((version) => {
+      setVersion(version);
+    });
+  }, []);
+
+  useEffect(() => {
+    if (!version) {
+      return;
+    }
+
+    getLatestVersion({ silent: true });
+  }, [version]);
 
   return (
     <div>
@@ -76,13 +77,7 @@ function Version() {
           type="text"
           // className="!px-0"
           onClick={async () => {
-            const data = await getLatestVersion();
-
-            if (data && version && data === version) {
-              modal.success({
-                title: '已是最新版本',
-              });
-            }
+            await getLatestVersion({ silent: false });
           }}
         >
           检查更新
