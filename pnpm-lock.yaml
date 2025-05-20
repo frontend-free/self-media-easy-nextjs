@@ -68,6 +68,9 @@ importers:
       semver:
         specifier: ^7.7.1
         version: 7.7.1
+      swr:
+        specifier: ^2.3.3
+        version: 2.3.3(react@19.1.0)
     devDependencies:
       '@eslint/eslintrc':
         specifier: ^3

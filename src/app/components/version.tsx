@@ -1,11 +1,13 @@
 'use client';
 
 import { electronApi } from '@/electron';
-import { App, Button } from 'antd';
+import { App } from 'antd';
 import { useEffect, useState } from 'react';
 import semver from 'semver';
 import * as OtherAction from '../actions/other_action';
 import { DebugWrapVersion } from './debug';
+import { LoadingButton } from './loading_button';
+import { useGlobalSWRMutation } from './use_global_swr';
 
 function getDownLoadURL({ version }: { version: string }) {
   const prefix = `${process.env.NEXT_PUBLIC_DOWNLOAD_SERVER}/subject-media-electron-${version}`;
@@ -16,50 +18,51 @@ function getDownLoadURL({ version }: { version: string }) {
   return `${prefix}-setup.exe`;
 }
 
-async function checkVersionAndUpdate({ modal, silent = true }) {
-  const nowAppVersion = await electronApi.getVersion();
-
-  const latestAppVersion = await OtherAction.getLatestAppVersion();
-
-  const res = semver.compare(latestAppVersion, nowAppVersion);
-
-  // 需要更新
-  if (res === 1) {
-    modal.confirm({
-      title: `发现新版本`,
-      content: `当前版本: v${nowAppVersion}，最新版本: v${latestAppVersion}，请升级！`,
-      okText: '升级',
-      onOk: () => {
-        window.open(getDownLoadURL({ version: latestAppVersion }));
-      },
-    });
-  } else {
-    if (res === 0) {
-      if (!silent) {
-        modal.success({
-          title: '当前版本是最新版本',
-        });
-      }
-    }
-    // nothing
-  }
-}
-
 function Version() {
-  const [version, setVersion] = useState<string>('');
+  const [version, setVersion] = useState<string | undefined>(undefined);
+
   const { modal } = App.useApp();
+
+  const { data: res, trigger } = useGlobalSWRMutation(
+    'OtherAction.getLatestAppVersion',
+    async () => {
+      return await OtherAction.getLatestAppVersion();
+    },
+  );
+  const latestVersion = res?.data;
 
   useEffect(() => {
     if (!electronApi.isElectron()) {
       return;
     }
 
-    checkVersionAndUpdate({ modal });
-
     electronApi.getVersion().then((version) => {
       setVersion(version);
     });
   }, []);
+
+  useEffect(() => {
+    trigger();
+  }, []);
+
+  useEffect(() => {
+    if (!latestVersion || !version) {
+      return;
+    }
+
+    const res = semver.compare(latestVersion, version);
+
+    if (res === 1) {
+      modal.confirm({
+        title: `发现新版本`,
+        content: `当前版本: v${version}，最新版本: v${latestVersion}，请升级！`,
+        okText: '升级',
+        onOk: () => {
+          window.open(getDownLoadURL({ version: latestVersion }));
+        },
+      });
+    }
+  }, [latestVersion, modal, version]);
 
   return (
     <div>
@@ -67,13 +70,23 @@ function Version() {
         <DebugWrapVersion>
           <div>版本 v{version}</div>
         </DebugWrapVersion>
-        <Button
+        <LoadingButton
           type="text"
           // className="!px-0"
-          onClick={() => checkVersionAndUpdate({ modal, silent: false })}
+          onClick={async () => {
+            const data = await trigger();
+
+            if (version && data.data === version) {
+              modal.success({
+                title: '已是最新版本',
+              });
+            }
+
+            console.log(res);
+          }}
         >
           检查更新
-        </Button>
+        </LoadingButton>
       </div>
     </div>
   );

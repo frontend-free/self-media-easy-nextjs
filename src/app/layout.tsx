@@ -8,7 +8,13 @@ import { initDatabase } from '@/app/lib/init_db';
 
 import '@ant-design/v5-patch-for-react-19';
 
-import { HomeOutlined, SendOutlined, UnorderedListOutlined, UserOutlined } from '@ant-design/icons';
+import {
+  HomeOutlined,
+  SendOutlined,
+  SettingOutlined,
+  UnorderedListOutlined,
+  UserOutlined,
+} from '@ant-design/icons';
 import { AntdRegistry } from '@ant-design/nextjs-registry';
 import { App, ConfigProvider } from 'antd';
 import zhCN from 'antd/locale/zh_CN';
@@ -57,6 +63,11 @@ const menuItems = [
         </AuthComponent>
       </div>
     ),
+  },
+  {
+    key: '/auto_publish',
+    label: '自动发布设置',
+    icon: <SettingOutlined />,
   },
 ];
 

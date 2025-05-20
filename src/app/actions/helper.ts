@@ -3,6 +3,12 @@ import { Prisma, PrismaClient } from '@/generated/prisma';
 import { Operation } from '@prisma/client/runtime/library';
 import { Session } from 'next-auth';
 
+export interface ServerActionResult<T> {
+  success: boolean;
+  data?: T;
+  message?: string;
+}
+
 /** 检查登录态 */
 export async function needAuth(): Promise<{ sessionUser: Session['user'] }> {
   const session = await auth();
