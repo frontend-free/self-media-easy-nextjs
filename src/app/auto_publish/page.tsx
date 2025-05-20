@@ -79,8 +79,15 @@ function Page() {
         )}
         <Button
           type="primary"
-          onClick={() => {
-            runAutoPublish({ notification });
+          onClick={async () => {
+            try {
+              await runAutoPublish({ notification });
+            } catch (error) {
+              // nothing
+              console.error(error);
+            } finally {
+              getData();
+            }
           }}
         >
           手动触发扫描
