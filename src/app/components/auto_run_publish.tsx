@@ -68,8 +68,7 @@ function AutoRunPublishComponent() {
     }
 
     const timer = setInterval(() => {
-      // 先不自动运行
-      // runAutoPublish();
+      runAutoPublish();
     }, INTERVAL);
 
     return () => {
