@@ -8,10 +8,11 @@ function InstallBrowser() {
       type={'info'}
       message={
         <div>
-          <span>请确保本地已安装好 Chrome 浏览器，</span>
+          <span>请确保本地已安装好 Chrome 浏览器。如需，</span>
           <a href="https://www.google.cn/intl/zh-CN/chrome/" target="_blank">
             点我安装 Chrome
           </a>
+          。
         </div>
       }
     />

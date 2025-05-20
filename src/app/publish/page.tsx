@@ -11,7 +11,7 @@ import {
   valueEnumPublishResourceType,
   valueEnumPublishType,
 } from '@/generated/enums';
-import { AccountStatus, PublishResourceType, PublishType } from '@/generated/prisma';
+import { Account, AccountStatus, PublishResourceType, PublishType } from '@/generated/prisma';
 import { DeleteOutlined } from '@ant-design/icons';
 import {
   ProForm,
@@ -125,7 +125,6 @@ function Page() {
             title: '账号发布状态',
             dataIndex: 'tasks',
             render: (value) => {
-              console.log(value);
               if (!value) {
                 return null;
               }
@@ -185,10 +184,23 @@ function Page() {
                 return res.data.map((item) => ({
                   label: item.platformName,
                   value: item.id,
+                  originData: item,
                 }));
               }}
               required
               rules={[{ required: true }]}
+              fieldProps={{
+                optionRender: (option) => {
+                  const account = option.data.originData as Account;
+                  return (
+                    <PlatformWithName
+                      name={account.platformName || ''}
+                      value={account.platform as EnumPlatform}
+                      status={account.status as AccountStatus}
+                    />
+                  );
+                },
+              }}
             />
 
             <ProFormText
