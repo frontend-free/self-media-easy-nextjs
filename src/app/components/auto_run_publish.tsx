@@ -19,6 +19,11 @@ async function runAutoPublish({ notification }) {
     return;
   }
 
+  if (!autoPublishSetting.enabled) {
+    console.log('自动发布未启用');
+    return;
+  }
+
   const { resourceVideoDir, accounts: originalAccounts, lastRunAt, title } = autoPublishSetting;
 
   const accounts = originalAccounts.filter(
@@ -74,8 +79,14 @@ function AutoRunPublishComponent() {
       return;
     }
 
-    const timer = setInterval(() => {
-      runAutoPublish({ notification });
+    const timer = setInterval(async () => {
+      const { success, data: autoPublishSetting } =
+        await AutoPublishActions.getAutoPublishSetting();
+
+      // 启用才运行
+      if (success && autoPublishSetting && autoPublishSetting.enabled) {
+        await runAutoPublish({ notification });
+      }
     }, INTERVAL);
 
     return () => {

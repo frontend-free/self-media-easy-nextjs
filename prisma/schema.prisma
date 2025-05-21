@@ -164,6 +164,7 @@ model Task {
 model AutoPublishSetting {
   id String @id // 使用 userId 作为主键
 
+  enabled Boolean @default(false) // 是否启用
   resourceVideoDir String? // 视频资源目录
   title String? // 标题
   accounts Account[]

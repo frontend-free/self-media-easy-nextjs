@@ -1,7 +1,7 @@
 'use client';
 
 import { electronApi } from '@/electron';
-import { ProForm, ProFormText } from '@ant-design/pro-components';
+import { ProForm, ProFormSwitch, ProFormText } from '@ant-design/pro-components';
 import { Alert, App, Button, Divider } from 'antd';
 import dayjs from 'dayjs';
 import { useCallback, useEffect, useState } from 'react';
@@ -79,15 +79,11 @@ function Page() {
         )}
         <Button
           type="primary"
+          disabled={!data?.enabled}
           onClick={async () => {
-            try {
-              await runAutoPublish({ notification });
-            } catch (error) {
-              // nothing
-              console.error(error);
-            } finally {
+            await runAutoPublish({ notification }).finally(() => {
               getData();
-            }
+            });
           }}
         >
           手动触发扫描
@@ -108,6 +104,7 @@ function Page() {
               message.success('更新成功');
             }}
           >
+            <ProFormSwitch name="enabled" label="启用" required rules={[{ required: true }]} />
             <ProFormDirectory
               name="resourceVideoDir"
               label="目录"

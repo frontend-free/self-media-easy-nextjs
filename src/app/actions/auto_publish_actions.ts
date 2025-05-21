@@ -4,7 +4,7 @@ import { Account, AutoPublishSetting } from '@/generated/prisma';
 import { needAuth, prisma, wrapServerAction } from './helper';
 
 export type UpdateAutoPublishSettingInput = Partial<
-  Pick<AutoPublishSetting, 'resourceVideoDir' | 'title' | 'lastRunAt'>
+  Pick<AutoPublishSetting, 'enabled' | 'resourceVideoDir' | 'title' | 'lastRunAt'>
 > & { accountIds?: string[] };
 
 export type AutoPublishSettingWithRelations = AutoPublishSetting & {
