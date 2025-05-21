@@ -190,7 +190,7 @@ export const valueEnumTaskStatus = {
   [EnumTaskStatus.PENDING]: {
     text: '等待发布',
     value: 'PENDING',
-    color: 'default',
+    color: '#2db7f5',
   },
   [EnumTaskStatus.PUBLISHING]: {
     text: '发布中',

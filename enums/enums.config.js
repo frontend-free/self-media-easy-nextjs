@@ -44,7 +44,7 @@ const enums = {
   TaskStatus: {
     PENDING: {
       text: '等待发布',
-      color: 'default',
+      color: '#2db7f5',
     },
     PUBLISHING: {
       text: '发布中',

@@ -26,29 +26,38 @@ async function runAutoTask({
 }) {
   const task = await TaskActions.getTaskById(id);
 
-  console.log('runAutoTask task', task);
-
-  if (task.account.deletedAt) {
-    onError?.(new Error('账号已删除'));
-    return;
-  }
-
-  if (task.account.status !== AccountStatus.AUTHED) {
-    onError?.(new Error('账号未授权'));
-    return;
-  }
+  console.log('runAutoTask task', id, task);
 
   const platform = task.account?.platform;
   const authInfo = task.account?.authInfo;
   const resourceOfVideo = task.publish?.resourceOfVideo;
 
+  let error = '';
+  if (task.account.deletedAt) {
+    error = '账号已删除';
+  }
+  // 账号未授权
+  else if (task.account.status !== AccountStatus.AUTHED) {
+    error = '账号未授权';
+  }
   // 检查下参数
-  if (!platform || !authInfo || !resourceOfVideo) {
-    onError?.(new Error('参数错误，请检查'));
+  else if (!platform || !authInfo || !resourceOfVideo) {
+    error = '参数错误，请检查';
+  }
+  if (error) {
+    // 更新任务状态
+    await TaskActions.updateTask({
+      id: task.id,
+      status: TaskStatus.FAILED,
+      logs: JSON.stringify([error]),
+      endAt: new Date(),
+    });
+
+    onError?.(new Error(error));
     return;
   }
 
-  // 更新任务状态
+  // 开发发布，更新状态
   await TaskActions.updateTask({
     id: task.id,
     status: TaskStatus.PUBLISHING,
@@ -58,8 +67,8 @@ async function runAutoTask({
   // 发布
   const res = await electronApi.platformPublish({
     platform,
-    authInfo,
-    resourceOfVideo,
+    authInfo: authInfo!,
+    resourceOfVideo: resourceOfVideo!,
     title: task.publish?.title || undefined,
     description: task.publish?.description || undefined,
     publishType: task.publish?.publishType || undefined,
@@ -171,7 +180,7 @@ function AutoRunTaskComponent() {
   );
 
   const autoRunTask = useCallback(() => {
-    // 5s 检查是否有任务需要运行
+    // 检查是否有任务需要运行
     return setInterval(async () => {
       console.log('autoRunTask', maxRunCount, runningTaskIds);
 
@@ -179,19 +188,26 @@ function AutoRunTaskComponent() {
         return;
       }
 
-      const waitTasks = await TaskActions.pageTasks({
+      const tasksRes = await TaskActions.pageTasks({
         current: 1,
         pageSize: 100,
         status: TaskStatus.PENDING,
       });
 
-      setCount(waitTasks.data.length);
+      // 设置任务数
+      setCount(tasksRes.data.length);
 
-      for (const task of waitTasks.data) {
+      // 获取到需要运行的任务
+      const toRunTasks = tasksRes.data.slice(-maxRunCount - runningTaskIds.length);
+
+      for (const task of toRunTasks) {
         runningTaskIds.push(task.id);
 
-        // 运行，只会成功
-        await doPublishTask(task);
+        try {
+          await doPublishTask(task);
+        } catch (e) {
+          console.log(e);
+        }
 
         runningTaskIds = runningTaskIds.filter((id) => id !== task.id);
 
