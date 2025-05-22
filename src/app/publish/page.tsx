@@ -21,6 +21,7 @@ import {
 import { Alert, Button } from 'antd';
 import { TaskWithRelations } from '../actions/task_actions';
 import { ProFormSelectAccounts } from '../components/form/pro_form_select_accounts';
+import { ProFormTextWithSelect } from '../components/form/pro_form_text_with_select';
 import { PlatformWithName } from '../components/platform';
 import { Resource } from '../components/resource';
 
@@ -177,7 +178,7 @@ function Page() {
               rules={[{ required: true }]}
             />
 
-            <ProFormText
+            <ProFormTextWithSelect
               name="title"
               label="标题"
               rules={[

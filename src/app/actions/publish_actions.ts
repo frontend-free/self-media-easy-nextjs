@@ -75,3 +75,24 @@ export async function createPublish(data: CreatePublishInput) {
 
   return publish;
 }
+
+/** 获取最近10条不同的标题 */
+export async function getPublishTitles(): Promise<string[]> {
+  const titles = await prisma.publish.findMany({
+    select: {
+      title: true,
+    },
+    where: {
+      AND: [{ title: { not: null } }, { title: { not: '' } }],
+    },
+    // 去重
+    distinct: ['title'],
+    orderBy: {
+      createdAt: 'desc',
+    },
+    // 限制返回 10 条记录
+    take: 10,
+  });
+
+  return titles.map((title) => title.title as string);
+}
