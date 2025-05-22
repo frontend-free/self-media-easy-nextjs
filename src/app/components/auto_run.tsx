@@ -192,6 +192,11 @@ function AutoRunTaskComponent() {
         current: 1,
         pageSize: 100,
         status: TaskStatus.PENDING,
+        // 没删除的
+        account: {
+          deletedAt: null,
+          status: AccountStatus.AUTHED,
+        },
       });
 
       // 设置任务数

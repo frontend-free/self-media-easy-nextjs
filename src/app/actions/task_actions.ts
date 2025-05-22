@@ -1,7 +1,7 @@
 'use server';
 
 import { EnumPlatform } from '@/generated/enums';
-import { Account, Prisma, Publish, Task, TaskStatus } from '@/generated/prisma';
+import { Account, AccountStatus, Prisma, Publish, Task, TaskStatus } from '@/generated/prisma';
 import { createModel, deleteModel, getModelById, pageModel, prisma, updateModel } from './helper';
 
 export type CreateTaskInput = Pick<Task, 'accountId' | 'publishId'>;
@@ -23,6 +23,8 @@ export async function pageTasks(params: {
   account?: {
     platform?: EnumPlatform;
     platformName?: string;
+    status?: AccountStatus;
+    deletedAt?: Date | null;
   };
   publish?: {
     title?: string;
@@ -38,6 +40,8 @@ export async function pageTasks(params: {
         account: {
           platform: params.account?.platform,
           platformName: { contains: params.account?.platformName },
+          status: params.account?.status,
+          deletedAt: params.account?.deletedAt,
         },
         publish: {
           title: { contains: params.publish?.title },
