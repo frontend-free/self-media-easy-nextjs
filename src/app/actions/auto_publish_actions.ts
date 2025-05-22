@@ -50,6 +50,7 @@ export async function updateAutoPublishSetting(data?: UpdateAutoPublishSettingIn
     const { sessionUser } = await needAuth();
 
     const { accountIds, ...rest } = data || {};
+
     await prisma.autoPublishSetting.update({
       where: {
         id: sessionUser.id,

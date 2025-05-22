@@ -137,6 +137,7 @@ function Page() {
                         name={item.account.platformName || ''}
                         value={item.account.platform as EnumPlatform}
                         status={item.account.status as AccountStatus}
+                        deletedAt={item.account.deletedAt || undefined}
                       />
                       <TagTaskStatus value={item.status} />
                     </div>
