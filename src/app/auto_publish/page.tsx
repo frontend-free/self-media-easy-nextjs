@@ -43,7 +43,7 @@ function ProFormDirectory(props) {
 
 function Page() {
   const { notification } = App.useApp();
-  const [form] = ProForm.useForm();
+
   const [data, setData] = useState<
     (AutoPublishSettingWithRelations & { accountIds: string[] }) | undefined
   >(undefined);
@@ -94,7 +94,6 @@ function Page() {
         {data && (
           <ProForm
             key={data.updatedAt.getTime()}
-            form={form}
             initialValues={data}
             onFinish={async (values) => {
               await AutoPublishActions.updateAutoPublishSetting(values);

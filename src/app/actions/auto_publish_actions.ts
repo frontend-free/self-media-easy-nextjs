@@ -51,6 +51,20 @@ export async function updateAutoPublishSetting(data?: UpdateAutoPublishSettingIn
 
     const { accountIds, ...rest } = data || {};
 
+    // 批量获取所有账号状态
+    const validAccountIds = accountIds
+      ? (
+          await prisma.account.findMany({
+            where: {
+              id: { in: accountIds },
+              deletedAt: null,
+            },
+            select: { id: true },
+          })
+        ).map((account) => account.id)
+      : [];
+
+    // 更新设置
     await prisma.autoPublishSetting.update({
       where: {
         id: sessionUser.id,
@@ -58,7 +72,7 @@ export async function updateAutoPublishSetting(data?: UpdateAutoPublishSettingIn
       data: {
         ...rest,
         accounts: {
-          connect: accountIds?.map((id) => ({ id })),
+          set: validAccountIds.map((id) => ({ id })),
         },
       },
     });
