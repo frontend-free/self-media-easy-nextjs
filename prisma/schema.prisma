@@ -168,6 +168,7 @@ model AutoPublishSetting {
   resourceVideoDir String? // 视频资源目录
   title String? // 标题
   accounts Account[]
+  runResourceOfVideos String? // 已运行视频资源列表
   lastRunAt DateTime? // 上次运行时间
 
   createdAt DateTime @default(now())

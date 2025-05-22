@@ -24,7 +24,12 @@ async function runAutoPublish({ notification }) {
     return;
   }
 
-  const { resourceVideoDir, accounts: originalAccounts, lastRunAt, title } = autoPublishSetting;
+  const {
+    resourceVideoDir,
+    accounts: originalAccounts,
+    title,
+    runResourceOfVideos,
+  } = autoPublishSetting;
 
   const accounts = originalAccounts.filter(
     (account) => !account.deletedAt && account.status === AccountStatus.AUTHED,
@@ -37,13 +42,19 @@ async function runAutoPublish({ notification }) {
 
   const { data: res } = await electronApi.getDirectoryVideoFiles({
     directory: resourceVideoDir,
-    lastRunAt: lastRunAt ?? undefined,
   });
 
   console.log('res', res);
-  const files = res?.filePaths || [];
+
+  const hasRunFiles = runResourceOfVideos ? JSON.parse(runResourceOfVideos) : [];
+  const files = (res?.filePaths || []).filter((file) => !hasRunFiles.includes(file));
+
+  console.log('files', files);
 
   if (!files || !files.length) {
+    notification.info({
+      message: `没有待发布的文件`,
+    });
     console.log('没有待发布的文件');
     return;
   }
@@ -67,6 +78,7 @@ async function runAutoPublish({ notification }) {
   // 更新自动发布设置
   await AutoPublishActions.updateAutoPublishSetting({
     ...autoPublishSetting,
+    runResourceOfVideos: JSON.stringify(hasRunFiles.concat(files)),
     lastRunAt: new Date(),
   });
 }

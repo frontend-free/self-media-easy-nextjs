@@ -70,7 +70,7 @@ function Page() {
 
   return (
     <div>
-      <Alert message="每30分钟扫描目录，扫描出新的视频文件，并发布！" />
+      <Alert message="每30分钟扫描目录，扫描出新的视频文件，然后自动发布！" />
       <div className="mt-4 flex flex-row justify-end gap-2 items-center">
         {data && (
           <div>

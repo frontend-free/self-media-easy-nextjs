@@ -4,7 +4,10 @@ import { Account, AutoPublishSetting } from '@/generated/prisma';
 import { needAuth, prisma, wrapServerAction } from './helper';
 
 export type UpdateAutoPublishSettingInput = Partial<
-  Pick<AutoPublishSetting, 'enabled' | 'resourceVideoDir' | 'title' | 'lastRunAt'>
+  Pick<
+    AutoPublishSetting,
+    'enabled' | 'resourceVideoDir' | 'title' | 'lastRunAt' | 'runResourceOfVideos'
+  >
 > & { accountIds?: string[] };
 
 export type AutoPublishSettingWithRelations = AutoPublishSetting & {
@@ -51,30 +54,41 @@ export async function updateAutoPublishSetting(data?: UpdateAutoPublishSettingIn
 
     const { accountIds, ...rest } = data || {};
 
-    // 批量获取所有账号状态
-    const validAccountIds = accountIds
-      ? (
-          await prisma.account.findMany({
-            where: {
-              id: { in: accountIds },
-              deletedAt: null,
-            },
-            select: { id: true },
-          })
-        ).map((account) => account.id)
-      : [];
+    if (accountIds) {
+      // 批量获取所有账号状态
+      const validAccountIds = accountIds
+        ? (
+            await prisma.account.findMany({
+              where: {
+                id: { in: accountIds },
+                deletedAt: null,
+              },
+              select: { id: true },
+            })
+          ).map((account) => account.id)
+        : [];
 
-    // 更新设置
-    await prisma.autoPublishSetting.update({
-      where: {
-        id: sessionUser.id,
-      },
-      data: {
-        ...rest,
-        accounts: {
-          set: validAccountIds.map((id) => ({ id })),
+      await prisma.autoPublishSetting.update({
+        where: {
+          id: sessionUser.id,
         },
-      },
-    });
+        data: {
+          ...rest,
+          accounts: {
+            set: validAccountIds.map((id) => ({ id })),
+          },
+        },
+      });
+    } else {
+      // 更新设置
+      await prisma.autoPublishSetting.update({
+        where: {
+          id: sessionUser.id,
+        },
+        data: {
+          ...rest,
+        },
+      });
+    }
   });
 }
