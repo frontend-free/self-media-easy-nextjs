@@ -1,7 +1,7 @@
 'use server';
 
 import { Prisma, Publish } from '@/generated/prisma';
-import { createModel, deleteModel, pageModel, prisma } from './helper';
+import { createModel, deleteModel, needAuth, pageModel, prisma } from './helper';
 import * as TaskActions from './task_actions';
 
 export type CreatePublishInput = Pick<
@@ -78,12 +78,15 @@ export async function createPublish(data: CreatePublishInput) {
 
 /** 获取最近10条不同的标题 */
 export async function getPublishTitles(): Promise<string[]> {
+  const { sessionUser } = await needAuth();
+
   const titles = await prisma.publish.findMany({
     select: {
       title: true,
     },
     where: {
       AND: [{ title: { not: null } }, { title: { not: '' } }],
+      userId: sessionUser.id,
     },
     // 去重
     distinct: ['title'],

@@ -45,7 +45,7 @@ function SelectAccounts({ value, onChange }) {
       keyMap[item.key] = true;
     });
 
-    return value.filter((v) => !keyMap[v]);
+    return value?.filter((v) => !keyMap[v]) || [];
   }, [data, value]);
 
   const dataSource = useMemo(() => {
