@@ -32,7 +32,7 @@ function TextWithSelect(props: TextWithSelectProps) {
       }}
       allowClear
       disabled={autoTitle}
-      placeholder={autoTitle ? '自动生成标题' : '请输入标题'}
+      placeholder={autoTitle ? '自动按文件名生成标题' : '请输入标题'}
     />
   );
 }
@@ -66,9 +66,17 @@ function ProFormTextWithSelect(props) {
   );
 }
 
-function getMatchTitle(title) {
-  const reg = /[\u4e00-\u9fa5a-zA-Z0-9《》""：+?%℃\s]+/g;
-  return (title.match(reg) || []).join('');
+function isTitleValid(title) {
+  let valid = true;
+  const reg = /^[\u4e00-\u9fa5a-zA-Z0-9《》""：+?%℃\s]+$/;
+  if (!reg.test(title)) {
+    valid = false;
+  }
+  if (title.length < 6 || title.length > 30) {
+    valid = false;
+  }
+
+  return valid;
 }
 
-export { getMatchTitle, ProFormTextWithSelect };
+export { isTitleValid, ProFormTextWithSelect };

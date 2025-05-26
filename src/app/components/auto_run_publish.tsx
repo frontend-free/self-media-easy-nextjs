@@ -6,7 +6,7 @@ import { electronApi } from '@/electron';
 import { AccountStatus, PublishResourceType, PublishType } from '@/generated/prisma';
 import { App } from 'antd';
 import { useEffect } from 'react';
-import { getMatchTitle } from './form/pro_form_text_with_select';
+import { isTitleValid } from './form/pro_form_text_with_select';
 
 const INTERVAL = 30 * 60 * 1000;
 
@@ -65,7 +65,7 @@ async function runAutoPublish({ notification }) {
   }
 
   const hasRunFiles = runResourceOfVideos ? JSON.parse(runResourceOfVideos) : [];
-  const files = (res?.filePaths || []).filter((file) => !hasRunFiles.includes(file));
+  let files = (res?.filePaths || []).filter((file) => !hasRunFiles.includes(file));
   console.log('待发布的文件', files);
 
   if (!files.length) {
@@ -76,19 +76,23 @@ async function runAutoPublish({ notification }) {
     return;
   }
 
-  // 继续过滤出合法的文件
-  const validFiles = files.filter((file) => {
-    const title = file.split('/').pop()?.split('.')[0];
-    const matchTitle = getMatchTitle(title);
-    return matchTitle.length >= 6 && matchTitle.length <= 30;
-  });
-  const validFilesTitle = validFiles.map((file) => file.split('/').pop()?.split('.')[0]);
-  console.log('合法未扫描文件', validFilesTitle, validFilesTitle);
-
   let message = `待发布视频文件 ${files.length} 个。`;
 
-  if (validFiles.length !== files.length) {
-    message += `但有 ${files.length - validFiles.length} 个文件被跳过，因为标题不合法。`;
+  // 如果启用了自动标题，则需要获取到文件名，且按文件名合法性过滤。
+  if (autoTitle) {
+    // 继续过滤出合法的文件
+    const validFiles = files.filter((file) => {
+      const title = file.split('/').pop()?.split('.')[0];
+      return isTitleValid(title);
+    });
+
+    console.log('合法文件', validFiles);
+
+    if (validFiles.length !== files.length) {
+      message += `但有 ${files.length - validFiles.length} 个文件被跳过，因为标题不合法。`;
+    }
+
+    files = validFiles;
   }
 
   notification.info({
@@ -96,13 +100,15 @@ async function runAutoPublish({ notification }) {
   });
 
   // 创建发布
-  validFiles.forEach((file, index) => {
-    const fileTitle = validFilesTitle[index]!;
+  files.forEach((file) => {
+    const newTitle = autoTitle ? file.split('/').pop()?.split('.')[0] : title;
+
+    console.log('newTitle', newTitle);
 
     PublishActions.createPublish({
       resourceType: PublishResourceType.VIDEO,
       resourceOfVideo: file,
-      title: (autoTitle ? fileTitle : title) || '',
+      title: newTitle || '',
       description: '',
       publishType: PublishType.OFFICIAL,
       accountIds: accounts.map((account) => account.id),
