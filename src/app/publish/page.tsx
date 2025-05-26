@@ -178,22 +178,7 @@ function Page() {
               rules={[{ required: true }]}
             />
 
-            <ProFormTextWithSelect
-              name="title"
-              label="标题"
-              rules={[
-                {
-                  min: 6,
-                  max: 30,
-                  message: '标题至少需要6个字,最多30个字',
-                },
-                {
-                  pattern: /^[\u4e00-\u9fa5a-zA-Z0-9《》""：+?%℃\s]+$/,
-                  message:
-                    '符号仅支持书名号、引号、冒号、加号、问号、百分号、摄氏度，逗号可用空格代替',
-                },
-              ]}
-            />
+            <ProFormTextWithSelect name="title" label="标题" />
 
             {/* 先屏蔽 */}
             <ProFormTextArea name="description" label="描述" hidden />

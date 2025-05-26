@@ -6,11 +6,11 @@ import { useEffect, useState } from 'react';
 interface TextWithSelectProps {
   value?: string;
   onChange: (value: string) => void;
-  disabled?: boolean;
+  autoTitle?: boolean;
 }
 
 function TextWithSelect(props: TextWithSelectProps) {
-  const { value, onChange, disabled } = props;
+  const { value, onChange, autoTitle } = props;
 
   const [options, setOptions] = useState<{ label: string; value: string }[]>([]);
 
@@ -31,7 +31,8 @@ function TextWithSelect(props: TextWithSelectProps) {
         onChange(value);
       }}
       allowClear
-      disabled={disabled}
+      disabled={autoTitle}
+      placeholder={autoTitle ? '自动生成标题' : '请输入标题'}
     />
   );
 }
@@ -40,10 +41,34 @@ function ProFormTextWithSelect(props) {
   /* eslint-disable-next-line */
   const { cacheForSwr, proFieldKey, onBlur, fieldProps, ...rest } = props;
   return (
-    <ProForm.Item {...rest}>
+    <ProForm.Item
+      {...rest}
+      rules={[
+        {
+          min: 6,
+          max: 30,
+          message: '标题至少需要6个字,最多30个字',
+        },
+        {
+          pattern: /^[\u4e00-\u9fa5a-zA-Z0-9《》""：+?%℃\s]+$/,
+          message: '符号仅支持书名号、引号、冒号、加号、问号、百分号、摄氏度，逗号可用空格代替',
+        },
+      ]}
+      extra={
+        <div>
+          <div>最少6个字,最多30个字</div>
+          <div>符号仅支持书名号、引号、冒号、加号、问号、百分号、摄氏度，逗号可用空格代替</div>
+        </div>
+      }
+    >
       <TextWithSelect {...fieldProps} />
     </ProForm.Item>
   );
 }
 
-export { ProFormTextWithSelect };
+function getMatchTitle(title) {
+  const reg = /[\u4e00-\u9fa5a-zA-Z0-9《》""：+?%℃\s]+/g;
+  return (title.match(reg) || []).join('');
+}
+
+export { getMatchTitle, ProFormTextWithSelect };

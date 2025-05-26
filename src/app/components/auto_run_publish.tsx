@@ -6,6 +6,7 @@ import { electronApi } from '@/electron';
 import { AccountStatus, PublishResourceType, PublishType } from '@/generated/prisma';
 import { App } from 'antd';
 import { useEffect } from 'react';
+import { getMatchTitle } from './form/pro_form_text_with_select';
 
 const INTERVAL = 30 * 60 * 1000;
 
@@ -28,6 +29,7 @@ async function runAutoPublish({ notification }) {
     resourceVideoDir,
     accounts: originalAccounts,
     title,
+    autoTitle,
     runResourceOfVideos,
   } = autoPublishSetting;
 
@@ -40,18 +42,33 @@ async function runAutoPublish({ notification }) {
     return;
   }
 
+  // 获取到文件列表
   const { data: res } = await electronApi.getDirectoryVideoFiles({
     directory: resourceVideoDir,
   });
 
   console.log('res', res);
 
+  // 更新自动发布设置
+  const { success: updateSuccess, message: updateMessage } =
+    await AutoPublishActions.updateAutoPublishSetting({
+      // 全部文件
+      runResourceOfVideos: JSON.stringify(res?.filePaths || []),
+      lastRunAt: new Date(),
+    });
+
+  if (!updateSuccess) {
+    notification.error({
+      message: updateMessage,
+    });
+    return;
+  }
+
   const hasRunFiles = runResourceOfVideos ? JSON.parse(runResourceOfVideos) : [];
   const files = (res?.filePaths || []).filter((file) => !hasRunFiles.includes(file));
+  console.log('待发布的文件', files);
 
-  console.log('files', files);
-
-  if (!files || !files.length) {
+  if (!files.length) {
     notification.info({
       message: `没有待发布的文件`,
     });
@@ -59,27 +76,37 @@ async function runAutoPublish({ notification }) {
     return;
   }
 
+  // 继续过滤出合法的文件
+  const validFiles = files.filter((file) => {
+    const title = file.split('/').pop()?.split('.')[0];
+    const matchTitle = getMatchTitle(title);
+    return matchTitle.length >= 6 && matchTitle.length <= 30;
+  });
+  const validFilesTitle = validFiles.map((file) => file.split('/').pop()?.split('.')[0]);
+  console.log('合法未扫描文件', validFilesTitle, validFilesTitle);
+
+  let message = `待发布视频文件 ${files.length} 个。`;
+
+  if (validFiles.length !== files.length) {
+    message += `但有 ${files.length - validFiles.length} 个文件被跳过，因为标题不合法。`;
+  }
+
   notification.info({
-    message: `发现待发布视频文件 ${files.length} 个，自动创建发布`,
+    message,
   });
 
   // 创建发布
-  for (const file of files) {
-    await PublishActions.createPublish({
+  validFiles.forEach((file, index) => {
+    const fileTitle = validFilesTitle[index]!;
+
+    PublishActions.createPublish({
       resourceType: PublishResourceType.VIDEO,
       resourceOfVideo: file,
-      title,
+      title: (autoTitle ? fileTitle : title) || '',
       description: '',
       publishType: PublishType.OFFICIAL,
       accountIds: accounts.map((account) => account.id),
     });
-  }
-
-  // 更新自动发布设置
-  await AutoPublishActions.updateAutoPublishSetting({
-    ...autoPublishSetting,
-    runResourceOfVideos: JSON.stringify(hasRunFiles.concat(files)),
-    lastRunAt: new Date(),
   });
 }
 
