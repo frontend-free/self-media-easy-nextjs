@@ -12,6 +12,7 @@ import { useIsDebug } from '../components/debug';
 import { LoadingButton } from '../components/loading_button';
 import { PlatformWithName } from '../components/platform';
 import { Resource } from '../components/resource';
+
 function Page() {
   const refCRUD = useRef<any | undefined>(undefined);
 
@@ -115,6 +116,22 @@ function Page() {
         const res = await TaskActions.pageTasks(params);
         return res;
       }}
+      toolBarRenderPre={
+        <Button
+          danger
+          onClick={() => {
+            modal.confirm({
+              title: '确定停止待运行任务？',
+              onOk: async () => {
+                await TaskActions.stopTasksOfPending();
+                refCRUD?.current?.reload();
+              },
+            });
+          }}
+        >
+          停止待运行任务
+        </Button>
+      }
       disabledCreate
       disabledDelete
       disabledUpdate

@@ -2,7 +2,15 @@
 
 import { EnumPlatform } from '@/generated/enums';
 import { Account, AccountStatus, Prisma, Publish, Task, TaskStatus } from '@/generated/prisma';
-import { createModel, deleteModel, getModelById, pageModel, prisma, updateModel } from './helper';
+import {
+  createModel,
+  deleteModel,
+  getModelById,
+  needAuth,
+  pageModel,
+  prisma,
+  updateModel,
+} from './helper';
 
 export type CreateTaskInput = Pick<Task, 'accountId' | 'publishId'>;
 export type UpdateTaskInput = Partial<
@@ -108,4 +116,29 @@ export async function deleteTask(id: string) {
       withUser: true,
     },
   );
+}
+
+export async function stopTasksOfPending() {
+  const { sessionUser } = await needAuth();
+
+  const tasks = await prisma.task.findMany({
+    where: {
+      status: TaskStatus.PENDING,
+      userId: sessionUser.id,
+      deletedAt: null,
+    },
+  });
+
+  if (tasks.length === 0) {
+    return;
+  }
+
+  await prisma.task.updateMany({
+    where: {
+      id: { in: tasks.map((task) => task.id) },
+    },
+    data: {
+      status: TaskStatus.CANCELLED,
+    },
+  });
 }
