@@ -43,22 +43,28 @@ async function runAutoTask({
   // 检查下参数
   else if (!platform || !authInfo || !resourceOfVideo) {
     error = '参数错误，请检查';
+  } else {
+    // 检查今天账号发布成功的任务数量
+    const count = await TaskActions.getTaskCountOfPublishByAccountId(task.accountId);
+    if (count > 2) {
+      error = '今天账号发布成功的任务数量已达到上限 2';
+    }
   }
+
   if (error) {
     // 更新任务状态
     await TaskActions.updateTask({
       id: task.id,
-      status: TaskStatus.FAILED,
+      status: TaskStatus.CANCELLED,
       remark: error,
       logs: JSON.stringify([error]),
-      endAt: new Date(),
     });
 
     onError?.(new Error(error));
     return;
   }
 
-  // 开发发布，更新状态
+  // 发布，更新状态
   await TaskActions.updateTask({
     id: task.id,
     status: TaskStatus.PUBLISHING,
@@ -117,6 +123,7 @@ async function runAutoTask({
       await TaskActions.updateTask({
         id: task.id,
         status: TaskStatus.FAILED,
+        remark: '发布失败',
         logs: JSON.stringify(res.data?.logs || []),
         endAt: new Date(),
       });
