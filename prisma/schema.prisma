@@ -65,14 +65,14 @@ model User {
   nickname String?
   isAdmin  Boolean @default(false)
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
   deletedAt DateTime?
 
-  tagCoachList TagCoach[]
-  Account      Account[]
-  publishes    Publish[]
-  tasks        Task[]
+  tagCoachList       TagCoach[]
+  Account            Account[]
+  publishes          Publish[]
+  tasks              Task[]
   autoPublishSetting AutoPublishSetting[]
 }
 
@@ -81,8 +81,8 @@ model TagCoach {
   id   String @id @default(uuid())
   name String
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
   deletedAt DateTime?
 
   userId  String
@@ -105,17 +105,17 @@ model Account {
   tagCoachId String?
   tagCoach   TagCoach? @relation(fields: [tagCoachId], references: [id])
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
   deletedAt DateTime?
 
-  userId String
-  user   User   @relation(fields: [userId], references: [id])
-  tasks  Task[]
+  userId    String
+  user      User      @relation(fields: [userId], references: [id])
+  tasks     Task[]
   publishes Publish[]
 
   autoPublishSettingId String?
-  autoPublishSetting AutoPublishSetting? @relation(fields: [autoPublishSettingId], references: [id])
+  autoPublishSetting   AutoPublishSetting? @relation(fields: [autoPublishSettingId], references: [id])
 }
 
 // 发布
@@ -129,19 +129,20 @@ model Publish {
 
   accounts Account[]
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
   deletedAt DateTime?
 
   userId String
   user   User   @relation(fields: [userId], references: [id])
-  tasks Task[] // 任务
+  tasks  Task[] // 任务
 }
 
 // 任务
 model Task {
   id      String     @id @default(uuid())
   status  TaskStatus @default(PENDING) // 任务状态
+  remark  String? // 任务备注
   logs    String? // 任务日志 JSON
   startAt DateTime? // 开始发布时间
   endAt   DateTime? // 结束发布时间
@@ -149,8 +150,8 @@ model Task {
   accountId String
   account   Account @relation(fields: [accountId], references: [id])
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
   deletedAt DateTime?
 
   userId String
@@ -164,12 +165,13 @@ model Task {
 model AutoPublishSetting {
   id String @id // 使用 userId 作为主键
 
-  enabled Boolean @default(false) // 是否启用
-  resourceVideoDir String? // 视频资源目录
-  title String? // 标题
-  accounts Account[]
+  enabled             Boolean   @default(false) // 是否启用
+  resourceVideoDir    String? // 视频资源目录
+  title               String? // 标题
+  autoTitle           Boolean?  @default(false) // 是否自动生成标题
+  accounts            Account[]
   runResourceOfVideos String? // 已运行视频资源列表
-  lastRunAt DateTime? // 上次运行时间
+  lastRunAt           DateTime? // 上次运行时间
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

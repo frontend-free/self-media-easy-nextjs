@@ -1,7 +1,7 @@
 'use client';
 
 import { electronApi } from '@/electron';
-import { ProForm, ProFormSwitch } from '@ant-design/pro-components';
+import { ProForm, ProFormDependency, ProFormSwitch } from '@ant-design/pro-components';
 import { Alert, App, Button, Divider } from 'antd';
 import dayjs from 'dayjs';
 import { useCallback, useEffect, useState } from 'react';
@@ -45,6 +45,8 @@ function ProFormDirectory(props) {
 function Page() {
   const { notification } = App.useApp();
 
+  const [form] = ProForm.useForm();
+
   const [data, setData] = useState<
     (AutoPublishSettingWithRelations & { accountIds: string[] }) | undefined
   >(undefined);
@@ -58,15 +60,25 @@ function Page() {
       throw new Error(message);
     }
 
-    setData({
+    const newData = {
       ...data!,
       accountIds: data!.accounts.map((account) => account.id) || [],
-    });
-  }, []);
+    };
+    setData(newData);
+
+    form.setFieldsValue(newData);
+  }, [form]);
 
   useEffect(() => {
     getData();
   }, []);
+
+  const autoTitle = ProForm.useWatch('autoTitle', form);
+  useEffect(() => {
+    if (autoTitle) {
+      form.setFieldValue('title', '');
+    }
+  }, [autoTitle, form]);
 
   return (
     <div>
@@ -94,8 +106,7 @@ function Page() {
       <div>
         {data && (
           <ProForm
-            key={data.updatedAt.getTime()}
-            initialValues={data}
+            form={form}
             onFinish={async (values) => {
               await AutoPublishActions.updateAutoPublishSetting(values);
 
@@ -111,24 +122,46 @@ function Page() {
               required
               rules={[{ required: true }]}
             />
-            <ProFormTextWithSelect
-              name="title"
-              label="标题"
+            <ProFormSwitch
+              name="autoTitle"
+              label="自动生成标题"
               required
-              rules={[
-                {
-                  required: true,
-                  min: 6,
-                  max: 30,
-                  message: '标题至少需要6个字,最多30个字',
-                },
-                {
-                  pattern: /^[\u4e00-\u9fa5a-zA-Z0-9《》""：+?%℃\s]+$/,
-                  message:
-                    '标题包含特殊字符，符号仅支持书名号、引号、冒号、加号、问号、百分号、摄氏度，逗号可用空格代替',
-                },
-              ]}
+              extra="取视频文件名作为标题，但是按标题的规则填入"
             />
+            <ProFormDependency name={['autoTitle']}>
+              {({ autoTitle }) => {
+                return (
+                  <ProFormTextWithSelect
+                    name="title"
+                    label="标题"
+                    rules={[
+                      {
+                        min: 6,
+                        max: 30,
+                        message: '标题至少需要6个字,最多30个字',
+                      },
+                      {
+                        pattern: /^[\u4e00-\u9fa5a-zA-Z0-9《》""：+?%℃\s]+$/,
+                        message:
+                          '符号仅支持书名号、引号、冒号、加号、问号、百分号、摄氏度，逗号可用空格代替',
+                      },
+                    ]}
+                    fieldProps={{
+                      disabled: autoTitle,
+                      placeholder: autoTitle ? '自动生成标题' : '请输入标题',
+                    }}
+                    extra={
+                      <div>
+                        <div>最少6个字,最多30个字</div>
+                        <div>
+                          符号仅支持书名号、引号、冒号、加号、问号、百分号、摄氏度，逗号可用空格代替
+                        </div>
+                      </div>
+                    }
+                  />
+                );
+              }}
+            </ProFormDependency>
             <ProFormSelectAccounts
               name="accountIds"
               label="账号"

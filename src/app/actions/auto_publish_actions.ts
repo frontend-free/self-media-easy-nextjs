@@ -6,7 +6,7 @@ import { needAuth, prisma, wrapServerAction } from './helper';
 export type UpdateAutoPublishSettingInput = Partial<
   Pick<
     AutoPublishSetting,
-    'enabled' | 'resourceVideoDir' | 'title' | 'lastRunAt' | 'runResourceOfVideos'
+    'enabled' | 'resourceVideoDir' | 'title' | 'autoTitle' | 'lastRunAt' | 'runResourceOfVideos'
   >
 > & { accountIds?: string[] };
 

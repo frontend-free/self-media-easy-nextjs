@@ -6,10 +6,11 @@ import { useEffect, useState } from 'react';
 interface TextWithSelectProps {
   value?: string;
   onChange: (value: string) => void;
+  disabled?: boolean;
 }
 
 function TextWithSelect(props: TextWithSelectProps) {
-  const { value, onChange } = props;
+  const { value, onChange, disabled } = props;
 
   const [options, setOptions] = useState<{ label: string; value: string }[]>([]);
 
@@ -30,6 +31,7 @@ function TextWithSelect(props: TextWithSelectProps) {
         onChange(value);
       }}
       allowClear
+      disabled={disabled}
     />
   );
 }

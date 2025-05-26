@@ -14,7 +14,7 @@ import {
 
 export type CreateTaskInput = Pick<Task, 'accountId' | 'publishId'>;
 export type UpdateTaskInput = Partial<
-  Pick<Task, 'id' | 'status' | 'logs' | 'startAt' | 'endAt'>
+  Pick<Task, 'id' | 'status' | 'remark' | 'logs' | 'startAt' | 'endAt'>
 > & {
   id: string;
 };
