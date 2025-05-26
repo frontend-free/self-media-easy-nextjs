@@ -49,6 +49,7 @@ async function runAutoTask({
     await TaskActions.updateTask({
       id: task.id,
       status: TaskStatus.FAILED,
+      remark: error,
       logs: JSON.stringify([error]),
       endAt: new Date(),
     });
@@ -90,7 +91,7 @@ async function runAutoTask({
   }
   // 失败更新任务
   else {
-    // 授权信息错误
+    // 授权信息失效
     if (res.data?.code === EnumCode.ERROR_AUTH_INFO_INVALID) {
       // 可能账号被删除，try catch 下
       try {
@@ -102,15 +103,24 @@ async function runAutoTask({
       } catch (error) {
         console.error('更新账号状态失败', error);
       }
-    }
 
-    // 更新任务状态
-    await TaskActions.updateTask({
-      id: task.id,
-      status: TaskStatus.FAILED,
-      logs: JSON.stringify(res.data?.logs || []),
-      endAt: new Date(),
-    });
+      // 更新任务状态
+      await TaskActions.updateTask({
+        id: task.id,
+        status: TaskStatus.FAILED,
+        remark: '账号授权失效',
+        logs: JSON.stringify(res.data?.logs || []),
+        endAt: new Date(),
+      });
+    } else {
+      // 更新任务状态
+      await TaskActions.updateTask({
+        id: task.id,
+        status: TaskStatus.FAILED,
+        logs: JSON.stringify(res.data?.logs || []),
+        endAt: new Date(),
+      });
+    }
 
     onError?.(new Error('发布失败'));
   }
