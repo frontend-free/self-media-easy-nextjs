@@ -56,8 +56,10 @@ export async function createPublish(data: CreatePublishInput) {
   if (rest.resourceOfVideo) {
     const { success, data } = await AutoPublishActions.getAutoPublishSetting();
     if (success) {
-      const runResourceOfVideos = JSON.parse(data?.runResourceOfVideos || '[]');
+      let runResourceOfVideos = JSON.parse(data?.runResourceOfVideos || '[]');
       runResourceOfVideos.push(rest.resourceOfVideo);
+      // 去重
+      runResourceOfVideos = Array.from(new Set(runResourceOfVideos));
       // 更新
       await AutoPublishActions.updateAutoPublishSetting({
         runResourceOfVideos: JSON.stringify(runResourceOfVideos),
