@@ -8,6 +8,7 @@ import { useCallback, useEffect, useState } from 'react';
 import * as AccountActions from '../actions/account_actions';
 import * as TaskActions from '../actions/task_actions';
 import { useIsDebug } from './debug';
+import { getFileName } from './resource';
 
 const maxRunCount = 1;
 let runningTaskIds: string[] = [];
@@ -147,7 +148,7 @@ function AutoRunTaskComponent() {
             {valueEnumPlatform[task.account?.platform]?.text} {task.account?.platformName}
           </div>
           <div>{task.publish?.title}</div>
-          <div>{task.publish?.resourceOfVideo.split('/').pop()}</div>
+          <div>{getFileName(task.publish?.resourceOfVideo)}</div>
         </div>
       );
 

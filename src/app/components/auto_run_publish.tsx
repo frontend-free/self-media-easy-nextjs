@@ -7,6 +7,7 @@ import { AccountStatus, PublishResourceType, PublishType } from '@/generated/pri
 import { App } from 'antd';
 import { useEffect } from 'react';
 import { isTitleValid } from './form/pro_form_text_with_select';
+import { getFileName } from './resource';
 
 const INTERVAL = 30 * 60 * 1000;
 
@@ -82,7 +83,7 @@ async function runAutoPublish({ notification }) {
   if (autoTitle) {
     // 继续过滤出合法的文件
     const validFiles = files.filter((file) => {
-      const title = file.split('/').pop()?.split('.')[0];
+      const title = getFileName(file);
       return isTitleValid(title);
     });
 
@@ -101,7 +102,7 @@ async function runAutoPublish({ notification }) {
 
   // 创建发布
   files.forEach((file) => {
-    const newTitle = autoTitle ? file.split('/').pop()?.split('.')[0] : title;
+    const newTitle = autoTitle ? getFileName(file) : title;
 
     console.log('newTitle', newTitle);
 
