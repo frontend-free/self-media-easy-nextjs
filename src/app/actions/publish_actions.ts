@@ -1,6 +1,7 @@
 'use server';
 
 import { Prisma, Publish } from '@/generated/prisma';
+import * as AutoPublishActions from './auto_publish_actions';
 import { createModel, deleteModel, needAuth, pageModel, prisma } from './helper';
 import * as TaskActions from './task_actions';
 
@@ -33,18 +34,6 @@ export async function pagePublishes(params: { pageSize: number; current: number;
   );
 }
 
-export async function deletePublish(id: string) {
-  return deleteModel<Prisma.PublishDelegate>(
-    {
-      model: prisma.publish,
-      id,
-    },
-    {
-      withUser: true,
-    },
-  );
-}
-
 export async function createPublish(data: CreatePublishInput) {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { accountIds, ...rest } = data;
@@ -64,6 +53,18 @@ export async function createPublish(data: CreatePublishInput) {
     },
   );
 
+  if (rest.resourceOfVideo) {
+    const { success, data } = await AutoPublishActions.getAutoPublishSetting();
+    if (success) {
+      const runResourceOfVideos = JSON.parse(data?.runResourceOfVideos || '[]');
+      runResourceOfVideos.push(rest.resourceOfVideo);
+      // 更新
+      await AutoPublishActions.updateAutoPublishSetting({
+        runResourceOfVideos: JSON.stringify(runResourceOfVideos),
+      });
+    }
+  }
+
   const publishId = publish.id;
 
   for (const accountId of data.accountIds) {
@@ -74,6 +75,18 @@ export async function createPublish(data: CreatePublishInput) {
   }
 
   return publish;
+}
+
+export async function deletePublish(id: string) {
+  return deleteModel<Prisma.PublishDelegate>(
+    {
+      model: prisma.publish,
+      id,
+    },
+    {
+      withUser: true,
+    },
+  );
 }
 
 /** 获取最近10条不同的标题 */
