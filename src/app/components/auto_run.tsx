@@ -123,7 +123,7 @@ async function runAutoTask({
       await TaskActions.updateTask({
         id: task.id,
         status: TaskStatus.FAILED,
-        remark: '发布失败',
+        remark: '请查看日志',
         logs: JSON.stringify(res.data?.logs || []),
         endAt: new Date(),
       });
