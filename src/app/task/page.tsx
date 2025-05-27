@@ -3,6 +3,7 @@
 import { EnumPlatform, valueEnumPlatform, valueEnumTaskStatus } from '@/generated/enums';
 import { AccountStatus, PublishResourceType } from '@/generated/prisma';
 import { App, Button } from 'antd';
+import dayjs from 'dayjs';
 import { useEffect, useRef } from 'react';
 import type { TaskWithRelations } from '../actions/task_actions';
 import * as TaskActions from '../actions/task_actions';
@@ -86,13 +87,17 @@ function Page() {
           title: '标题',
           dataIndex: ['publish', 'title'],
           search: true,
-        },
-        {
-          title: '视频',
-          dataIndex: ['publish', 'resourceOfVideo'],
-          render: (value) => (
-            <Resource resourceType={PublishResourceType.VIDEO} resourceOfVideo={value as string} />
-          ),
+          render: (_, record: TaskWithRelations) => {
+            return (
+              <div>
+                <div className="line-clamp-2">{record.publish.title}</div>
+                <Resource
+                  resourceType={PublishResourceType.VIDEO}
+                  resourceOfVideo={record.publish.resourceOfVideo as string}
+                />
+              </div>
+            );
+          },
         },
         {
           title: '状态',
@@ -101,15 +106,21 @@ function Page() {
           search: true,
         },
         {
+          title: '备注',
+          dataIndex: 'remark',
+        },
+        {
           title: '发布时间',
           dataIndex: 'endAt',
           valueType: 'dateTime',
-        },
-        {
-          title: '创建时间',
-          dataIndex: 'createdAt',
-          key: 'createdAt',
-          valueType: 'dateTime',
+          render: (_, record: TaskWithRelations) => {
+            return (
+              <div>
+                <div>发布 {dayjs(record.endAt).format('YYYY-MM-DD HH:mm:ss')}</div>
+                <div>创建 {dayjs(record.createdAt).format('YYYY-MM-DD HH:mm:ss')}</div>
+              </div>
+            );
+          },
         },
       ]}
       request={async (params) => {
