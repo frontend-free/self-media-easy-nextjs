@@ -92,13 +92,17 @@ const UserInfo = () => {
           onOpenChange={setShow}
           initialValues={user || {}}
           onFinish={handleFinish(async (values) => {
-            await UserActions.updateUser(values);
+            const { success } = await UserActions.updateUser(values);
 
-            message.success('修改成功');
+            if (success) {
+              message.success('修改成功');
 
-            getUser();
+              getUser();
 
-            return true;
+              return true;
+            }
+
+            return false;
           })}
           modalProps={{
             destroyOnClose: true,
