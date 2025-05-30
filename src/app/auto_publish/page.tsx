@@ -43,15 +43,13 @@ function ProFormDirectory(props) {
 }
 
 function Page() {
-  const { notification } = App.useApp();
+  const { notification, message } = App.useApp();
 
   const [form] = ProForm.useForm();
 
   const [data, setData] = useState<
     (AutoPublishSettingWithRelations & { accountIds: string[] }) | undefined
   >(undefined);
-
-  const { message } = App.useApp();
 
   const getData = useCallback(async () => {
     const { success, data, message } = await AutoPublishActions.getAutoPublishSetting();

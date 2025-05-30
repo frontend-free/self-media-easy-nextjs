@@ -77,6 +77,14 @@ const menuItems = [
       </div>
     ),
   },
+  {
+    type: 'divider',
+  },
+  {
+    key: '/setting',
+    label: '设置',
+    icon: <SettingOutlined />,
+  },
 ];
 
 function RootLayout({ children }: { children: React.ReactNode }) {

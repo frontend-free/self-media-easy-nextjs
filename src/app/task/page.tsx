@@ -116,8 +116,13 @@ function Page() {
           render: (_, record: TaskWithRelations) => {
             return (
               <div>
-                <div>发布 {dayjs(record.endAt).format('YYYY-MM-DD HH:mm:ss')}</div>
-                <div>创建 {dayjs(record.createdAt).format('YYYY-MM-DD HH:mm:ss')}</div>
+                <div>
+                  发布 {record.endAt ? dayjs(record.endAt).format('YYYY-MM-DD HH:mm:ss') : ''}
+                </div>
+                <div>
+                  创建{' '}
+                  {record.createdAt ? dayjs(record.createdAt).format('YYYY-MM-DD HH:mm:ss') : ''}
+                </div>
               </div>
             );
           },

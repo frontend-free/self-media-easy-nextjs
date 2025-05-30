@@ -74,6 +74,7 @@ model User {
   publishes          Publish[]
   tasks              Task[]
   autoPublishSetting AutoPublishSetting[]
+  setting            Setting[]
 }
 
 // 标签-教练
@@ -172,6 +173,17 @@ model AutoPublishSetting {
   accounts            Account[]
   runResourceOfVideos String? // 已运行视频资源列表
   lastRunAt           DateTime? // 上次运行时间
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [id], references: [id])
+}
+
+model Setting {
+  id String @id // 使用 userId 作为主键
+
+  publishCount Int @default(1) // 每个账号发布数量
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

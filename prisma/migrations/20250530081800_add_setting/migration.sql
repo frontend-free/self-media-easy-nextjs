@@ -1,0 +1,8 @@
+-- CreateTable
+CREATE TABLE "Setting" (
+    "id" TEXT NOT NULL PRIMARY KEY,
+    "publishCount" INTEGER NOT NULL DEFAULT 1,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" DATETIME NOT NULL,
+    CONSTRAINT "Setting_id_fkey" FOREIGN KEY ("id") REFERENCES "User" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
+);
