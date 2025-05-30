@@ -17,7 +17,7 @@ import {
   UserOutlined,
 } from '@ant-design/icons';
 import { AntdRegistry } from '@ant-design/nextjs-registry';
-import { App, ConfigProvider } from 'antd';
+import { App, ConfigProvider, MenuProps } from 'antd';
 import zhCN from 'antd/locale/zh_CN';
 import type { Metadata } from 'next';
 import { SessionProvider } from 'next-auth/react';
@@ -85,7 +85,7 @@ const menuItems = [
     label: '设置',
     icon: <SettingOutlined />,
   },
-];
+] as MenuProps['items'];
 
 function RootLayout({ children }: { children: React.ReactNode }) {
   return (
