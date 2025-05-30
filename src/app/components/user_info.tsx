@@ -61,11 +61,13 @@ const UserInfo = () => {
   const [user, setUser] = useState<User | undefined>(undefined);
 
   async function getUser() {
-    const { data } = await AuthActions.getUser();
+    const { success, data, message: errorMessage } = await AuthActions.getUser();
 
-    if (data) {
-      setUser(data);
+    if (!success) {
+      throw new Error(errorMessage || '获取用户信息失败');
     }
+
+    setUser(data);
   }
 
   useEffect(() => {
