@@ -28,7 +28,7 @@ function Version() {
 
     const res = semver.compare(latestVersion, version);
 
-    if (true || res === 1) {
+    if (res === 1) {
       modal.confirm({
         title: `发现新版本`,
         content: `当前版本: v${version}，最新版本: v${latestVersion}，请升级！`,
