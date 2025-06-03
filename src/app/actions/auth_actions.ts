@@ -43,7 +43,7 @@ export async function getUserByNamePassword({
 }) {
   return wrapServerAction(async () => {
     return prisma.user.findUnique({
-      where: { name, password },
+      where: { name, password, deletedAt: null },
     });
   });
 }
