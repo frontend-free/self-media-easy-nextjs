@@ -4,17 +4,18 @@ import { electronApi } from '@/electron';
 import { App } from 'antd';
 import { useEffect, useState } from 'react';
 import semver from 'semver';
-import * as OtherActions from '../actions/other_actions';
 import { DebugWrapVersion } from './debug';
 import { LoadingButton } from './loading_button';
 
-function getDownLoadURL({ version }: { version: string }) {
-  const prefix = `${process.env.NEXT_PUBLIC_DOWNLOAD_SERVER}/subject-media-electron-${version}`;
-  if (navigator.userAgent.includes('Mac')) {
-    return `${prefix}.dmg`;
-  }
+async function getLatestAppVersion() {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_DOWNLOAD_SERVER}/latest.json`).then((res) =>
+    res.json(),
+  );
 
-  return `${prefix}-setup.exe`;
+  return {
+    latestVersion: res.version,
+    downloadUrl: `${process.env.NEXT_PUBLIC_DOWNLOAD_SERVER}/${res.path}`,
+  };
 }
 
 function Version() {
@@ -23,21 +24,17 @@ function Version() {
   const { modal } = App.useApp();
 
   async function getLatestVersion({ silent }: { silent: boolean }) {
-    const { data: latestVersion, message } = await OtherActions.getLatestAppVersion();
-
-    if (!latestVersion) {
-      throw new Error(message);
-    }
+    const { latestVersion, downloadUrl } = await getLatestAppVersion();
 
     const res = semver.compare(latestVersion, version);
 
-    if (res === 1) {
+    if (true || res === 1) {
       modal.confirm({
         title: `发现新版本`,
         content: `当前版本: v${version}，最新版本: v${latestVersion}，请升级！`,
         okText: '升级',
         onOk: () => {
-          window.open(getDownLoadURL({ version: latestVersion }));
+          window.open(downloadUrl);
         },
       });
     } else {
