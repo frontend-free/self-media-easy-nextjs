@@ -5,6 +5,7 @@
   "private": true,
   "scripts": {
     "build-enums": "free-scripts build-code -i ./enums/enums.config.js -o ./src/generated -t antd && prettier ./src/generated --write",
+    "prebuild": "npx prisma migrate deploy; npx prisma generate;",
     "build": "next build --no-mangling",
     "start": "next start",
     "lint": "next lint",
