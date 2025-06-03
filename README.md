@@ -26,7 +26,7 @@ pnpm dev
 
 ```text
 DATABASE_URL="file:./prisma/prod.db"
-NEXT_PUBLIC_DOWNLOAD_SERVER="http://110.41.47.50:3001/auto-updates"
+NEXT_UPDATER_SERVER="http://47.105.58.181:3001/subject-media-electron"
 ```
 
 准备 auth 密钥
