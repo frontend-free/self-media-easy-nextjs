@@ -6,16 +6,18 @@ import { User } from '@/generated/prisma';
 
 import { RightOutlined } from '@ant-design/icons';
 import { ModalForm, ProFormText } from '@ant-design/pro-components';
-import { App, Dropdown } from 'antd';
+import { App, Dropdown, MenuProps } from 'antd';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { UserAvatar } from './avatar';
 import { handleFinish } from './crud';
 
 function UserDropdown({
+  user,
   children,
   setShow,
 }: {
+  user?: User;
   children: React.ReactNode;
   setShow: (show: boolean) => void;
 }) {
@@ -46,7 +48,14 @@ function UserDropdown({
             label: '退出',
             onClick: handleLogout,
           },
-        ],
+          user?.isAdmin && {
+            key: 'user_manage',
+            label: '用户管理',
+            onClick: () => {
+              router.push('/admin/users');
+            },
+          },
+        ].filter(Boolean) as MenuProps['items'],
       }}
     >
       {children}
@@ -76,7 +85,7 @@ const UserInfo = () => {
 
   return (
     <div className="p-2 pl-4">
-      <UserDropdown setShow={setShow}>
+      <UserDropdown setShow={setShow} user={user}>
         <div className="flex gap-2 items-center cursor-pointer">
           <div className="flex flex-1 gap-2 items-center">
             <UserAvatar size={30} src={user?.avatar || undefined} />

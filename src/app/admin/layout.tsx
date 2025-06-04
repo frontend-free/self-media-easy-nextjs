@@ -1,6 +1,10 @@
+'use client';
+
 import { AppMenu } from '@/app/components/menu';
 import { UserOutlined } from '@ant-design/icons';
 import '@ant-design/v5-patch-for-react-19';
+import { Button } from 'antd';
+import { useRouter } from 'next/navigation';
 
 const menuItems = [
   {
@@ -11,11 +15,13 @@ const menuItems = [
 ];
 
 function AdminLayout({ children }: { children: React.ReactNode }) {
+  const router = useRouter();
   return (
     <div className="h-screen w-screen flex bg-gray-200">
       <div className="w-[220px] h-full flex flex-col gap-2">
         <div className="h-5"></div>
         <div className="text-2xl font-bold text-center">Admin</div>
+        <Button onClick={() => router.push('/')}>返回</Button>
         <div className="flex-1">
           <AppMenu items={menuItems} />
         </div>
