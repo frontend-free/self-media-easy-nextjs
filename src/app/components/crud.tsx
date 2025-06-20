@@ -53,6 +53,7 @@ const ProTable = dynamic(
 ) as (typeof import('@ant-design/pro-components'))['ProTable'];
 
 interface CRUDProps<T> {
+  rowKey?: string;
   title: string;
   columns: ProColumns<T>[];
   detailForm?: (props: { type: 'create' | 'update' }) => ReactNode;
@@ -168,6 +169,7 @@ function Update<T>({
 
 function CRUD<T extends Record<string, any>>({
   ref,
+  rowKey,
   title,
   columns,
   request,
@@ -267,7 +269,7 @@ function CRUD<T extends Record<string, any>>({
       cardBordered
       headerTitle={title}
       actionRef={actionRef}
-      rowKey="id"
+      rowKey={rowKey || 'id'}
       columns={newColumns}
       request={handleRequest}
       toolBarRender={() => [

@@ -2,6 +2,8 @@
 
 import { EnumPlatform } from '@/generated/enums';
 import { Platform, PublishType } from '@/generated/prisma';
+import { electronApiOfRecorder } from './electron_recorder';
+import { getElectron } from './helper';
 
 enum EnumCode {
   /** 浏览器被关闭了 */
@@ -88,16 +90,6 @@ interface GetDirectoryVideoFilesResult {
     filePaths: string[];
   };
   message?: string;
-}
-
-function getElectron(): any {
-  // @ts-expect-error 先忽略
-  if (typeof window !== 'undefined' && window.electron) {
-    // @ts-expect-error 先忽略
-    return window.electron;
-  }
-
-  throw new Error('需要在桌面端使用');
 }
 
 // 都封装在这里
@@ -196,6 +188,24 @@ const electronApi = {
 
     await electron.ipcRenderer.invoke('installPlaywrightBrowser');
   },
+  ...electronApiOfRecorder,
 };
+
+// 拦截打日志
+Object.keys(electronApi).forEach((key) => {
+  const func = electronApi[key];
+
+  if (key !== 'isElectron') {
+    electronApi[key] = async (params) => {
+      console.log(key, 'params', params);
+
+      const res = await func(params);
+
+      console.log(key, 'res', res);
+
+      return res;
+    };
+  }
+});
 
 export { electronApi, EnumCode };
