@@ -108,8 +108,7 @@ function Records({ data, refresh }) {
     // 一分钟检查一次 autoCheckAndRecord
     const timer = setInterval(() => {
       autoCheckAndRecord();
-      // TODO 要调整
-    }, 1000 * 10);
+    }, 1000 * 60);
 
     return () => {
       clearInterval(timer);
