@@ -237,3 +237,52 @@ export function TagTaskStatus(props: { value?: EnumTaskStatus | string } & TagPr
 
   return null;
 }
+
+// --- RecorderStatus
+
+export enum EnumRecorderStatus {
+  INIT = 'INIT',
+  RECORDING = 'RECORDING',
+  END = 'END',
+}
+
+export const valueEnumRecorderStatus = {
+  [EnumRecorderStatus.INIT]: {
+    text: '初始化',
+    value: 'INIT',
+    color: 'default',
+  },
+  [EnumRecorderStatus.RECORDING]: {
+    text: '录制中',
+    value: 'RECORDING',
+    color: 'green',
+  },
+  [EnumRecorderStatus.END]: {
+    text: '已结束',
+    value: 'END',
+  },
+};
+
+export const listRecorderStatus = Object.keys(valueEnumRecorderStatus).map((key) => {
+  const item = valueEnumRecorderStatus[key];
+
+  return {
+    value: item.value !== undefined ? item.value : key,
+    label: item.text,
+    originData: item.data,
+  };
+});
+
+export function TagRecorderStatus(props: { value?: EnumRecorderStatus | string } & TagProps) {
+  const item = props.value && valueEnumRecorderStatus[props.value];
+
+  if (item) {
+    return (
+      <Tag color={item.color} {...props}>
+        {item.text}
+      </Tag>
+    );
+  }
+
+  return null;
+}

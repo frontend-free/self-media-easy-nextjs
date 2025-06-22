@@ -63,6 +63,19 @@ const enums = {
       color: 'gray',
     },
   },
+  RecorderStatus: {
+    INIT: {
+      text: '初始化',
+      color: 'default',
+    },
+    RECORDING: {
+      text: '录制中',
+      color: 'green',
+    },
+    END: {
+      text: '已结束',
+    },
+  },
 };
 
 module.exports = { enums };

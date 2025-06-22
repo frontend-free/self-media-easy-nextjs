@@ -1,15 +1,5 @@
+import { EnumRecorderStatus } from '@/generated/enums';
 import { ElectronApiResult, getElectron } from './helper';
-
-enum EnumRecorderStatus {
-  // 初始
-  INIT = 'init',
-  // 创建中
-  CREATING = 'creating',
-  // 记录中
-  RECORDING = 'recording',
-  // 结束了
-  END = 'end',
-}
 
 enum EnumRoomStatus {
   Living = 0,
