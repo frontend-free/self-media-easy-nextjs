@@ -94,6 +94,7 @@ function RecordItem({ item, onItem, info }) {
 
 function FFMPEGCheck() {
   const [isInstalled, setIsInstalled] = useState(false);
+  const { message } = App.useApp();
 
   useEffect(() => {
     electronApi.checkFfmpeg().then((res) => {
@@ -103,24 +104,27 @@ function FFMPEGCheck() {
 
   return (
     <Alert
-      type={'info'}
+      type={isInstalled ? 'info' : 'error'}
       message={
         <div>
           <span>请确保本地已安装好 ffmpeg 插件：</span>
           {isInstalled ? (
-            <span>已安装</span>
+            <span>已安装。</span>
           ) : (
-            <LoadingButton
-              type="link"
-              className="!px-0"
-              onClick={async () => {
-                await electronApi.installFfmpeg().then(() => {
+            <>
+              <LoadingButton
+                type="link"
+                className="!px-0"
+                onClick={async () => {
+                  await electronApi.installFfmpeg();
                   setIsInstalled(true);
-                });
-              }}
-            >
-              点我检查和安装
-            </LoadingButton>
+                  message.success('安装成功');
+                }}
+              >
+                点我检查和安装
+              </LoadingButton>
+              <span>，请耐心等待，大约 70MB。</span>
+            </>
           )}
         </div>
       }
@@ -242,7 +246,19 @@ function Records({ data, refresh }) {
           请根据自身网络情况设置录制直播间数量，一般同时直播 3 个左右。
         </span>
         <div className="flex-1"></div>
-        <Button onClick={doAutoCheckAndRecord}>立即扫描</Button>
+        <span className="text-gray-500">默认一分钟扫描一次</span>
+        <LoadingButton
+          onClick={async () => {
+            await doAutoCheckAndRecord();
+            message.info('扫描中');
+
+            return new Promise((resolve) => {
+              setTimeout(() => resolve(), 500);
+            });
+          }}
+        >
+          立即扫描
+        </LoadingButton>
       </div>
 
       {recorderList.map((item, index) => (
