@@ -28,7 +28,12 @@ function Detail({
       initialValues={data}
       onFinish={onFinish}
     >
-      <ProFormText name="roomId" label="直播间ID" />
+      <ProFormText
+        name="roomId"
+        label="直播间ID"
+        extra="如 46766877522"
+        rules={[{ required: true }, { pattern: /^\d+$/, message: '请输入数字' }]}
+      />
       <ProFormText name="description" label="备注" />
       <ProFormSwitch name="auto" label="自动录制" />
     </ModalForm>
