@@ -96,10 +96,14 @@ function FFMPEGCheck() {
   const [isInstalled, setIsInstalled] = useState(false);
   const { message } = App.useApp();
 
+  const checkFfmpeg = async () => {
+    const res = await electronApi.checkFfmpeg();
+    setIsInstalled(!!res.data);
+    return res;
+  };
+
   useEffect(() => {
-    electronApi.checkFfmpeg().then((res) => {
-      setIsInstalled(!!res.data);
-    });
+    checkFfmpeg();
   }, []);
 
   return (
@@ -116,9 +120,9 @@ function FFMPEGCheck() {
                 type="link"
                 className="!px-0"
                 onClick={async () => {
-                  const res = await electronApi.checkFfmpeg();
+                  const res = await checkFfmpeg();
 
-                  if (res.success) {
+                  if (res.data) {
                     message.success('已安装');
                     setIsInstalled(true);
                     return;
@@ -126,7 +130,7 @@ function FFMPEGCheck() {
 
                   message.info('未安装，开始安装...');
                   await electronApi.installFfmpeg();
-                  setIsInstalled(true);
+                  await checkFfmpeg();
                   message.success('安装成功');
                 }}
               >
