@@ -5,8 +5,8 @@ import { RecorderInfo } from '@/electron/electron_recorder';
 import { TagRecorderStatus } from '@/generated/enums';
 import { ModalForm, ProFormSwitch, ProFormText } from '@ant-design/pro-components';
 import { usePrevious } from 'ahooks';
-import { Alert, App, Button, Tag } from 'antd';
-import { useEffect, useMemo, useState } from 'react';
+import { Alert, App, Button, Divider, Tag } from 'antd';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import * as SettingActions from '../actions/setting_actions';
 
 function Detail({
@@ -103,30 +103,33 @@ function Records({ data, refresh }) {
 
   const [infos, setInfos] = useState<Record<string, RecorderInfo>>({});
 
-  useEffect(() => {
-    async function autoCheckAndRecord() {
-      for (const roomId of autoRoomIds) {
-        // 没目录，忽略
-        if (!data?.recorderOutputDir) {
-          return;
-        }
-
-        await electronApi.autoCheckAndRecord({
-          roomId,
-          outputDir: data.recorderOutputDir,
-        });
+  const doAutoCheckAndRecord = useCallback(async () => {
+    for (const roomId of autoRoomIds) {
+      // 没目录，忽略
+      if (!data?.recorderOutputDir) {
+        return;
       }
-    }
 
+      await electronApi.autoCheckAndRecord({
+        roomId,
+        outputDir: data.recorderOutputDir,
+      });
+    }
+  }, [autoRoomIds, data?.recorderOutputDir]);
+
+  useEffect(() => {
     // 一分钟检查一次 autoCheckAndRecord
     const timer = setInterval(() => {
-      autoCheckAndRecord();
+      doAutoCheckAndRecord();
     }, 1000 * 60);
+
+    // 开始扫描一次
+    doAutoCheckAndRecord();
 
     return () => {
       clearInterval(timer);
     };
-  }, [autoRoomIds, data?.recorderOutputDir]);
+  }, [doAutoCheckAndRecord]);
 
   useEffect(() => {
     async function getRecords() {
@@ -177,7 +180,8 @@ function Records({ data, refresh }) {
         </Button>
         {data?.recorderOutputDir}
       </div>
-      <div className="flex items-center gap-2">
+      <Divider />
+      <div className="flex items-center gap-2 justify-between">
         <Detail
           onFinish={async (values) => {
             const exist = recorderList.find((item) => item.roomId === values.roomId);
@@ -197,7 +201,9 @@ function Records({ data, refresh }) {
         >
           <Button type="primary">添加直播间</Button>
         </Detail>
+        <Button onClick={doAutoCheckAndRecord}>立即扫描</Button>
       </div>
+
       {recorderList.map((item, index) => (
         <RecordItem
           key={item.roomId}
