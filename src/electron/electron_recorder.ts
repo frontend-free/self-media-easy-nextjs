@@ -31,13 +31,13 @@ const electronApiOfRecorder = {
     roomId: string;
     outputDir: string;
     fileName?: string;
-  }): Promise<ElectronApiResult<RecorderInfo>> => {
+  }): ElectronApiResult<RecorderInfo> => {
     return await getElectron().ipcRenderer.invoke('autoCheckAndRecord', params);
   },
-  stopRecord: async (params: { roomId: string }): Promise<ElectronApiResult<void>> => {
+  stopRecord: async (params: { roomId: string }): ElectronApiResult<void> => {
     return await getElectron().ipcRenderer.invoke('stopRecord', params);
   },
-  getRecorders: async (): Promise<ElectronApiResult<Record<string, RecorderInfo>>> => {
+  getRecorders: async (): ElectronApiResult<Record<string, RecorderInfo>> => {
     return await getElectron().ipcRenderer.invoke('getRecorders');
   },
 };

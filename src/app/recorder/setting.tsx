@@ -8,6 +8,7 @@ import { usePrevious } from 'ahooks';
 import { Alert, App, Button, Divider, Tag } from 'antd';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import * as SettingActions from '../actions/setting_actions';
+import { LoadingButton } from '../components/loading_button';
 
 function Detail({
   data,
@@ -91,6 +92,42 @@ function RecordItem({ item, onItem, info }) {
   );
 }
 
+function FFMPEGCheck() {
+  const [isInstalled, setIsInstalled] = useState(false);
+
+  useEffect(() => {
+    electronApi.checkFfmpeg().then((res) => {
+      setIsInstalled(!!res.data);
+    });
+  }, []);
+
+  return (
+    <Alert
+      type={'info'}
+      message={
+        <div>
+          <span>请确保本地已安装好 ffmpeg 插件：</span>
+          {isInstalled ? (
+            <span>已安装</span>
+          ) : (
+            <LoadingButton
+              type="link"
+              className="!px-0"
+              onClick={async () => {
+                await electronApi.installFfmpeg().then(() => {
+                  setIsInstalled(true);
+                });
+              }}
+            >
+              点我检查和安装
+            </LoadingButton>
+          )}
+        </div>
+      }
+    />
+  );
+}
+
 function Records({ data, refresh }) {
   const { message } = App.useApp();
   const recorderList = useMemo(() => {
@@ -162,7 +199,7 @@ function Records({ data, refresh }) {
 
   return (
     <div className="flex flex-col gap-2">
-      <Alert message="请根据自身网络情况设置录制直播间数量，一般 5 个左右。" type="info" />
+      <FFMPEGCheck />
       <div className="flex items-center gap-2">
         视频存放目录：
         <Button
@@ -181,7 +218,7 @@ function Records({ data, refresh }) {
         {data?.recorderOutputDir}
       </div>
       <Divider />
-      <div className="flex items-center gap-2 justify-between">
+      <div className="flex items-center gap-2">
         <Detail
           onFinish={async (values) => {
             const exist = recorderList.find((item) => item.roomId === values.roomId);
@@ -201,6 +238,10 @@ function Records({ data, refresh }) {
         >
           <Button type="primary">添加直播间</Button>
         </Detail>
+        <span className="text-gray-500">
+          请根据自身网络情况设置录制直播间数量，一般同时直播 3 个左右。
+        </span>
+        <div className="flex-1"></div>
         <Button onClick={doAutoCheckAndRecord}>立即扫描</Button>
       </div>
 

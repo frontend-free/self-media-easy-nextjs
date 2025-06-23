@@ -3,93 +3,13 @@
 import { EnumPlatform } from '@/generated/enums';
 import { Platform, PublishType } from '@/generated/prisma';
 import { electronApiOfRecorder } from './electron_recorder';
-import { getElectron } from './helper';
+import { ElectronApiResult, getElectron } from './helper';
 
 enum EnumCode {
   /** 浏览器被关闭了 */
   ERROR_CLOSED = 'ERROR_CLOSED',
   /** 授权信息无效 */
   ERROR_AUTH_INFO_INVALID = 'ERROR_AUTH_INFO_INVALID',
-}
-
-interface PlatformAuthParams {
-  platform: EnumPlatform;
-  isDebug?: boolean;
-}
-interface PlatformAuthResult {
-  success: boolean;
-  data?: {
-    code: EnumCode;
-    platform: string;
-    platformName?: string;
-    platformAvatar?: string;
-    platformId?: string;
-    authInfo?: string;
-    logs?: string[];
-  };
-  message?: string;
-}
-
-interface PlatformAuthCheckParams {
-  platform: EnumPlatform;
-  authInfo: string;
-  isDebug?: boolean;
-}
-interface PlatformAuthCheckResult {
-  success: boolean;
-  data?: {
-    code: EnumCode;
-    platform: EnumPlatform;
-    logs?: string[];
-  };
-  message?: string;
-}
-
-interface PlatformPublishParams {
-  platform: Platform;
-  authInfo: string;
-  resourceOfVideo: string;
-  title?: string;
-  description?: string;
-  publishType?: PublishType;
-  isDebug?: boolean;
-}
-interface PlatformPublishResult {
-  success: boolean;
-  data?: {
-    code: EnumCode;
-    platform: Platform;
-    logs?: string[];
-  };
-  message?: string;
-}
-
-interface ShowOpenDialogOfOpenFileResult {
-  success: boolean;
-  data?: {
-    filePaths: string[];
-  };
-  message?: string;
-}
-
-interface ShowOpenDialogOfOpenDirectoryResult {
-  success: boolean;
-  data?: {
-    filePaths: string[];
-  };
-  message?: string;
-}
-
-interface GetDirectoryVideoFilesParams {
-  directory: string;
-  lastRunAt?: Date;
-}
-interface GetDirectoryVideoFilesResult {
-  success: boolean;
-  data?: {
-    filePaths: string[];
-  };
-  message?: string;
 }
 
 // 都封装在这里
@@ -105,88 +25,79 @@ const electronApi = {
     }
   },
   getVersion: async (): Promise<string> => {
-    const electron = getElectron();
-
-    const res: string = await electron.ipcRenderer.invoke('getVersion');
+    const res: string = await getElectron().ipcRenderer.invoke('getVersion');
 
     return res;
   },
-  platformAuth: async (params: PlatformAuthParams): Promise<PlatformAuthResult> => {
-    const electron = getElectron();
-
-    console.log('platformAuth params', params);
-    const res: PlatformAuthResult = await electron.ipcRenderer.invoke('platformAuth', params);
-
-    console.log('platformAuth res', res);
-    return res;
+  platformAuth: async (params: {
+    platform: EnumPlatform;
+    isDebug?: boolean;
+  }): ElectronApiResult<{
+    code: EnumCode;
+    platform: string;
+    platformName?: string;
+    platformAvatar?: string;
+    platformId?: string;
+    authInfo?: string;
+    logs?: string[];
+  }> => {
+    return await getElectron().ipcRenderer.invoke('platformAuth', params);
   },
-  platformAuthCheck: async (params: PlatformAuthCheckParams): Promise<PlatformAuthCheckResult> => {
-    const electron = getElectron();
-
-    console.log('platformAuthCheck params', params);
-    const res: PlatformAuthCheckResult = await electron.ipcRenderer.invoke(
-      'platformAuthCheck',
-      params,
-    );
-
-    return res;
+  platformAuthCheck: async (params: {
+    platform: EnumPlatform;
+    authInfo: string;
+    isDebug?: boolean;
+  }): ElectronApiResult<{
+    code: EnumCode;
+    platform: EnumPlatform;
+    logs?: string[];
+  }> => {
+    return await getElectron().ipcRenderer.invoke('platformAuthCheck', params);
   },
-  platformPublish: async (params: PlatformPublishParams): Promise<PlatformPublishResult> => {
-    const electron = getElectron();
-
-    console.log('platformPublish params', params);
-    const res: PlatformPublishResult = await electron.ipcRenderer.invoke('platformPublish', params);
-
-    console.log('platformPublish res', res);
-
-    return res;
+  platformPublish: async (params: {
+    platform: Platform;
+    authInfo: string;
+    resourceOfVideo: string;
+    title?: string;
+    description?: string;
+    publishType?: PublishType;
+    isDebug?: boolean;
+  }): ElectronApiResult<{
+    code: EnumCode;
+    platform: Platform;
+    logs?: string[];
+  }> => {
+    return await getElectron().ipcRenderer.invoke('platformPublish', params);
   },
-  showOpenDialogOfOpenFile: async (): Promise<ShowOpenDialogOfOpenFileResult> => {
-    const electron = getElectron();
-
-    const res: ShowOpenDialogOfOpenFileResult = await electron.ipcRenderer.invoke(
-      'showOpenDialogOfOpenFile',
-    );
-
-    console.log('showOpenDialogOfOpenFile res', res);
-
-    return res;
+  showOpenDialogOfOpenFile: async (): ElectronApiResult<{
+    filePaths: string[];
+  }> => {
+    return await getElectron().ipcRenderer.invoke('showOpenDialogOfOpenFile');
   },
-  showOpenDialogOfOpenDirectory: async (): Promise<ShowOpenDialogOfOpenDirectoryResult> => {
-    const electron = getElectron();
-
-    const res: ShowOpenDialogOfOpenDirectoryResult = await electron.ipcRenderer.invoke(
-      'showOpenDialogOfOpenDirectory',
-    );
-
-    console.log('showOpenDialogOfOpenDirectory res', res);
-
-    return res;
+  showOpenDialogOfOpenDirectory: async (): ElectronApiResult<{
+    filePaths: string[];
+  }> => {
+    return await getElectron().ipcRenderer.invoke('showOpenDialogOfOpenDirectory');
   },
-  getDirectoryVideoFiles: async (
-    params: GetDirectoryVideoFilesParams,
-  ): Promise<GetDirectoryVideoFilesResult> => {
-    const electron = getElectron();
-
-    console.log('getDirectoryVideoFiles params', params);
-    const res: GetDirectoryVideoFilesResult = await electron.ipcRenderer.invoke(
-      'getDirectoryVideoFiles',
-      params,
-    );
-
-    console.log('getDirectoryVideoFiles res', res);
-
-    return res;
+  getDirectoryVideoFiles: async (params: {
+    directory: string;
+    lastRunAt?: Date;
+  }): ElectronApiResult<{
+    filePaths: string[];
+  }> => {
+    return await getElectron().ipcRenderer.invoke('getDirectoryVideoFiles', params);
   },
   checkPlaywrightBrowser: async (): Promise<void> => {
-    const electron = getElectron();
-
-    await electron.ipcRenderer.invoke('checkPlaywrightBrowser');
+    await getElectron().ipcRenderer.invoke('checkPlaywrightBrowser');
   },
   installPlaywrightBrowser: async (): Promise<void> => {
-    const electron = getElectron();
-
-    await electron.ipcRenderer.invoke('installPlaywrightBrowser');
+    await getElectron().ipcRenderer.invoke('installPlaywrightBrowser');
+  },
+  checkFfmpeg: async (): ElectronApiResult<string> => {
+    return await getElectron().ipcRenderer.invoke('checkFfmpeg');
+  },
+  installFfmpeg: async (): ElectronApiResult<void> => {
+    return await getElectron().ipcRenderer.invoke('installFfmpeg');
   },
   ...electronApiOfRecorder,
 };

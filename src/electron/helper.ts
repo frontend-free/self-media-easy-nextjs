@@ -1,8 +1,8 @@
-interface ElectronApiResult<T> {
+type ElectronApiResult<T> = Promise<{
   success: boolean;
   data?: T;
   message?: string;
-}
+}>;
 
 function getElectron(): any {
   // @ts-expect-error 先忽略
