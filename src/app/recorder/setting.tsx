@@ -5,7 +5,7 @@ import { RecorderInfo } from '@/electron/electron_recorder';
 import { TagRecorderStatus } from '@/generated/enums';
 import { ModalForm, ProFormSwitch, ProFormText } from '@ant-design/pro-components';
 import { usePrevious } from 'ahooks';
-import { Alert, Button, Tag } from 'antd';
+import { Alert, App, Button, Tag } from 'antd';
 import { useEffect, useMemo, useState } from 'react';
 import * as SettingActions from '../actions/setting_actions';
 
@@ -30,9 +30,16 @@ function Detail({
     >
       <ProFormText
         name="roomId"
-        label="直播间ID"
-        extra="如 46766877522"
-        rules={[{ required: true }, { pattern: /^\d+$/, message: '请输入数字' }]}
+        label="直播间ID或者贴入直播间地址"
+        extra="如 46766877522，或者 https://live.douyin.com/46766877522"
+        rules={[{ required: true }]}
+        transform={(value) => {
+          if (value.includes('live.douyin.com/')) {
+            return new URL(value).pathname.slice(1);
+          }
+          return value;
+        }}
+        disabled={!!data?.roomId}
       />
       <ProFormText name="description" label="备注" />
       <ProFormSwitch name="auto" label="自动录制" />
@@ -85,6 +92,7 @@ function RecordItem({ item, onItem, info }) {
 }
 
 function Records({ data, refresh }) {
+  const { message } = App.useApp();
   const recorderList = useMemo(() => {
     return data?.recorderList ? JSON.parse(data.recorderList) : [];
   }, [data]);
@@ -172,6 +180,12 @@ function Records({ data, refresh }) {
       <div className="flex items-center gap-2">
         <Detail
           onFinish={async (values) => {
+            const exist = recorderList.find((item) => item.roomId === values.roomId);
+            if (exist) {
+              message.error('直播间已存在');
+              return false;
+            }
+
             const newRecorderList = [...recorderList, values];
 
             SettingActions.updateSetting({ recorderList: JSON.stringify(newRecorderList) });
