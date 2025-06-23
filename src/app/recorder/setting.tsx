@@ -116,6 +116,15 @@ function FFMPEGCheck() {
                 type="link"
                 className="!px-0"
                 onClick={async () => {
+                  const res = await electronApi.checkFfmpeg();
+
+                  if (res.success) {
+                    message.success('已安装');
+                    setIsInstalled(true);
+                    return;
+                  }
+
+                  message.info('未安装，开始安装...');
                   await electronApi.installFfmpeg();
                   setIsInstalled(true);
                   message.success('安装成功');
