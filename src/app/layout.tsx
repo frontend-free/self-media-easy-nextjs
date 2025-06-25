@@ -15,7 +15,6 @@ import {
   SettingOutlined,
   UnorderedListOutlined,
   UserOutlined,
-  VideoCameraOutlined,
 } from '@ant-design/icons';
 import { AntdRegistry } from '@ant-design/nextjs-registry';
 import { App, ConfigProvider, MenuProps } from 'antd';
@@ -40,21 +39,11 @@ const menuItems = [
     icon: <HomeOutlined />,
   },
   {
-    type: 'divider',
-  },
-  {
     key: '/account',
     label: '账号',
     icon: <UserOutlined />,
   },
-  {
-    type: 'divider',
-  },
-  {
-    key: '/publish',
-    label: '发布',
-    icon: <SendOutlined />,
-  },
+
   // {
   //   key: '/tag_coach',
   //   label: '教练',
@@ -85,20 +74,14 @@ const menuItems = [
     ),
   },
   {
-    type: 'divider',
-  },
-  {
-    key: '/recorder',
-    label: '抖音直播录制',
-    icon: <VideoCameraOutlined />,
-  },
-  {
-    type: 'divider',
-  },
-  {
     key: '/setting',
     label: '设置',
     icon: <SettingOutlined />,
+  },
+  {
+    key: '/publish',
+    label: '发布',
+    icon: <SendOutlined />,
   },
 ] as MenuProps['items'];
 
