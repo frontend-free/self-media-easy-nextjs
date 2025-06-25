@@ -245,7 +245,7 @@ function Records({ data, refresh }) {
       <div>
         <div>
           <span className="text-red-500">*</span>
-          <span>视频存放目录：</span>
+          <span>录制视频存放目录：</span>
           <span className="text-gray-500">
             (请不要和自动发布目录配置一致，因为录制文件可能没完成！)
           </span>

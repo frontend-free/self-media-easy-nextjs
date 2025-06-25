@@ -15,6 +15,7 @@ import {
   SettingOutlined,
   UnorderedListOutlined,
   UserOutlined,
+  VideoCameraOutlined,
 } from '@ant-design/icons';
 import { AntdRegistry } from '@ant-design/nextjs-registry';
 import { App, ConfigProvider, MenuProps } from 'antd';
@@ -77,6 +78,11 @@ const menuItems = [
     key: '/setting',
     label: '设置',
     icon: <SettingOutlined />,
+  },
+  {
+    key: '/recorder',
+    label: '抖音直播录制',
+    icon: <VideoCameraOutlined />,
   },
   {
     key: '/publish',
