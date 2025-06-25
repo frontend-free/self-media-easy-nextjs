@@ -3,12 +3,49 @@
 import { electronApi } from '@/electron';
 import { RecorderInfo } from '@/electron/electron_recorder';
 import { TagRecorderStatus } from '@/generated/enums';
+import { QuestionCircleOutlined } from '@ant-design/icons';
 import { ModalForm, ProFormSwitch, ProFormText } from '@ant-design/pro-components';
 import { usePrevious } from 'ahooks';
-import { Alert, App, Button, Divider, Tag } from 'antd';
+import { Alert, App, Button, Divider, Tag, Tooltip } from 'antd';
+import Image from 'next/image';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import * as SettingActions from '../actions/setting_actions';
 import { LoadingButton } from '../components/loading_button';
+import Img from './image.png';
+
+function RoomId({ disabled }) {
+  return (
+    <ProFormText
+      name="roomId"
+      label="直播间ID"
+      extra={
+        <div>
+          <div>直播间ID 46766877522，或者直播间地址 https://live.douyin.com/46766877522</div>
+          <div>
+            或者抖音号 238668114
+            <Tooltip
+              title={
+                <div>
+                  <Image src={Img} alt="抖音号" />
+                </div>
+              }
+            >
+              <QuestionCircleOutlined />
+            </Tooltip>
+          </div>
+        </div>
+      }
+      rules={[{ required: true }]}
+      transform={(value) => {
+        if (value.includes('live.douyin.com/')) {
+          return new URL(value).pathname.slice(1);
+        }
+        return value;
+      }}
+      disabled={disabled}
+    />
+  );
+}
 
 function Detail({
   data,
@@ -29,24 +66,7 @@ function Detail({
       initialValues={data}
       onFinish={onFinish}
     >
-      <ProFormText
-        name="roomId"
-        label="直播间ID"
-        extra={
-          <div>
-            <div>如直播间ID 46766877522</div>
-            <div>或者直播间地址 https://live.douyin.com/46766877522</div>
-          </div>
-        }
-        rules={[{ required: true }]}
-        transform={(value) => {
-          if (value.includes('live.douyin.com/')) {
-            return new URL(value).pathname.slice(1);
-          }
-          return value;
-        }}
-        disabled={!!data?.roomId}
-      />
+      <RoomId disabled={!!data?.roomId} />
       <ProFormText name="description" label="备注" />
       <ProFormSwitch name="auto" label="自动录制" />
     </ModalForm>
