@@ -6,9 +6,6 @@ import { AdminPathComponent, AuthPathComponent } from '@/app/components/path';
 import { UserInfo } from '@/app/components/user_info';
 import { ErrorComponent } from '@/app/lib/error';
 import { initDatabase } from '@/app/lib/init_db';
-
-import '@ant-design/v5-patch-for-react-19';
-
 import {
   HomeOutlined,
   SendOutlined,
@@ -18,12 +15,14 @@ import {
   VideoCameraOutlined,
 } from '@ant-design/icons';
 import { AntdRegistry } from '@ant-design/nextjs-registry';
+import '@ant-design/v5-patch-for-react-19';
 import { App, ConfigProvider, MenuProps } from 'antd';
 import zhCN from 'antd/locale/zh_CN';
 import type { Metadata } from 'next';
 import { SessionProvider } from 'next-auth/react';
 import { Version } from './components/version';
 import './globals.css';
+import { AutoRunRecord } from './recorder/auto_run_record';
 
 // 初始化数据库
 initDatabase().catch(console.error);
@@ -41,15 +40,9 @@ const menuItems = [
   },
   {
     key: '/account',
-    label: '账号',
+    label: '账号（学员领学时）',
     icon: <UserOutlined />,
   },
-
-  // {
-  //   key: '/tag_coach',
-  //   label: '教练',
-  //   icon: <UserOutlined />,
-  // },
   {
     key: '/task',
     label: (
@@ -81,8 +74,15 @@ const menuItems = [
   },
   {
     key: '/recorder',
-    label: '抖音直播录制',
-    icon: <VideoCameraOutlined />,
+    label: (
+      <div className="flex items-center gap-2">
+        <VideoCameraOutlined />
+        <div>抖音直播录制</div>
+        <AuthComponent>
+          <AutoRunRecord />
+        </AuthComponent>
+      </div>
+    ),
   },
   {
     key: '/publish',

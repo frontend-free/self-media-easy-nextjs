@@ -8,9 +8,11 @@ import { ModalForm, ProFormSwitch, ProFormText } from '@ant-design/pro-component
 import { usePrevious } from 'ahooks';
 import { Alert, App, Button, Divider, Tag, Tooltip } from 'antd';
 import Image from 'next/image';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import * as SettingActions from '../actions/setting_actions';
+import { ProFormTextWithSelect } from '../components/form/pro_form_text_with_select';
 import { LoadingButton } from '../components/loading_button';
+import { useDoAutoCheckAndRecord } from './auto_run_record';
 import Img from './image.png';
 
 function RoomId({ disabled }) {
@@ -69,6 +71,7 @@ function Detail({
       <RoomId disabled={!!data?.roomId} />
       <ProFormText name="description" label="备注" />
       <ProFormSwitch name="auto" label="自动录制" />
+      <ProFormTextWithSelect name="title" label="自动标题" />
     </ModalForm>
   );
 }
@@ -78,8 +81,11 @@ function RecordItem({ item, onItem, info }) {
 
   return (
     <div key={item.roomId} className="flex gap-4 items-center c-border-bottom p-2">
-      <div>直播间ID: {item.roomId}</div>
-      <div>备注: {item.description}</div>
+      <div>
+        {item.roomId} {item.description ? `(${item.description})` : ''}
+      </div>
+
+      <div>标题: {item.title || '-'}</div>
       <div>
         自动录制: <Tag color={item.auto ? 'green' : 'default'}>{item.auto ? '开启' : '关闭'}</Tag>
       </div>
@@ -172,43 +178,17 @@ function FFMPEGCheck() {
 
 function Records({ data, refresh }) {
   const { message } = App.useApp();
+
   const recorderList = useMemo(() => {
     return data?.recorderList ? JSON.parse(data.recorderList) : [];
   }, [data]);
-
   const autoRoomIds = useMemo(() => {
     return recorderList.filter((item) => item.auto).map((item) => item.roomId);
   }, [recorderList]);
 
   const [infos, setInfos] = useState<Record<string, RecorderInfo>>({});
 
-  const doAutoCheckAndRecord = useCallback(async () => {
-    for (const roomId of autoRoomIds) {
-      // 没目录，忽略
-      if (!data?.recorderOutputDir) {
-        return;
-      }
-
-      await electronApi.autoCheckAndRecord({
-        roomId,
-        outputDir: data.recorderOutputDir,
-      });
-    }
-  }, [autoRoomIds, data?.recorderOutputDir]);
-
-  useEffect(() => {
-    // 一分钟检查一次 autoCheckAndRecord
-    const timer = setInterval(() => {
-      doAutoCheckAndRecord();
-    }, 1000 * 60);
-
-    // 开始扫描一次
-    doAutoCheckAndRecord();
-
-    return () => {
-      clearInterval(timer);
-    };
-  }, [doAutoCheckAndRecord]);
+  const { doAutoCheckAndRecord } = useDoAutoCheckAndRecord();
 
   useEffect(() => {
     async function getRecords() {
