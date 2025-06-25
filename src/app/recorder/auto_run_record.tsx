@@ -20,7 +20,7 @@ function useDoAutoCheckAndRecord() {
       await electronApi.autoCheckAndRecord({
         roomId: item.roomId,
         outputDir: data.recorderOutputDir,
-        fileName: item.fileName,
+        fileName: item.title,
       });
     }
   }, []);
