@@ -51,8 +51,8 @@ function Version() {
       return;
     }
 
-    electronApi.getVersion().then((version) => {
-      setVersion(version);
+    electronApi.getVersion().then((res) => {
+      setVersion(res.data as string);
     });
   }, []);
 

@@ -24,10 +24,8 @@ const electronApi = {
       return false;
     }
   },
-  getVersion: async (): Promise<string> => {
-    const res: string = await getElectron().ipcRenderer.invoke('getVersion');
-
-    return res;
+  getVersion: async (): ElectronApiResult<string> => {
+    return await getElectron().ipcRenderer.invoke('getVersion');
   },
   platformAuth: async (params: {
     platform: EnumPlatform;
