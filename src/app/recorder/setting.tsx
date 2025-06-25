@@ -31,8 +31,13 @@ function Detail({
     >
       <ProFormText
         name="roomId"
-        label="直播间ID或者贴入直播间地址"
-        extra="如 46766877522，或者 https://live.douyin.com/46766877522"
+        label="直播间ID"
+        extra={
+          <div>
+            <div>如直播间ID 46766877522</div>
+            <div>或者直播间地址 https://live.douyin.com/46766877522</div>
+          </div>
+        }
         rules={[{ required: true }]}
         transform={(value) => {
           if (value.includes('live.douyin.com/')) {

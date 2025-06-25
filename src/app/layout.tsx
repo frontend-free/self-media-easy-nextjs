@@ -40,14 +40,20 @@ const menuItems = [
     icon: <HomeOutlined />,
   },
   {
-    key: '/publish',
-    label: '发布',
-    icon: <SendOutlined />,
+    type: 'divider',
   },
   {
     key: '/account',
     label: '账号',
     icon: <UserOutlined />,
+  },
+  {
+    type: 'divider',
+  },
+  {
+    key: '/publish',
+    label: '发布',
+    icon: <SendOutlined />,
   },
   // {
   //   key: '/tag_coach',
