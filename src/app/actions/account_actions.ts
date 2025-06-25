@@ -23,10 +23,14 @@ export type CreateAccountInput = Pick<
   | 'authedAt'
   | 'logs'
   | 'tagCoachId'
+  | 'subjectId'
 >;
 
 export type UpdateAccountInput = Partial<
-  Pick<Account, 'platformName' | 'platformAvatar' | 'status' | 'authInfo' | 'authedAt' | 'logs'>
+  Pick<
+    Account,
+    'platformName' | 'platformAvatar' | 'status' | 'authInfo' | 'authedAt' | 'logs' | 'subjectId'
+  >
 > & {
   id: string;
 };

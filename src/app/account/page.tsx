@@ -9,11 +9,10 @@ import {
   valueEnumPlatform,
 } from '@/generated/enums';
 import { Account, AccountStatus } from '@/generated/prisma';
-import { ProFormSelect, ProFormText } from '@ant-design/pro-components';
+import { ProFormText } from '@ant-design/pro-components';
 import { Alert, App, Button, Modal } from 'antd';
 import { useRef, useState } from 'react';
 import * as AccountActions from '../actions/account_actions';
-import * as TagCoachActions from '../actions/tag_coach_actions';
 import { CRUD } from '../components/crud';
 import { useIsDebug } from '../components/debug';
 import { LoadingButton } from '../components/loading_button';
@@ -149,29 +148,14 @@ function Page() {
           valueType: 'dateTime',
         },
         {
-          title: '所属教练',
-          dataIndex: 'tagCoach',
-          // @ts-expect-error 暂时不知道如何解决
-          render: (_, record: Account) => record.tagCoach?.name,
+          title: '学员ID',
+          dataIndex: 'subjectId',
         },
       ]}
       detailForm={() => (
         <div>
           <ProFormText name="id" label="ID" hidden />
-          <ProFormSelect
-            name="tagCoachId"
-            label="所属教练"
-            request={async () => {
-              const res = await TagCoachActions.pageTagCoaches({
-                pageSize: 100,
-                current: 1,
-              });
-              return res.data.map((item) => ({
-                label: item.name,
-                value: item.id,
-              }));
-            }}
-          />
+          <ProFormText name="subjectId" label="学员ID" />
         </div>
       )}
       request={async (params) => {
@@ -179,6 +163,9 @@ function Page() {
         return res;
       }}
       disabledCreate
+      requestUpdate={async (values) => {
+        await AccountActions.updateAccount(values);
+      }}
       requestDelete={async (id) => {
         await AccountActions.deleteAccount(id);
       }}
@@ -186,7 +173,6 @@ function Page() {
         const res = await AccountActions.getAccountById(id);
         return res;
       }}
-      disabledUpdate
       toolBarRenderPre={<Add refCRUD={refCRUD} />}
       renderOperate={({ record }) => {
         return (

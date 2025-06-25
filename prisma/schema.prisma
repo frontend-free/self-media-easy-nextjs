@@ -103,6 +103,8 @@ model Account {
   authedAt       DateTime // 授权时间
   logs           String? // 授权日志 JSON
 
+  subjectId String? // 评判软件ID
+
   tagCoachId String?
   tagCoach   TagCoach? @relation(fields: [tagCoachId], references: [id])
 
