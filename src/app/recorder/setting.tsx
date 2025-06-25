@@ -242,22 +242,30 @@ function Records({ data, refresh }) {
   return (
     <div className="flex flex-col gap-2">
       <FFMPEGCheck />
-      <div className="flex items-center gap-2">
-        视频存放目录：
-        <Button
-          onClick={async () => {
-            const res = await electronApi.showOpenDialogOfOpenDirectory();
-            if (res.success) {
-              SettingActions.updateSetting({
-                recorderOutputDir: res.data?.filePaths[0] || undefined,
-              });
-              refresh();
-            }
-          }}
-        >
-          选择目录
-        </Button>
-        {data?.recorderOutputDir}
+      <div>
+        <div>
+          <span className="text-red-500">*</span>
+          <span>视频存放目录：</span>
+          <span className="text-gray-500">
+            (请不要和自动发布目录配置一致，因为录制文件可能没完成！)
+          </span>
+        </div>
+        <div className="flex items-center gap-2">
+          <Button
+            onClick={async () => {
+              const res = await electronApi.showOpenDialogOfOpenDirectory();
+              if (res.success) {
+                SettingActions.updateSetting({
+                  recorderOutputDir: res.data?.filePaths[0] || undefined,
+                });
+                refresh();
+              }
+            }}
+          >
+            选择目录
+          </Button>
+          {data?.recorderOutputDir}
+        </div>
       </div>
       <Divider />
       <div className="flex items-center gap-2">
