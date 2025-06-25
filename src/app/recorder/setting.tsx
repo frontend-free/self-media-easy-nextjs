@@ -161,8 +161,12 @@ function FFMPEGCheck() {
 
                   message.info('未安装，开始安装...');
                   await electronApi.installFfmpeg();
-                  await checkFfmpeg();
-                  message.success('安装成功');
+                  const res2 = await checkFfmpeg();
+                  if (res2.success) {
+                    message.success('安装成功');
+                  } else {
+                    message.error('安装失败，请重试');
+                  }
                 }}
               >
                 点我检查和安装
