@@ -68,7 +68,7 @@ function Version() {
       1000 * 60 * 30,
     );
 
-    getLatestVersion({ silent: false });
+    getLatestVersion({ silent: true });
 
     return () => {
       clearInterval(timer);
