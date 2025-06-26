@@ -8,13 +8,13 @@ import { DebugWrapVersion } from './debug';
 import { LoadingButton } from './loading_button';
 
 async function getLatestAppVersion() {
-  const res = await fetch(`${process.env.NEXT_UPDATER_SERVER}/latest.json`).then((res) =>
+  const res = await fetch(`${process.env.NEXT_PUBLIC_UPDATER_SERVER}/latest.json`).then((res) =>
     res.json(),
   );
 
   return {
     latestVersion: res.version,
-    downloadUrl: `${process.env.NEXT_UPDATER_SERVER}/${res.path}`,
+    downloadUrl: `${process.env.NEXT_PUBLIC_UPDATER_SERVER}/${res.path}`,
   };
 }
 
@@ -61,7 +61,18 @@ function Version() {
       return;
     }
 
-    getLatestVersion({ silent: true });
+    const timer = setInterval(
+      () => {
+        getLatestVersion({ silent: true });
+      },
+      1000 * 60 * 30,
+    );
+
+    getLatestVersion({ silent: false });
+
+    return () => {
+      clearInterval(timer);
+    };
   }, [version]);
 
   return (
