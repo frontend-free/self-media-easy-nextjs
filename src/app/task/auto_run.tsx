@@ -1,5 +1,6 @@
 'use client';
 
+import { useIsDebug } from '@/app/components/debug';
 import { electronApi, EnumCode } from '@/electron';
 import { valueEnumPlatform } from '@/generated/enums';
 import { AccountStatus, TaskStatus } from '@/generated/prisma';
@@ -8,7 +9,6 @@ import { useCallback, useEffect, useState } from 'react';
 import * as AccountActions from '../actions/account_actions';
 import * as SettingActions from '../actions/setting_actions';
 import * as TaskActions from '../actions/task_actions';
-import { useIsDebug } from './debug';
 
 const maxRunCount = 1;
 let runningTaskIds: string[] = [];

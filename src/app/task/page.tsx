@@ -7,12 +7,12 @@ import dayjs from 'dayjs';
 import { useEffect, useRef } from 'react';
 import type { TaskWithRelations } from '../actions/task_actions';
 import * as TaskActions from '../actions/task_actions';
-import { runAutoTask } from '../components/auto_run';
 import { CRUD } from '../components/crud';
 import { useIsDebug } from '../components/debug';
 import { LoadingButton } from '../components/loading_button';
 import { PlatformWithName } from '../components/platform';
 import { Resource } from '../components/resource';
+import { runAutoTask } from './auto_run';
 
 function Page() {
   const refCRUD = useRef<any | undefined>(undefined);

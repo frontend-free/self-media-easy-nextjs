@@ -70,7 +70,7 @@ const enums = {
     },
     RECORDING: {
       text: '录制中',
-      color: 'green',
+      color: 'red',
     },
     END: {
       text: '已结束',

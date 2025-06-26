@@ -255,7 +255,7 @@ export const valueEnumRecorderStatus = {
   [EnumRecorderStatus.RECORDING]: {
     text: '录制中',
     value: 'RECORDING',
-    color: 'green',
+    color: 'red',
   },
   [EnumRecorderStatus.END]: {
     text: '已结束',

@@ -1,11 +1,11 @@
+import { AutoRunPublishComponent } from '@/app/auto_publish/auto_run_publish';
 import { AuthComponent } from '@/app/components/auth';
-import { AutoRunTaskComponent } from '@/app/components/auto_run';
-import { AutoRunPublishComponent } from '@/app/components/auto_run_publish';
 import { AppMenu } from '@/app/components/menu';
 import { AdminPathComponent, AuthPathComponent } from '@/app/components/path';
 import { UserInfo } from '@/app/components/user_info';
 import { ErrorComponent } from '@/app/lib/error';
 import { initDatabase } from '@/app/lib/init_db';
+import { AutoRunTaskComponent } from '@/app/task/auto_run';
 import {
   HomeOutlined,
   SendOutlined,

@@ -7,9 +7,9 @@ import dayjs from 'dayjs';
 import { useCallback, useEffect, useState } from 'react';
 import * as AutoPublishActions from '../actions/auto_publish_actions';
 import { AutoPublishSettingWithRelations } from '../actions/auto_publish_actions';
-import { runAutoPublish } from '../components/auto_run_publish';
 import { ProFormSelectAccounts } from '../components/form/pro_form_select_accounts';
 import { ProFormTextWithSelect } from '../components/form/pro_form_text_with_select';
+import { runAutoPublish } from './auto_run_publish';
 
 function Directory(props: { value: string; onChange: (value?: string) => void }) {
   const { value, onChange } = props;

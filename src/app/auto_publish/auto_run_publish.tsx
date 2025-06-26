@@ -2,12 +2,12 @@
 
 import * as AutoPublishActions from '@/app/actions/auto_publish_actions';
 import * as PublishActions from '@/app/actions/publish_actions';
+import { isTitleValid } from '@/app/components/form/pro_form_text_with_select';
+import { getFileName } from '@/app/components/resource';
 import { electronApi } from '@/electron';
 import { AccountStatus, PublishResourceType, PublishType } from '@/generated/prisma';
 import { App } from 'antd';
 import { useEffect } from 'react';
-import { isTitleValid } from './form/pro_form_text_with_select';
-import { getFileName } from './resource';
 
 const INTERVAL = 30 * 60 * 1000;
 
