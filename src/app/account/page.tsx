@@ -22,8 +22,16 @@ function useAuth() {
   const { modal, message } = App.useApp();
   const { isDebug } = useIsDebug();
 
-  const onAuth = async ({ platform }) => {
-    const res = await electronApi.platformAuth({ platform, isDebug });
+  const onAuth = async ({
+    platform,
+    studentId,
+    h5AuthId,
+  }: {
+    platform: EnumPlatform;
+    h5AuthId?: string;
+    studentId?: string;
+  }) => {
+    const res = await electronApi.platformAuth({ platform, h5AuthId, isDebug });
 
     if (res.success && res.data) {
       await AccountActions.createAccount({
@@ -36,6 +44,8 @@ function useAuth() {
         authInfo: res.data.authInfo || null,
         authedAt: new Date(),
         logs: JSON.stringify(res.data.logs || []),
+
+        studentId,
       } as AccountActions.CreateAccountInput);
 
       message.success('授权成功');
@@ -49,6 +59,8 @@ function useAuth() {
           </div>
         ),
       });
+
+      return Promise.reject();
     }
   };
 
@@ -149,13 +161,13 @@ function Page() {
         },
         {
           title: '学员ID',
-          dataIndex: 'subjectId',
+          dataIndex: 'studentId',
         },
       ]}
       detailForm={() => (
         <div>
           <ProFormText name="id" label="ID" hidden />
-          <ProFormText name="subjectId" label="学员ID" />
+          <ProFormText name="studentId" label="学员ID" />
         </div>
       )}
       request={async (params) => {
@@ -182,7 +194,7 @@ function Page() {
                 type="link"
                 className="!px-0"
                 onClick={async () => {
-                  await onAuth({ platform: record.platform });
+                  await onAuth({ platform: record.platform as EnumPlatform });
                   refCRUD.current?.reload();
                 }}
               >
@@ -233,5 +245,7 @@ function Page() {
     />
   );
 }
+
+export { useAuth };
 
 export default Page;

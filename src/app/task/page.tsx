@@ -12,7 +12,7 @@ import { useIsDebug } from '../components/debug';
 import { LoadingButton } from '../components/loading_button';
 import { PlatformWithName } from '../components/platform';
 import { Resource } from '../components/resource';
-import { runAutoTask } from './auto_run';
+import { runAutoTask } from './auto_run_task';
 
 function Page() {
   const refCRUD = useRef<any | undefined>(undefined);

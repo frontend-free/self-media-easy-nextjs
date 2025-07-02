@@ -17,6 +17,12 @@ function UsersList() {
           search: true,
         },
         {
+          title: '驾校ID',
+          dataIndex: 'schoolId',
+          key: 'schoolId',
+          search: true,
+        },
+        {
           title: '昵称',
           dataIndex: 'nickname',
           key: 'nickname',
@@ -55,6 +61,8 @@ function UsersList() {
             rules={[{ required: true }]}
             disabled={type === 'update'}
           />
+          <ProFormText name="schoolId" label="驾校ID" required rules={[{ required: true }]} />
+          <ProFormText name="password" label="密码" placeholder="不设置则默认 123456" />
           <ProFormText name="nickname" label="昵称" />
           <ProFormText name="mobile" label="手机号" />
           <ProFormSwitch name="isAdmin" label="是否为管理员" />

@@ -31,4 +31,15 @@ function AdminPathComponent({ element, children }: { element: ReactNode; childre
   return children;
 }
 
-export { AdminPathComponent, AuthPathComponent };
+function H5PathComponent({ element, children }: { element: ReactNode; children: ReactNode }) {
+  const pathname = usePathname();
+
+  // 如果路径以 /h5/ 开头，返回 null
+  if (pathname?.startsWith('/h5/')) {
+    return element || null;
+  }
+
+  return children;
+}
+
+export { AdminPathComponent, AuthPathComponent, H5PathComponent };

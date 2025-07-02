@@ -1,11 +1,11 @@
 import { AutoRunPublishComponent } from '@/app/auto_publish/auto_run_publish';
 import { AuthComponent } from '@/app/components/auth';
 import { AppMenu } from '@/app/components/menu';
-import { AdminPathComponent, AuthPathComponent } from '@/app/components/path';
+import { AdminPathComponent, AuthPathComponent, H5PathComponent } from '@/app/components/path';
 import { UserInfo } from '@/app/components/user_info';
 import { ErrorComponent } from '@/app/lib/error';
 import { initDatabase } from '@/app/lib/init_db';
-import { AutoRunTaskComponent } from '@/app/task/auto_run';
+import { AutoRunTaskComponent } from '@/app/task/auto_run_task';
 import {
   HomeOutlined,
   SendOutlined,
@@ -20,6 +20,7 @@ import { App, ConfigProvider, MenuProps } from 'antd';
 import zhCN from 'antd/locale/zh_CN';
 import type { Metadata } from 'next';
 import { SessionProvider } from 'next-auth/react';
+import { AutoRunH5AuthComponent } from './account/auto_run_h5_auth';
 import { Version } from './components/version';
 import './globals.css';
 import { AutoRunRecord } from './recorder/auto_run_record';
@@ -40,8 +41,15 @@ const menuItems = [
   },
   {
     key: '/account',
-    label: '账号（学员领学时）',
-    icon: <UserOutlined />,
+    label: (
+      <div className="flex items-center gap-2">
+        <UserOutlined />
+        <div>账号（学员领学时）</div>
+        <AuthComponent>
+          <AutoRunH5AuthComponent />
+        </AuthComponent>
+      </div>
+    ),
   },
   {
     key: '/task',
@@ -123,9 +131,11 @@ function WrapRootLayout({ children }: { children: React.ReactNode }) {
               <App>
                 <ErrorComponent />
                 <AdminPathComponent element={children}>
-                  <AuthPathComponent element={children}>
-                    <RootLayout>{children}</RootLayout>
-                  </AuthPathComponent>
+                  <H5PathComponent element={children}>
+                    <AuthPathComponent element={children}>
+                      <RootLayout>{children}</RootLayout>
+                    </AuthPathComponent>
+                  </H5PathComponent>
                 </AdminPathComponent>
               </App>
             </SessionProvider>
