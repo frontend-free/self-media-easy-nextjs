@@ -121,8 +121,10 @@ function H5AuthDetailPage({ params }) {
         )}
         {data?.status === H5AuthStatus.MOBILE_CODE && (
           <div>
-            <div>2 输入手机验证码</div>
+            <div>2 验证码。</div>
+
             <div className="flex flex-col items-center gap-2">
+              <div className="text-center">请输入抖音发送的短信验证码。</div>
               <InputNumber
                 className="!w-full"
                 size="large"
