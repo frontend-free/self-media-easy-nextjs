@@ -1,6 +1,5 @@
 'use client';
 
-import { electronApi } from '@/electron';
 import {
   EnumAccountStatus,
   EnumPlatform,
@@ -14,75 +13,9 @@ import { Alert, App, Button, Modal } from 'antd';
 import { useRef, useState } from 'react';
 import * as AccountActions from '../actions/account_actions';
 import { CRUD } from '../components/crud';
-import { useIsDebug } from '../components/debug';
 import { LoadingButton } from '../components/loading_button';
 import { Platform, PlatformWithName } from '../components/platform';
-
-function useAuth() {
-  const { modal, message } = App.useApp();
-  const { isDebug } = useIsDebug();
-
-  const onAuth = async ({
-    platform,
-    studentId,
-    h5AuthId,
-  }: {
-    platform: EnumPlatform;
-    h5AuthId?: string;
-    studentId?: string;
-  }) => {
-    const res = await electronApi.platformAuth({ platform, h5AuthId, isDebug });
-
-    if (res.success && res.data) {
-      await AccountActions.createAccount({
-        platform,
-        platformId: res.data.platformId || null,
-        platformName: res.data.platformName || null,
-        platformAvatar: res.data.platformAvatar || null,
-
-        status: EnumAccountStatus.AUTHED,
-        authInfo: res.data.authInfo || null,
-        authedAt: new Date(),
-        logs: JSON.stringify(res.data.logs || []),
-
-        studentId,
-      } as AccountActions.CreateAccountInput);
-
-      message.success('授权成功');
-    } else {
-      modal.error({
-        title: '授权失败',
-        content: (
-          <div>
-            <div>{res.message || '未知错误'}</div>
-            <pre className="whitespace-pre-wrap">{JSON.stringify(res.data, null, 2)}</pre>
-          </div>
-        ),
-      });
-
-      return Promise.reject();
-    }
-  };
-
-  const onAuthCheck = async ({ id, platform, authInfo, status }) => {
-    const res = await electronApi.platformAuthCheck({ platform, authInfo, isDebug });
-
-    if (res.success) {
-      message.success('账号授权信息有效');
-    } else {
-      message.error('账号授权信息无效');
-      if (status === EnumAccountStatus.AUTHED) {
-        await AccountActions.updateAccount({
-          id,
-          status: EnumAccountStatus.INVALID,
-          logs: JSON.stringify(res.data?.logs || []),
-        });
-      }
-    }
-  };
-
-  return { onAuth, onAuthCheck };
-}
+import { useAuth } from './use_auth';
 
 function Add({ refCRUD }) {
   const [open, setOpen] = useState(false);

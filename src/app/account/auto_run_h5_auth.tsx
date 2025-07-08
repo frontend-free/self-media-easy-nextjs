@@ -5,7 +5,7 @@ import { electronApi } from '@/electron';
 import { EnumPlatform } from '@/generated/enums';
 import { H5AuthStatus } from '@/generated/prisma';
 import { useCallback, useEffect } from 'react';
-import { useAuth } from './page';
+import { useAuth } from './use_auth';
 
 function AutoRunH5AuthComponent() {
   const { onAuth } = useAuth();
