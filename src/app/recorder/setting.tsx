@@ -22,9 +22,8 @@ function RoomId({ disabled }) {
       label="直播间ID"
       extra={
         <div>
-          <div>直播间ID 46766877522，或者直播间地址 https://live.douyin.com/46766877522</div>
           <div>
-            或者抖音号 238668114
+            输入抖音号 238668114 &nbsp;&nbsp;
             <Tooltip
               title={
                 <div>
@@ -35,6 +34,7 @@ function RoomId({ disabled }) {
               <QuestionCircleOutlined />
             </Tooltip>
           </div>
+          <div>或者直播间ID 46766877522，或者直播间地址 https://live.douyin.com/46766877522</div>
         </div>
       }
       rules={[{ required: true }]}
