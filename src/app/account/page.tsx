@@ -179,6 +179,4 @@ function Page() {
   );
 }
 
-export { useAuth };
-
 export default Page;
