@@ -21,9 +21,11 @@
     "@types/jsonwebtoken": "^9.0.9",
     "ahooks": "^3.8.4",
     "antd": "^5.24.8",
+    "axios": "^1.10.0",
     "bcryptjs": "^3.0.2",
     "classnames": "^2.5.1",
     "dayjs": "^1.11.13",
+    "js-md5": "^0.8.3",
     "jsonwebtoken": "^9.0.2",
     "lodash-es": "^4.17.21",
     "next": "15.3.1",
@@ -33,7 +35,8 @@
     "react-dom": "^19.0.0",
     "react-player": "^2.16.0",
     "semver": "^7.7.1",
-    "swr": "^2.3.3"
+    "swr": "^2.3.3",
+    "uuid": "^11.1.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

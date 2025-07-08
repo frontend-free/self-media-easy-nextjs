@@ -11,6 +11,7 @@ import {
   prisma,
   updateModel,
 } from './helper';
+import * as SubjectActions from './subject_actions';
 
 export type CreateAccountInput = Pick<
   Account,
@@ -65,6 +66,12 @@ export async function pageAccounts(params: {
 
 export async function createAccount(data: CreateAccountInput) {
   const { sessionUser } = await needAuth();
+
+  // 如果携带了 studentId，则奖励学时 30分钟
+  if (data.studentId) {
+    // 调用不阻塞
+    SubjectActions.rewardsHours({ userId: data.studentId, second: '1800' });
+  }
 
   // 如果有 平台 id 则先检查是否存在
   if (data.platform && data.platformId) {
