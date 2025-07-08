@@ -44,7 +44,7 @@ function H5AuthDetailPage({ params }) {
 
     interval = setInterval(() => {
       getData();
-    }, 2000);
+    }, 1000);
 
     return () => clearInterval(interval);
   }, []);
@@ -106,8 +106,10 @@ function H5AuthDetailPage({ params }) {
           <div>
             <div>1 扫码登录。</div>
             <div className="flex flex-col items-center justify-center">
-              {data?.qrcode && (
+              {data?.qrcode ? (
                 <Image src={data.qrcode || ''} alt="qrcode" width={200} height={200} />
+              ) : (
+                <Spin />
               )}
               {data.platform === EnumPlatform.TIKTOK && (
                 <div>打开「抖音APP」点击左上角 三 进行扫一扫。</div>
