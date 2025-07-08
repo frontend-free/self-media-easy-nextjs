@@ -2,7 +2,7 @@
 
 import * as H5AuthActions from '@/app/actions/h5_auth_actions';
 import { LoadingButton } from '@/app/components/loading_button';
-import { EnumPlatform } from '@/generated/enums';
+import { EnumPlatform, valueEnumPlatform } from '@/generated/enums';
 import { H5Auth, H5AuthStatus } from '@/generated/prisma';
 import { useCountDown } from 'ahooks';
 import { App, Button, InputNumber, Result, Spin } from 'antd';
@@ -85,10 +85,15 @@ function H5AuthDetailPage({ params }) {
   return (
     <div className="flex flex-col h-screen w-screen">
       <div className="p-4 flex items-center justify-between">
-        <Button type="link" onClick={() => router.back()}>
-          返回
-        </Button>
-        <div>{Math.floor(countdown / 1000)}s</div>
+        <div className="flex-1">
+          <Button type="link" size="large" onClick={() => router.back()}>
+            返回
+          </Button>
+        </div>
+        <div className="flex-1 text-center">
+          {data?.platform && valueEnumPlatform[data.platform]?.text}
+        </div>
+        <div className="flex-1 text-right">{Math.floor(countdown / 1000)}s</div>
       </div>
       <div className="px-4 flex flex-col gap-4">
         {data?.status === H5AuthStatus.PENDING && (
