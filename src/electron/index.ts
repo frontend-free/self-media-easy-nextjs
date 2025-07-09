@@ -19,8 +19,8 @@ const electronApi = {
     try {
       getElectron();
       return true;
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (err) {
-      console.error('isElectron error', err);
       // nothing
       return false;
     }
