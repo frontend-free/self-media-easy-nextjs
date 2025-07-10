@@ -114,10 +114,12 @@ export async function updateH5Auth(data: UpdateH5AuthInput) {
 // 无需登录
 export async function deleteH5Auth(id: string) {
   return wrapServerAction(async () => {
-    // 直接删除
-    const result = await prisma.h5Auth.delete({
+    const result = await prisma.h5Auth.update({
       where: {
         id,
+      },
+      data: {
+        deletedAt: new Date(),
       },
     });
 
