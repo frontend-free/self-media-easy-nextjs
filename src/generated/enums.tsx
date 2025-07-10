@@ -12,12 +12,16 @@ export const valueEnumPlatform = {
   [EnumPlatform.TIKTOK]: {
     text: '抖音',
     value: 'TIKTOK',
-    data: { icon: '/platform/tiktok.png' },
+    data: { icon: '/platform/tiktok.png', authDesc: '抖音点左上角-扫一扫。' },
   },
   [EnumPlatform.WEIXIN_VIDEO]: {
     text: '视频号',
     value: 'WEIXIN_VIDEO',
-    data: { icon: '/platform/weixin_video.png', desc: '微信风控原因，24小时内必掉线' },
+    data: {
+      icon: '/platform/weixin_video.png',
+      desc: '微信风控原因，24小时内必掉线',
+      authDesc: '微信扫码登录',
+    },
   },
 };
 
