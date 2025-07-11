@@ -17,18 +17,36 @@ function H5AuthPage({ searchParams }) {
   const router = useRouter();
 
   if (!schoolId || !studentId) {
-    return <div className="text-center p-4">缺少驾校ID或学员ID</div>;
+    return <div>缺少驾校ID或学员ID</div>;
   }
 
   return (
-    <div className="flex flex-col gap-4 h-screen w-screen">
-      <Image src={bg} className="w-full h-full" alt="bg" />
-      <div className="flex flex-col justify-center gap-4 absolute top-[100px] left-[20px]">
-        <div className="text-2xl">点击下面的平台开启授权</div>
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '1rem',
+        height: '100vh',
+        width: '100vw',
+      }}
+    >
+      <Image src={bg} style={{ width: '100%', height: '100%' }} alt="bg" />
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          gap: '1rem',
+          position: 'absolute',
+          top: 100,
+          left: 20,
+        }}
+      >
+        <div style={{ fontSize: '1.5rem' }}>点击下面的平台开启授权</div>
         {listPlatform.map((item) => (
           <div
             key={item.value}
-            className="flex items-center cursor-pointer gap-2"
+            style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', gap: '0.5rem' }}
             onClick={async () => {
               const {
                 success,
@@ -50,9 +68,11 @@ function H5AuthPage({ searchParams }) {
             }}
           >
             <Platform value={item.value} />
-            <div className="flex flex-col">
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
               <div>{item.label}</div>
-              <div className="text-sm text-gray-500">{item.originData.authDesc}</div>
+              <div style={{ fontSize: '0.875rem', color: '#6b7280' }}>
+                {item.originData.authDesc}
+              </div>
             </div>
           </div>
         ))}

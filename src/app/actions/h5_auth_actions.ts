@@ -59,7 +59,12 @@ export async function createH5Auth(data: CreateH5AuthInput) {
     // 通过 schoolId 获取 user
     const user = await prisma.user.findFirst({
       where: {
-        schoolId: data.schoolId,
+        OR: [
+          { schoolId: data.schoolId }, // 只有一个
+          { schoolId: { startsWith: data.schoolId + ',' } }, // 最前
+          { schoolId: { endsWith: ',' + data.schoolId } }, // 最后
+          { schoolId: { contains: ',' + data.schoolId + ',' } }, // 中间
+        ],
       },
     });
 

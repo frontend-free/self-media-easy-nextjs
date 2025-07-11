@@ -61,7 +61,13 @@ function UsersList() {
             rules={[{ required: true }]}
             disabled={type === 'update'}
           />
-          <ProFormText name="schoolId" label="驾校ID" required rules={[{ required: true }]} />
+          <ProFormText
+            name="schoolId"
+            label="驾校ID"
+            required
+            rules={[{ required: true }]}
+            extra="多个用逗号,隔开，如 1,2,3"
+          />
           <ProFormText name="password" label="密码" placeholder="不设置则默认 123456" />
           <ProFormText name="nickname" label="昵称" />
           <ProFormText name="mobile" label="手机号" />
