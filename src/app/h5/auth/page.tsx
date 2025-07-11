@@ -23,8 +23,8 @@ function H5AuthPage({ searchParams }) {
   return (
     <div className="flex flex-col gap-4 h-screen w-screen">
       <Image src={bg} className="w-full h-full" alt="bg" />
-      <div className=" flex flex-col justify-center gap-4 absolute top-[100px] left-[20px]">
-        <div className=" text-2xl">点击下面的平台开启授权</div>
+      <div className="flex flex-col justify-center gap-4 absolute top-[100px] left-[20px]">
+        <div className="text-2xl">点击下面的平台开启授权</div>
         {listPlatform.map((item) => (
           <div
             key={item.value}
