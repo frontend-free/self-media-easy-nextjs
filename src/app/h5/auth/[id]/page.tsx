@@ -83,21 +83,36 @@ function H5AuthDetailPage({ params }) {
   }
 
   return (
-    <div className="flex flex-col h-screen w-screen">
-      <div className="p-4 flex items-center justify-between">
-        <div className="flex-1">
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', width: '100vw' }}>
+      <div
+        style={{
+          padding: 16,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+        }}
+      >
+        <div style={{ flex: 1 }}>
           <Button type="link" size="large" onClick={() => router.back()}>
             返回
           </Button>
         </div>
-        <div className="flex-1 text-center">
+        <div style={{ flex: 1, textAlign: 'center' }}>
           {data?.platform && valueEnumPlatform[data.platform]?.text}
         </div>
-        <div className="flex-1 text-right">{Math.floor(countdown / 1000)}s</div>
+        <div style={{ flex: 1, textAlign: 'right' }}>{Math.floor(countdown / 1000)}s</div>
       </div>
-      <div className="px-4 flex flex-col gap-4">
+      <div
+        style={{
+          paddingLeft: 16,
+          paddingRight: 16,
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 16,
+        }}
+      >
         {data?.status === H5AuthStatus.PENDING && (
-          <div className="flex items-center gap-2">
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             <div>二维码准备中</div>
             <Spin />
           </div>
@@ -105,7 +120,14 @@ function H5AuthDetailPage({ params }) {
         {(data?.status === H5AuthStatus.QRCODE || data?.status === H5AuthStatus.MOBILE_CODE) && (
           <div>
             <div>1 扫码登录。</div>
-            <div className="flex flex-col items-center justify-center">
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
               {data?.qrcode ? (
                 <Image src={data.qrcode || ''} alt="qrcode" width={200} height={200} />
               ) : (
@@ -123,16 +145,16 @@ function H5AuthDetailPage({ params }) {
           <div>
             <div>2 验证码。</div>
 
-            <div className="flex flex-col items-center gap-2">
-              <div className="text-center">请输入抖音发送的短信验证码。</div>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
+              <div style={{ textAlign: 'center' }}>请输入抖音发送的短信验证码。</div>
               <InputNumber
-                className="!w-full"
+                style={{ width: '100%' }}
                 size="large"
                 value={code}
                 onChange={(value) => setCode(value || '')}
               />
               <LoadingButton
-                className="!w-full"
+                style={{ width: '100%' }}
                 type="primary"
                 size="large"
                 disabled={!code}
