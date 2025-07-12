@@ -89,7 +89,10 @@ const UserInfo = () => {
         <div className="flex gap-2 items-center cursor-pointer">
           <div className="flex flex-1 gap-2 items-center">
             <UserAvatar size={30} src={user?.avatar || undefined} />
-            <div className="flex-1 text-black">{user?.nickname || user?.name}</div>
+            <div className="flex-1 flex flex-col">
+              <div className="text-black">{user?.nickname || user?.name}</div>
+              <div className="text-xs text-gray-500">{user?.schoolId}</div>
+            </div>
           </div>
           <div>
             <RightOutlined className="text-xs" />
