@@ -1,10 +1,35 @@
 'use client';
 
+import { electronApi } from '@/electron';
 import { Setting } from '@/generated/prisma';
 import { ProForm, ProFormSelect } from '@ant-design/pro-components';
-import { App } from 'antd';
+import { App, Divider, Switch } from 'antd';
 import { useCallback, useEffect, useState } from 'react';
 import * as SettingActions from '../actions/setting_actions';
+
+function OpenAtLogin() {
+  const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    electronApi.openAtLogin().then((res) => {
+      setOpen(res.data!.open);
+    });
+  }, []);
+
+  return (
+    <div className="flex items-center gap-2">
+      <div>开机自启动</div>
+      <Switch
+        checked={open}
+        onChange={async (checked) => {
+          await electronApi.openAtLogin({ open: checked });
+
+          setOpen(checked);
+        }}
+      />
+    </div>
+  );
+}
 
 function SettingPage() {
   const [form] = ProForm.useForm();
@@ -60,6 +85,8 @@ function SettingPage() {
           />
         </ProForm>
       )}
+      <Divider />
+      <OpenAtLogin />
     </div>
   );
 }

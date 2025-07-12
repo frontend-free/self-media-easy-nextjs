@@ -28,6 +28,9 @@ const electronApi = {
   getVersion: async (): ElectronApiResult<string> => {
     return await getElectron().ipcRenderer.invoke('getVersion');
   },
+  openAtLogin: async (params?: { open: boolean }): ElectronApiResult<{ open: boolean } | void> => {
+    return await getElectron().ipcRenderer.invoke('openAtLogin', params);
+  },
   platformAuth: async (params: {
     platform: EnumPlatform;
     h5AuthId?: string;
