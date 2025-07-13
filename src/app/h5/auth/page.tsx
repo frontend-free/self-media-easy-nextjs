@@ -36,46 +36,54 @@ function H5AuthPage({ searchParams }) {
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'center',
-          gap: '1rem',
+
           position: 'absolute',
           top: 100,
           left: 20,
         }}
       >
-        <div style={{ fontSize: '1.5rem' }}>点击下面的平台开启授权</div>
-        {listPlatform.map((item) => (
-          <div
-            key={item.value}
-            style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', gap: '0.5rem' }}
-            onClick={async () => {
-              const {
-                success,
-                data,
-                message: errorMessage,
-              } = await H5AuthActions.createH5Auth({
-                schoolId,
-                studentId,
-                platform: item.value,
-                status: H5AuthStatus.PENDING,
-              });
+        <div style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>点击下面的平台开启授权</div>
+        {listPlatform.map(function (item) {
+          return (
+            <div
+              key={item.value}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                cursor: 'pointer',
+                marginBottom: '0.5rem',
+              }}
+              onTouchStart={function () {
+                alert('onTouchStart');
+              }}
+              onClick={function () {
+                alert('test');
 
-              if (!success) {
-                message.error(errorMessage);
-                return;
-              }
+                H5AuthActions.createH5Auth({
+                  schoolId,
+                  studentId,
+                  platform: item.value,
+                  status: H5AuthStatus.PENDING,
+                }).then(({ success, data, message: errorMessage }) => {
+                  if (!success) {
+                    message.error(errorMessage);
+                    return;
+                  }
 
-              router.push(`/h5/auth/${data!.id}`);
-            }}
-          >
-            <Platform value={item.value} />
-            <div style={{ display: 'flex', flexDirection: 'column' }}>
-              <div>{item.label}</div>
-              <div style={{ fontSize: '0.875rem', color: '#6b7280' }}>
-                {item.originData.authDesc}
+                  router.push(`/h5/auth/${data!.id}`);
+                });
+              }}
+            >
+              <Platform value={item.value} />
+              <div style={{ display: 'flex', flexDirection: 'column', marginLeft: '0.5rem' }}>
+                <div>{item.label}</div>
+                <div style={{ fontSize: '0.875rem', color: '#6b7280' }}>
+                  {item.originData.authDesc}
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );
