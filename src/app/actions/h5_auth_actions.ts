@@ -69,7 +69,7 @@ export async function createH5Auth(data: CreateH5AuthInput) {
     });
 
     if (!user) {
-      throw new Error('驾校用户不存在');
+      throw new Error('驾校没有被用户关联，请联系管理员关联');
     }
 
     const result = await prisma.h5Auth.create({
