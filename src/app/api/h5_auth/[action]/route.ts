@@ -1,6 +1,6 @@
 import * as H5AuthActions from '@/app/actions/h5_auth_actions';
 
-export async function POST(request: Request, { params }: { params: { action: string } }) {
+export async function POST(request: Request, { params }: { params: Promise<{ action: string }> }) {
   const { action } = await params;
   const data = await request.json();
 
