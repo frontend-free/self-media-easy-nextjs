@@ -6,12 +6,11 @@ export async function middleware(request: NextRequest) {
   const session = await auth();
   const isAuthPage = request.nextUrl.pathname.startsWith('/auth/');
   const isAdminPage = request.nextUrl.pathname.startsWith('/admin/');
-  const isH5Page = request.nextUrl.pathname.startsWith('/h5/');
 
   const isAdmin = session?.user?.isAdmin;
 
   // 如果用户未登录且不在认证页面，重定向到登录页
-  if (!session && !isAuthPage && !isH5Page) {
+  if (!session && !isAuthPage) {
     return NextResponse.redirect(new URL('/auth/login', request.url));
   }
 

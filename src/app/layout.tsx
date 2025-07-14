@@ -1,7 +1,7 @@
 import { AutoRunPublishComponent } from '@/app/auto_publish/auto_run_publish';
 import { AuthComponent } from '@/app/components/auth';
 import { AppMenu } from '@/app/components/menu';
-import { AdminPathComponent, AuthPathComponent, H5PathComponent } from '@/app/components/path';
+import { AdminPathComponent, AuthPathComponent } from '@/app/components/path';
 import { UserInfo } from '@/app/components/user_info';
 import { ErrorComponent } from '@/app/lib/error';
 import { initDatabase } from '@/app/lib/init_db';
@@ -131,11 +131,9 @@ function WrapRootLayout({ children }: { children: React.ReactNode }) {
               <App>
                 <ErrorComponent />
                 <AdminPathComponent element={children}>
-                  <H5PathComponent element={children}>
-                    <AuthPathComponent element={children}>
-                      <RootLayout>{children}</RootLayout>
-                    </AuthPathComponent>
-                  </H5PathComponent>
+                  <AuthPathComponent element={children}>
+                    <RootLayout>{children}</RootLayout>
+                  </AuthPathComponent>
                 </AdminPathComponent>
               </App>
             </SessionProvider>

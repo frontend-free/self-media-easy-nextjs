@@ -84,10 +84,10 @@ export async function createH5Auth(data: CreateH5AuthInput) {
 }
 
 // 无需登录
-export async function getH5AuthById(id: string) {
+export async function getH5AuthById(data: { id: string }) {
   return wrapServerAction(async () => {
     const result = await prisma.h5Auth.findUnique({
-      where: { id },
+      where: { id: data.id },
     });
 
     if (!result) {
@@ -117,11 +117,11 @@ export async function updateH5Auth(data: UpdateH5AuthInput) {
 }
 
 // 无需登录
-export async function deleteH5Auth(id: string) {
+export async function deleteH5Auth(data: { id: string }) {
   return wrapServerAction(async () => {
     const result = await prisma.h5Auth.update({
       where: {
-        id,
+        id: data.id,
       },
       data: {
         deletedAt: new Date(),

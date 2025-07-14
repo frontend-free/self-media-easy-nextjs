@@ -159,7 +159,7 @@ async function handleMobileCode(_, arg: { h5AuthId: string; resultKey: string })
   let timer: any = null;
 
   async function fetchMobileCode() {
-    const { success, data } = await H5AuthActions.getH5AuthById(h5AuthId);
+    const { success, data } = await H5AuthActions.getH5AuthById({ id: h5AuthId });
 
     // 获取到 mobile，则发送。
     if (success && data && data.mobileCode) {
