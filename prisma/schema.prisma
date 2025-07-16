@@ -131,9 +131,6 @@ model Account {
   user      User      @relation(fields: [userId], references: [id])
   tasks     Task[]
   publishes Publish[]
-
-  autoPublishSettingId String?
-  autoPublishSetting   AutoPublishSetting? @relation(fields: [autoPublishSettingId], references: [id])
 }
 
 // H5 授权
@@ -167,6 +164,7 @@ model Publish {
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
 
   userId String
   user   User   @relation(fields: [userId], references: [id])
@@ -200,13 +198,9 @@ model Task {
 model AutoPublishSetting {
   id String @id // 使用 userId 作为主键
 
-  enabled             Boolean   @default(false) // 是否启用
   resourceVideoDir    String? // 视频资源目录
   title               String? // 标题
   autoTitle           Boolean?  @default(false) // 是否自动生成标题
-  accounts            Account[]
-  runResourceOfVideos String? // 已运行视频资源列表
-  lastRunAt           DateTime? // 上次运行时间
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -217,8 +211,6 @@ model AutoPublishSetting {
 
 model Setting {
   id String @id // 使用 userId 作为主键
-
-  publishCount Int @default(1) // 每个账号发布数量
 
   recorderOutputDir String? // 录制输出目录
   recorderList      String? // 录制列表 JSON {roomId: string, description: string, auto: boolean, title?: string}

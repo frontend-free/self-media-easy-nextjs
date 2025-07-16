@@ -3,9 +3,7 @@
 import { Setting } from '@/generated/prisma';
 import { needAuth, prisma, wrapServerAction } from './helper';
 
-export type UpdateSettingInput = Partial<
-  Pick<Setting, 'publishCount' | 'recorderOutputDir' | 'recorderList'>
->;
+export type UpdateSettingInput = Partial<Pick<Setting, 'recorderOutputDir' | 'recorderList'>>;
 
 export async function getSetting() {
   return wrapServerAction(async () => {

@@ -90,7 +90,7 @@ function Page() {
           render: (_, record: TaskWithRelations) => {
             return (
               <div>
-                <div className="line-clamp-2">{record.publish.title}</div>
+                <div className="line-clamp-2">{record.publish.title || '-'}</div>
                 <Resource
                   resourceType={PublishResourceType.VIDEO}
                   resourceOfVideo={record.publish.resourceOfVideo as string}

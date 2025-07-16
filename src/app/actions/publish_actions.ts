@@ -1,7 +1,6 @@
 'use server';
 
 import { Prisma, Publish } from '@/generated/prisma';
-import * as AutoPublishActions from './auto_publish_actions';
 import { createModel, deleteModel, needAuth, pageModel, prisma } from './helper';
 import * as TaskActions from './task_actions';
 
@@ -52,20 +51,6 @@ export async function createPublish(data: CreatePublishInput) {
       withUser: true,
     },
   );
-
-  if (rest.resourceOfVideo) {
-    const { success, data } = await AutoPublishActions.getAutoPublishSetting();
-    if (success) {
-      let runResourceOfVideos = JSON.parse(data?.runResourceOfVideos || '[]');
-      runResourceOfVideos.push(rest.resourceOfVideo);
-      // 去重
-      runResourceOfVideos = Array.from(new Set(runResourceOfVideos));
-      // 更新
-      await AutoPublishActions.updateAutoPublishSetting({
-        runResourceOfVideos: JSON.stringify(runResourceOfVideos),
-      });
-    }
-  }
 
   const publishId = publish.id;
 

@@ -1,18 +1,11 @@
 'use server';
 
-import { Account, AutoPublishSetting } from '@/generated/prisma';
+import { AutoPublishSetting } from '@/generated/prisma';
 import { needAuth, prisma, wrapServerAction } from './helper';
 
 export type UpdateAutoPublishSettingInput = Partial<
-  Pick<
-    AutoPublishSetting,
-    'enabled' | 'resourceVideoDir' | 'title' | 'autoTitle' | 'lastRunAt' | 'runResourceOfVideos'
-  >
+  Pick<AutoPublishSetting, 'resourceVideoDir' | 'title' | 'autoTitle'>
 > & { accountIds?: string[] };
-
-export type AutoPublishSettingWithRelations = AutoPublishSetting & {
-  accounts: Account[];
-};
 
 export async function getAutoPublishSetting() {
   return wrapServerAction(async () => {
@@ -21,9 +14,6 @@ export async function getAutoPublishSetting() {
     let result = await prisma.autoPublishSetting.findUnique({
       where: {
         id: sessionUser.id,
-      },
-      include: {
-        accounts: true,
       },
     });
 
@@ -38,57 +28,23 @@ export async function getAutoPublishSetting() {
         where: {
           id: sessionUser.id,
         },
-        include: {
-          accounts: true,
-        },
       });
     }
 
-    return result as AutoPublishSettingWithRelations;
+    return result as AutoPublishSetting;
   });
 }
 
-export async function updateAutoPublishSetting(data?: UpdateAutoPublishSettingInput) {
+export async function updateAutoPublishSetting(data: UpdateAutoPublishSettingInput) {
   return wrapServerAction(async () => {
     const { sessionUser } = await needAuth();
 
-    const { accountIds, ...rest } = data || {};
-
-    if (accountIds) {
-      // 批量获取所有账号状态
-      const validAccountIds = accountIds
-        ? (
-            await prisma.account.findMany({
-              where: {
-                id: { in: accountIds },
-                deletedAt: null,
-              },
-              select: { id: true },
-            })
-          ).map((account) => account.id)
-        : [];
-
-      await prisma.autoPublishSetting.update({
-        where: {
-          id: sessionUser.id,
-        },
-        data: {
-          ...rest,
-          accounts: {
-            set: validAccountIds.map((id) => ({ id })),
-          },
-        },
-      });
-    } else {
-      // 更新设置
-      await prisma.autoPublishSetting.update({
-        where: {
-          id: sessionUser.id,
-        },
-        data: {
-          ...rest,
-        },
-      });
-    }
+    // 更新设置
+    await prisma.autoPublishSetting.update({
+      where: {
+        id: sessionUser.id,
+      },
+      data,
+    });
   });
 }

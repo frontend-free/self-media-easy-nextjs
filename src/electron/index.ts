@@ -84,7 +84,6 @@ const electronApi = {
   },
   getDirectoryVideoFiles: async (params: {
     directory: string;
-    lastRunAt?: Date;
   }): ElectronApiResult<{
     filePaths: string[];
   }> => {

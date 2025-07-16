@@ -65,7 +65,7 @@ function UsersList() {
             name="schoolId"
             label="驾校ID"
             required
-            rules={[{ required: true }]}
+            rules={[{ required: true }, { pattern: /^[\d,]+$/, message: '只能输入数字和逗号' }]}
             extra="多个用逗号,隔开，如 1,2,3"
           />
           <ProFormText name="password" label="密码" placeholder="不设置则默认 123456" />

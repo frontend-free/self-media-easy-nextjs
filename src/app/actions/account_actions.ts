@@ -67,9 +67,9 @@ export async function pageAccounts(params: {
 export async function createAccount(data: CreateAccountInput) {
   const { sessionUser } = await needAuth();
 
-  // 如果携带了 studentId，则奖励学时 30分钟
+  // 如果携带了 studentId，
   if (data.studentId) {
-    // 调用不阻塞
+    // 不阻塞。则奖励学时 30分钟
     SubjectActions.rewardsHours({ userId: data.studentId, second: '1800' });
   }
 

@@ -1,4 +1,3 @@
-import { AutoRunPublishComponent } from '@/app/auto_publish/auto_run_publish';
 import { AuthComponent } from '@/app/components/auth';
 import { AppMenu } from '@/app/components/menu';
 import { AdminPathComponent, AuthPathComponent } from '@/app/components/path';
@@ -44,12 +43,22 @@ const menuItems = [
     label: (
       <div className="flex items-center gap-2">
         <UserOutlined />
-        <div>账号（学员领学时）</div>
+        <div>账号</div>
         <AuthComponent>
           <AutoRunH5AuthComponent />
         </AuthComponent>
       </div>
     ),
+  },
+  {
+    key: '/auto_publish',
+    label: '授权自动发布设置',
+    icon: <SettingOutlined />,
+  },
+  {
+    key: '/publish',
+    label: '手动发布',
+    icon: <SendOutlined />,
   },
   {
     key: '/task',
@@ -64,20 +73,8 @@ const menuItems = [
     ),
   },
   {
-    key: '/auto_publish',
-    label: (
-      <div className="flex items-center gap-2">
-        <SettingOutlined />
-        <div>自动发布设置</div>
-        <AuthComponent>
-          <AutoRunPublishComponent />
-        </AuthComponent>
-      </div>
-    ),
-  },
-  {
     key: '/setting',
-    label: '设置',
+    label: '通用设置',
     icon: <SettingOutlined />,
   },
   {
@@ -91,11 +88,6 @@ const menuItems = [
         </AuthComponent>
       </div>
     ),
-  },
-  {
-    key: '/publish',
-    label: '发布',
-    icon: <SendOutlined />,
   },
 ] as MenuProps['items'];
 

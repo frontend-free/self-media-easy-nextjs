@@ -7,7 +7,6 @@ import { AccountStatus, TaskStatus } from '@/generated/prisma';
 import { App } from 'antd';
 import { useCallback, useEffect, useState } from 'react';
 import * as AccountActions from '../actions/account_actions';
-import * as SettingActions from '../actions/setting_actions';
 import * as TaskActions from '../actions/task_actions';
 
 const maxRunCount = 1;
@@ -28,10 +27,6 @@ async function runAutoTask({
   const task = await TaskActions.getTaskById(id);
   console.log('runAutoTask task', id, task);
 
-  const { data: setting } = await SettingActions.getSetting();
-  const publishCount = setting?.publishCount || 1;
-  console.log('publishCount', publishCount);
-
   const platform = task.account?.platform;
   const authInfo = task.account?.authInfo;
   const resourceOfVideo = task.publish?.resourceOfVideo;
@@ -47,12 +42,6 @@ async function runAutoTask({
   // 检查下参数
   else if (!platform || !authInfo || !resourceOfVideo) {
     error = '参数错误，请检查';
-  } else {
-    // 检查今天账号发布成功的任务数量
-    const count = await TaskActions.getTaskCountOfPublishByAccountId(task.accountId);
-    if (count >= publishCount) {
-      error = `账号已达每天上限 ${publishCount} 条`;
-    }
   }
 
   if (error) {

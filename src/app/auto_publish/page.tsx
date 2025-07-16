@@ -1,15 +1,12 @@
 'use client';
 
 import { electronApi } from '@/electron';
+import { AutoPublishSetting } from '@/generated/prisma';
 import { ProForm, ProFormDependency, ProFormSwitch } from '@ant-design/pro-components';
-import { Alert, App, Button, Divider } from 'antd';
-import dayjs from 'dayjs';
+import { Alert, App, Button } from 'antd';
 import { useCallback, useEffect, useState } from 'react';
 import * as AutoPublishActions from '../actions/auto_publish_actions';
-import { AutoPublishSettingWithRelations } from '../actions/auto_publish_actions';
-import { ProFormSelectAccounts } from '../components/form/pro_form_select_accounts';
 import { ProFormTextWithSelect } from '../components/form/pro_form_text_with_select';
-import { runAutoPublish } from './auto_run_publish';
 
 function Directory(props: { value: string; onChange: (value?: string) => void }) {
   const { value, onChange } = props;
@@ -43,13 +40,11 @@ function ProFormDirectory(props) {
 }
 
 function Page() {
-  const { notification, message } = App.useApp();
+  const { message } = App.useApp();
 
   const [form] = ProForm.useForm();
 
-  const [data, setData] = useState<
-    (AutoPublishSettingWithRelations & { accountIds: string[] }) | undefined
-  >(undefined);
+  const [data, setData] = useState<AutoPublishSetting | undefined>(undefined);
 
   const getData = useCallback(async () => {
     const { success, data, message } = await AutoPublishActions.getAutoPublishSetting();
@@ -58,13 +53,9 @@ function Page() {
       throw new Error(message);
     }
 
-    const newData = {
-      ...data!,
-      accountIds: data!.accounts.map((account) => account.id) || [],
-    };
-    setData(newData);
+    setData(data);
 
-    form.setFieldsValue(newData);
+    form.setFieldsValue(data);
   }, [form]);
 
   useEffect(() => {
@@ -80,27 +71,9 @@ function Page() {
 
   return (
     <div>
-      <Alert message="每30分钟扫描目录，扫描出新的视频文件，然后自动发布！" />
-      <div className="mt-4 flex flex-row justify-end gap-2 items-center">
-        {data && (
-          <div>
-            上次运行时间:{' '}
-            {data.lastRunAt ? dayjs(data.lastRunAt).format('YYYY-MM-DD HH:mm:ss') : '未运行'}
-          </div>
-        )}
-        <Button
-          type="primary"
-          disabled={!data?.enabled}
-          onClick={async () => {
-            await runAutoPublish({ notification }).finally(() => {
-              getData();
-            });
-          }}
-        >
-          手动触发扫描
-        </Button>
+      <div className="mb-4">
+        <Alert message="授权成功会从目录随机挑选 2 个视频，并贴上广告，然后发布。" />
       </div>
-      <Divider />
       <div>
         {data && (
           <ProForm
@@ -113,18 +86,17 @@ function Page() {
               message.success('更新成功');
             }}
           >
-            <ProFormSwitch name="enabled" label="启用" required rules={[{ required: true }]} />
             <ProFormDirectory
               name="resourceVideoDir"
-              label="目录"
+              label="视频目录"
               required
               rules={[{ required: true }]}
             />
             <ProFormSwitch
               name="autoTitle"
-              label="自动生成标题"
+              label="自动标题"
               required
-              extra="取视频文件名作为标题，但是按标题的规则填入"
+              extra="取视频文件名作为标题，但是按标题的规则填入，非法标题会过滤。"
             />
             <ProFormDependency name={['autoTitle']}>
               {({ autoTitle }) => {
@@ -133,12 +105,6 @@ function Page() {
                 );
               }}
             </ProFormDependency>
-            <ProFormSelectAccounts
-              name="accountIds"
-              label="账号"
-              required
-              rules={[{ required: true }]}
-            />
           </ProForm>
         )}
       </div>

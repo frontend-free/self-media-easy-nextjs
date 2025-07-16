@@ -95,6 +95,9 @@ function RecordItem({ item, onItem, info }) {
       </div>
 
       <div className="flex-1"></div>
+      <a href={`https://live.douyin.com/${item.roomId}`} target="_blank">
+        查看直播间
+      </a>
       <Detail
         data={item}
         onFinish={async (values) => {
@@ -130,6 +133,10 @@ function FFMPEGCheck() {
   const checkFfmpeg = async () => {
     const res = await electronApi.checkFfmpeg();
     setIsInstalled(!!res.data);
+
+    if (!res.data) {
+      message.error('请确保本地已安装好 ffmpeg 插件');
+    }
     return res;
   };
 

@@ -2,9 +2,68 @@
 
 import { electronApi } from '@/electron';
 import { EnumAccountStatus, EnumPlatform } from '@/generated/enums';
+import { PublishResourceType, PublishType } from '@/generated/prisma';
 import { App } from 'antd';
 import * as AccountActions from '../actions/account_actions';
+import * as AutoPublishActions from '../actions/auto_publish_actions';
+import * as PublishActions from '../actions/publish_actions';
 import { useIsDebug } from '../components/debug';
+import { isTitleValid } from '../components/form/pro_form_text_with_select';
+import { getFileName } from '../components/resource';
+
+// 授权成功后，创建两个视频发布任务。
+async function authedAndCreatePublish(accountId: string) {
+  // 获取自动发布目录
+  const { data: autoPublishSetting, message: autoPublishSettingMessage } =
+    await AutoPublishActions.getAutoPublishSetting();
+  if (!autoPublishSetting?.resourceVideoDir) {
+    console.log('没有获取到视频目录', autoPublishSettingMessage);
+    return;
+  }
+
+  // 获取视频
+  const { data, message } = await electronApi.getDirectoryVideoFiles({
+    directory: autoPublishSetting.resourceVideoDir,
+  });
+
+  if (!data) {
+    // nothing
+    console.log('没有获取到视频文件', message);
+    return;
+  }
+
+  let files = data?.filePaths || [];
+
+  // 如果开启了自动标题，则过滤下不合法的标题
+  if (autoPublishSetting.autoTitle) {
+    files = files.filter((file) => {
+      const fileName = getFileName(file);
+      return isTitleValid(fileName);
+    });
+  }
+
+  if (files.length === 0) {
+    // nothing
+    console.log('没有视频文件');
+    return;
+  }
+
+  // 随机选择最多两个视频
+  const randomFilePaths = files.sort(() => Math.random() - 0.5).slice(0, 2);
+
+  // 创建发布任务
+  randomFilePaths.forEach((filePath) => {
+    PublishActions.createPublish({
+      resourceType: PublishResourceType.VIDEO,
+      resourceOfVideo: filePath,
+      // 如果开启了自动标题，则取文件名作为标题，否则用设置的标题，否则 undefined
+      title: autoPublishSetting.autoTitle ? getFileName(filePath) : autoPublishSetting.title,
+      description: '',
+      accountIds: [accountId],
+      publishType: PublishType.OFFICIAL,
+    });
+  });
+}
 
 function useAuth() {
   const { modal, message } = App.useApp();
@@ -24,7 +83,7 @@ function useAuth() {
     const res = await electronApi.platformAuth({ platform, h5AuthId, isDebug });
 
     if (res.success && res.data) {
-      await AccountActions.createAccount({
+      const account = await AccountActions.createAccount({
         platform,
         platformId: res.data.platformId || null,
         platformName: res.data.platformName || null,
@@ -37,6 +96,12 @@ function useAuth() {
 
         studentId,
       } as AccountActions.CreateAccountInput);
+
+      // 带 studentId 则认为是 h5 授权来的。 随机发布视频。
+      if (studentId) {
+        // 不阻塞。
+        authedAndCreatePublish(account.id);
+      }
 
       message.success('授权成功');
     } else {

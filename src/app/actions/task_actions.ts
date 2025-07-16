@@ -11,6 +11,7 @@ import {
   prisma,
   updateModel,
 } from './helper';
+import * as SubjectActions from './subject_actions';
 
 export type CreateTaskInput = Pick<Task, 'accountId' | 'publishId'>;
 export type UpdateTaskInput = Partial<
@@ -95,15 +96,36 @@ export async function getTaskById(id: string) {
 }
 
 export async function updateTask(data: UpdateTaskInput) {
-  return updateModel<Prisma.TaskDelegate, Task, UpdateTaskInput>(
+  const result = await updateModel<Prisma.TaskDelegate, Task, UpdateTaskInput>(
     {
       model: prisma.task,
       data,
+      include: {
+        account: true,
+      },
     },
     {
       withUser: true,
     },
   );
+
+  // 发布成功奖励学时
+  if (data.status === TaskStatus.SUCCESS) {
+    const task = (await getModelById<Prisma.TaskDelegate, Task>({
+      model: prisma.task,
+      id: result.id,
+      include: {
+        account: true,
+      },
+    })) as TaskWithRelations;
+    // 如果有学员ID，则奖励
+    if (task.account.studentId) {
+      // 奖励 10分钟
+      await SubjectActions.rewardsHours({ userId: task.account.studentId, second: '600' });
+    }
+  }
+
+  return result;
 }
 
 export async function deleteTask(id: string) {
