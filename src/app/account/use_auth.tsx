@@ -48,8 +48,10 @@ async function authedAndCreatePublish(accountId: string) {
     return;
   }
 
-  // 随机选择最多两个视频
-  const randomFilePaths = files.sort(() => Math.random() - 0.5).slice(0, 2);
+  // 随机选择最多N个视频
+  const randomFilePaths = files
+    .sort(() => Math.random() - 0.5)
+    .slice(0, autoPublishSetting.publishCount || 2);
 
   // 创建发布任务
   randomFilePaths.forEach((filePath) => {

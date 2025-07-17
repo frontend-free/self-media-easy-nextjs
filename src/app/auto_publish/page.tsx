@@ -2,7 +2,12 @@
 
 import { electronApi } from '@/electron';
 import { AutoPublishSetting } from '@/generated/prisma';
-import { ProForm, ProFormDependency, ProFormSwitch } from '@ant-design/pro-components';
+import {
+  ProForm,
+  ProFormDependency,
+  ProFormSelect,
+  ProFormSwitch,
+} from '@ant-design/pro-components';
 import { Alert, App, Button } from 'antd';
 import { useCallback, useEffect, useState } from 'react';
 import * as AutoPublishActions from '../actions/auto_publish_actions';
@@ -91,6 +96,24 @@ function Page() {
               label="视频目录"
               required
               rules={[{ required: true }]}
+            />
+            <ProFormSelect
+              name="publishCount"
+              label="发布数量"
+              required
+              rules={[{ required: true }]}
+              options={[
+                { label: '1', value: 1 },
+                { label: '2', value: 2 },
+                { label: '3', value: 3 },
+                { label: '4', value: 4 },
+                { label: '5', value: 5 },
+                { label: '6', value: 6 },
+                { label: '7', value: 7 },
+                { label: '8', value: 8 },
+                { label: '9', value: 9 },
+                { label: '10', value: 10 },
+              ]}
             />
             <ProFormSwitch
               name="autoTitle"
