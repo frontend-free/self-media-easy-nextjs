@@ -90,6 +90,7 @@ model User {
   autoPublishSetting AutoPublishSetting[]
   setting            Setting[]
   h5Auths            H5Auth[]
+  schools            School[]
 }
 
 // 标签-教练
@@ -209,6 +210,19 @@ model AutoPublishSetting {
   user User @relation(fields: [id], references: [id])
 }
 
+model School {
+  id String @id
+  name String?
+  address String?
+  phone String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
+
+  userId String
+  user User @relation(fields: [userId], references: [id])
+}
 
 model Setting {
   id String @id // 使用 userId 作为主键

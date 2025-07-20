@@ -57,6 +57,11 @@ const menuItems = [
     icon: <SettingOutlined />,
   },
   {
+    key: '/school',
+    label: '驾校信息',
+    icon: <HomeOutlined />,
+  },
+  {
     key: '/publish',
     label: '手动发布',
     icon: <SendOutlined />,
