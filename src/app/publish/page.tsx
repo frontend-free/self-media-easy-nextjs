@@ -203,6 +203,10 @@ function Page() {
           await PublishActions.deletePublish(id);
         }}
         disabledUpdate
+        enableBatchDelete
+        requestDeletes={async (ids) => {
+          await PublishActions.batchDeletePublishes(ids);
+        }}
       />
     </div>
   );

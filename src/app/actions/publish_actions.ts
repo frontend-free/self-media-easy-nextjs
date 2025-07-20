@@ -1,7 +1,7 @@
 'use server';
 
 import { Prisma, Publish } from '@/generated/prisma';
-import { createModel, deleteModel, needAuth, pageModel, prisma } from './helper';
+import { batchDeleteModel, createModel, deleteModel, needAuth, pageModel, prisma } from './helper';
 import * as TaskActions from './task_actions';
 
 export type CreatePublishInput = Pick<
@@ -69,6 +69,18 @@ export async function deletePublish(id: string) {
     {
       model: prisma.publish,
       id,
+    },
+    {
+      withUser: true,
+    },
+  );
+}
+
+export async function batchDeletePublishes(ids: string[]) {
+  return batchDeleteModel<Prisma.PublishDelegate>(
+    {
+      model: prisma.publish,
+      ids,
     },
     {
       withUser: true,

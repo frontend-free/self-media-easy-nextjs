@@ -20,6 +20,7 @@ import zhCN from 'antd/locale/zh_CN';
 import type { Metadata } from 'next';
 import { SessionProvider } from 'next-auth/react';
 import { AutoRunH5AuthComponent } from './account/auto_run_h5_auth';
+import { FrameComponent } from './components/frame';
 import { Version } from './components/version';
 import './globals.css';
 import { AutoRunRecord } from './recorder/auto_run_record';
@@ -93,21 +94,34 @@ const menuItems = [
 
 function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="h-screen w-screen flex bg-gray-200">
-      <div className="w-[220px] h-full flex flex-col gap-2">
-        <div></div>
-        <UserInfo />
-        <div className="flex-1 flex flex-col">
-          <div className="flex-1">
-            <AppMenu items={menuItems} />
-          </div>
-          <Version />
-        </div>
-        <div></div>
+    <div className="h-screen w-screen flex flex-col bg-gray-200">
+      <div
+        className="px-4 py-2 text-center flex  items-center gap-5"
+        style={{
+          // @ts-expect-error 类型错误
+          WebkitAppRegion: 'drag',
+        }}
+      >
+        <span className="font-bold text-lg">多媒体-驾K先锋</span>
+        <span className="text-xs">给驾校/教练带来10-100倍招生广告效果！</span>
       </div>
+      <div className="flex-1 flex">
+        <div className="w-[220px] h-full flex flex-col gap-2">
+          <div></div>
+          <UserInfo />
+          <div className="flex-1 flex flex-col">
+            <div className="flex-1">
+              <AppMenu items={menuItems} />
+            </div>
+            <FrameComponent />
+            <Version />
+          </div>
+          <div></div>
+        </div>
 
-      <div className="flex-1 p-2 flex flex-col ">
-        <div className="bg-white rounded-md flex-1 p-4 overflow-y-auto">{children}</div>
+        <div className="flex-1 p-2 flex flex-col ">
+          <div className="bg-white rounded-md flex-1 p-4 overflow-y-auto">{children}</div>
+        </div>
       </div>
     </div>
   );

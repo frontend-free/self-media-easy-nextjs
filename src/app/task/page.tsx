@@ -196,6 +196,10 @@ function Page() {
           </>
         );
       }}
+      enableBatchDelete
+      requestDeletes={async (ids) => {
+        await TaskActions.batchDeleteTasks(ids);
+      }}
     />
   );
 }

@@ -27,7 +27,7 @@ export default function LoginPage() {
       <div className="p-8 bg-white rounded-lg shadow">
         <LoginForm
           title="驾K先锋-多媒体"
-          subTitle={<div>每年给驾校/教练带来10-100倍招生广告效果！</div>}
+          subTitle={<div>给驾校/教练带来10-100倍招生广告效果！</div>}
           onFinish={handleFinish(onFinish)}
         >
           <ProFormText name="name" required rules={[{ required: true }]} />

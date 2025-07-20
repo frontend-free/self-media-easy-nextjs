@@ -31,6 +31,12 @@ const electronApi = {
   openAtLogin: async (params?: { open: boolean }): ElectronApiResult<{ open: boolean } | void> => {
     return await getElectron().ipcRenderer.invoke('openAtLogin', params);
   },
+  minimizeWindow: async (): ElectronApiResult<void> => {
+    return await getElectron().ipcRenderer.invoke('minimizeWindow');
+  },
+  closeWindow: async (): ElectronApiResult<void> => {
+    return await getElectron().ipcRenderer.invoke('closeWindow');
+  },
   platformAuth: async (params: {
     platform: EnumPlatform;
     h5AuthId?: string;

@@ -9,16 +9,10 @@ import type {
 import { ModalForm } from '@ant-design/pro-components';
 import { App, Button } from 'antd';
 import dynamic from 'next/dynamic';
-import {
-  Fragment,
-  ReactNode,
-  RefObject,
-  useCallback,
-  useImperativeHandle,
-  useMemo,
-  useRef,
-} from 'react';
-import { LoadingButton } from './loading_button';
+import { Fragment, RefObject, useCallback, useImperativeHandle, useMemo, useRef } from 'react';
+import { LoadingButton } from '../loading_button';
+import type { CRUDProps } from './types';
+import { useRowSelection } from './use_row_selection';
 
 function handleFinish(onFinish) {
   return async (formData) => {
@@ -51,30 +45,6 @@ const ProTable = dynamic(
     ssr: false,
   },
 ) as (typeof import('@ant-design/pro-components'))['ProTable'];
-
-interface CRUDProps<T> {
-  rowKey?: string;
-  title: string;
-  columns: ProColumns<T>[];
-  detailForm?: (props: { type: 'create' | 'update' }) => ReactNode;
-  request: (params: { current: number; pageSize: number } & Record<string, any>) => Promise<{
-    success: boolean;
-    data: T[];
-    total: number;
-  }>;
-  disabledCreate?: boolean;
-  requestCreate?: (createValues: Partial<T>) => Promise<void>;
-  disabledDelete?: boolean;
-  requestDelete?: (id: string, data: T) => Promise<void>;
-  disabledUpdate?: boolean;
-  requestDetail?: (id: string, data: T) => Promise<T>;
-  requestUpdate?: (updateValues: Partial<T> & { id: string }) => Promise<void>;
-
-  toolBarRenderPre?: ReactNode;
-  renderOperate?: (params: { record: T }) => ReactNode;
-
-  ref?: RefObject<{ reload: () => void } | undefined>;
-}
 
 function Add<T>({
   actionRef,
@@ -183,6 +153,8 @@ function CRUD<T extends Record<string, any>>({
   requestUpdate,
   toolBarRenderPre,
   renderOperate,
+  enableBatchDelete,
+  requestDeletes,
 }: CRUDProps<T>) {
   const actionRef = useRef<ActionType | undefined>(undefined);
 
@@ -264,6 +236,31 @@ function CRUD<T extends Record<string, any>>({
     [request],
   );
 
+  const batchActions = useMemo(() => {
+    const bas: any[] = [];
+
+    if (enableBatchDelete && requestDeletes) {
+      const batchDeleteAction = {
+        btnText: '批量删除',
+        danger: true,
+        onClick: async (_, { selectedRows }) => {
+          await requestDeletes(
+            selectedRows.map((item) => item.id),
+            selectedRows,
+          );
+        },
+      };
+      bas.push(batchDeleteAction);
+    }
+
+    return bas;
+  }, [enableBatchDelete, requestDeletes]);
+
+  const { rowSelection, tableAlertRender, tableAlertOptionRender } = useRowSelection({
+    batchActions,
+    actionRef,
+  });
+
   return (
     <ProTable<T>
       cardBordered
@@ -289,6 +286,9 @@ function CRUD<T extends Record<string, any>>({
         defaultCollapsed: false,
       }}
       scroll={getTableScroll(newColumns)}
+      rowSelection={rowSelection}
+      tableAlertRender={tableAlertRender}
+      tableAlertOptionRender={tableAlertOptionRender}
     />
   );
 }

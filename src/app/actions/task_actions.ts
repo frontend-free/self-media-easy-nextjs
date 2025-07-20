@@ -3,6 +3,7 @@
 import { EnumPlatform } from '@/generated/enums';
 import { Account, AccountStatus, Prisma, Publish, Task, TaskStatus } from '@/generated/prisma';
 import {
+  batchDeleteModel,
   createModel,
   deleteModel,
   getModelById,
@@ -120,8 +121,8 @@ export async function updateTask(data: UpdateTaskInput) {
     })) as TaskWithRelations;
     // 如果有学员ID，则奖励
     if (task.account.studentId) {
-      // 奖励 10分钟
-      await SubjectActions.rewardsHours({ userId: task.account.studentId, second: '600' });
+      // 奖励学时 10分钟
+      await SubjectActions.rewardsHours({ userId: task.account.studentId, second: 10 * 60 + '' });
     }
   }
 
@@ -138,6 +139,13 @@ export async function deleteTask(id: string) {
       withUser: true,
     },
   );
+}
+
+export async function batchDeleteTasks(ids: string[]) {
+  return batchDeleteModel<Prisma.TaskDelegate>({
+    model: prisma.task,
+    ids,
+  });
 }
 
 export async function stopTasksOfPending() {

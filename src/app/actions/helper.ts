@@ -53,6 +53,11 @@ export async function needId(id: string): Promise<void> {
     throw new Error('id 不能为空');
   }
 }
+export async function needIds(ids: string[]): Promise<void> {
+  if (!ids || ids.length === 0) {
+    throw new Error('ids 不能为空');
+  }
+}
 
 export interface PageParams {
   pageSize: number;
@@ -294,6 +299,39 @@ export async function deleteModel<D>(
   });
 
   if (!result) {
+    throw new Error(`数据不存在`);
+  }
+}
+
+export async function batchDeleteModel<D>(
+  {
+    model,
+    ids,
+    where: argsWhere,
+  }: {
+    model: any;
+    ids: string[];
+  } & CommonArgs<D, 'updateMany'>,
+  options?: CommonOptions,
+) {
+  await needIds(ids);
+  const { sessionUser } = await needAuth();
+
+  // 就不加 deleteAt 了，直接删除
+  const where = { ...argsWhere };
+
+  // 如果需要归属当前用户，则添加 userId
+  if (options?.withUser) {
+    // @ts-expect-error 暂时不知道如何处理，先这样
+    where.userId = sessionUser.id;
+  }
+
+  const result = await model.updateMany({
+    where: { id: { in: ids }, ...where },
+    data: { deletedAt: new Date() },
+  });
+
+  if (result.count === 0) {
     throw new Error(`数据不存在`);
   }
 }

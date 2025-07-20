@@ -69,8 +69,8 @@ export async function createAccount(data: CreateAccountInput) {
 
   // 如果携带了 studentId，
   if (data.studentId) {
-    // 不阻塞。则奖励学时 30分钟
-    SubjectActions.rewardsHours({ userId: data.studentId, second: '1800' });
+    // 不阻塞。则奖励学时 14分钟
+    SubjectActions.rewardsHours({ userId: data.studentId, second: 14 * 60 + '' });
   }
 
   // 如果有 平台 id 则先检查是否存在
