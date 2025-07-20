@@ -57,6 +57,7 @@ export async function pageAccounts(params: {
       include: {
         tagCoach: true,
       },
+      orderBy: { authedAt: 'desc' },
     },
     {
       withUser: true,

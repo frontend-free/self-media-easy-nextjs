@@ -86,6 +86,7 @@ interface CommonArgs<D, M extends Operation> {
   include?: Prisma.Args<D, M>['include'];
   omit?: Prisma.Args<D, M>['omit'];
   select?: Prisma.Args<D, M>['select'];
+  orderBy?: Prisma.Args<D, M>['orderBy'];
 }
 
 interface CommonOptions {
@@ -102,6 +103,7 @@ export async function pageModel<D, R>(
     include,
     omit,
     select,
+    orderBy,
   }: {
     model: any;
     params: PageParams;
@@ -127,7 +129,7 @@ export async function pageModel<D, R>(
       where,
       skip,
       take: pageSize,
-      orderBy: { createdAt: 'desc' },
+      orderBy: orderBy || { createdAt: 'desc' },
       include,
       omit,
       select,
