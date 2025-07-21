@@ -84,7 +84,7 @@ const menuItems = [
 
 function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="h-screen w-screen flex flex-col bg-gray-200 relative">
+    <div className="h-screen w-screen flex flex-col bg-gradient-to-br from-blue-100 to-cyan-100 relative">
       <div
         className="px-4 py-2 text-center flex  items-center gap-5"
         style={{
