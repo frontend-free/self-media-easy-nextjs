@@ -16,16 +16,15 @@ function AutoRun() {
         </Button>
         <AutoRunH5AuthComponent />
 
+        <Button type="text" icon={<SyncOutlined spin />}>
+          抖音直播录制
+        </Button>
+        <AutoRunRecord />
+
         <div className="flex gap-2 items-center">
           <Button type="text" icon={<SyncOutlined spin />}>
             发布任务 <AutoRunTaskComponent />
           </Button>
-        </div>
-        <div className="flex gap-2 items-center">
-          <Button type="text" icon={<SyncOutlined spin />}>
-            抖音直播录制
-          </Button>
-          <AutoRunRecord />
         </div>
       </AuthComponent>
     </div>
