@@ -41,7 +41,7 @@ function Page() {
       detailForm={() => (
         <div>
           <ProFormText name="id" label="ID" disabled />
-          <ProFormText name="name" label="驾校" />
+          <ProFormText name="name" label="驾校" required rules={[{ required: true }]} />
           <ProFormText name="address" label="地址" />
           <ProFormText name="phone" label="电话" />
         </div>
