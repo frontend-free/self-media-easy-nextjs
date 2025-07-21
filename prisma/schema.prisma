@@ -159,6 +159,7 @@ model Publish {
   resourceOfVideo String? // 视频资源
   title           String? // 标题
   description     String? // 描述
+  adText          String? // 广告文案 \n 换行
   publishType     PublishType // 发布类型
 
   accounts Account[]

@@ -68,6 +68,7 @@ const electronApi = {
     authInfo: string;
     resourceOfVideo: string;
     title?: string;
+    adText?: string;
     description?: string;
     publishType?: PublishType;
     isDebug?: boolean;

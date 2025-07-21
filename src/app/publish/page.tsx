@@ -107,7 +107,6 @@ function Page() {
           {
             title: '视频',
             dataIndex: 'resourceOfVideo',
-
             render: (value) => (
               <Resource
                 resourceType={PublishResourceType.VIDEO}
@@ -116,9 +115,12 @@ function Page() {
             ),
           },
           {
-            title: '发布类型',
-            dataIndex: 'publishType',
-            valueEnum: valueEnumPublishType,
+            title: '文案',
+            dataIndex: 'adText',
+            render: (value) => {
+              const adText = value as string | undefined;
+              return <div>{adText?.split('\n').map((item) => <div key={item}>{item}</div>)}</div>;
+            },
           },
           {
             title: '账号发布状态',
@@ -182,6 +184,9 @@ function Page() {
 
             {/* 先屏蔽 */}
             <ProFormTextArea name="description" label="描述" hidden />
+
+            <ProFormTextArea name="adText" label="广告文案" extra="换行代表多行文案" />
+
             {/* 先屏蔽 */}
             <ProFormRadio.Group
               name="publishType"

@@ -2,6 +2,8 @@ import type { ProColumns } from '@ant-design/pro-components';
 import type { ReactNode, RefObject } from 'react';
 
 interface CRUDProps<T> {
+  ref?: RefObject<{ reload: () => void } | undefined>;
+
   rowKey?: string;
   title: string;
   columns: ProColumns<T>[];
@@ -21,8 +23,6 @@ interface CRUDProps<T> {
 
   toolBarRenderPre?: ReactNode;
   renderOperate?: (params: { record: T }) => ReactNode;
-
-  ref?: RefObject<{ reload: () => void } | undefined>;
 
   enableBatchDelete?: boolean;
   requestDeletes?: (ids: string[], datas: T[]) => Promise<void>;

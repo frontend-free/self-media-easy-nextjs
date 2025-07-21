@@ -90,7 +90,16 @@ function Page() {
           render: (_, record: TaskWithRelations) => {
             return (
               <div>
-                <div className="line-clamp-2">{record.publish.title || '-'}</div>
+                <div className="flex">
+                  标题：
+                  <div className="line-clamp-2">{record.publish.title || '-'}</div>
+                </div>
+                <div className="flex">
+                  文案：
+                  <div className="line-clamp-2">
+                    {record.publish.adText?.split('\n').map((item) => <div key={item}>{item}</div>)}
+                  </div>
+                </div>
                 <Resource
                   resourceType={PublishResourceType.VIDEO}
                   resourceOfVideo={record.publish.resourceOfVideo as string}
@@ -110,7 +119,7 @@ function Page() {
           dataIndex: 'remark',
         },
         {
-          title: '发布时间',
+          title: '时间',
           dataIndex: 'endAt',
           valueType: 'dateTime',
           render: (_, record: TaskWithRelations) => {
