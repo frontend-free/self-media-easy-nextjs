@@ -4,7 +4,7 @@ import { useIsDebug } from '@/app/components/debug';
 import { electronApi, EnumCode } from '@/electron';
 import { valueEnumPlatform } from '@/generated/enums';
 import { AccountStatus, TaskStatus } from '@/generated/prisma';
-import { App } from 'antd';
+import { App, Button } from 'antd';
 import { useCallback, useEffect, useState } from 'react';
 import * as AccountActions from '../actions/account_actions';
 import * as TaskActions from '../actions/task_actions';
@@ -247,9 +247,13 @@ function AutoRunTaskComponent() {
   }, []);
 
   return (
-    <div className="text-white min-w-[20px] h-[20px] bg-red-500 rounded-full flex items-center justify-center overflow-hidden px-2">
+    <Button
+      type="primary"
+      size="small"
+      className="text-white min-w-[20px] h-[20px]  rounded-full flex items-center justify-center overflow-hidden px-2"
+    >
       {count > 99 ? '99+' : count} 待发布
-    </div>
+    </Button>
   );
 }
 
