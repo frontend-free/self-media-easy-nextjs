@@ -1,10 +1,8 @@
-import { AuthComponent } from '@/app/components/auth';
 import { AppMenu } from '@/app/components/menu';
 import { AdminPathComponent, AuthPathComponent } from '@/app/components/path';
 import { UserInfo } from '@/app/components/user_info';
 import { ErrorComponent } from '@/app/lib/error';
 import { initDatabase } from '@/app/lib/init_db';
-import { AutoRunTaskComponent } from '@/app/task/auto_run_task';
 import {
   HomeOutlined,
   SendOutlined,
@@ -19,11 +17,10 @@ import { App, ConfigProvider, MenuProps } from 'antd';
 import zhCN from 'antd/locale/zh_CN';
 import type { Metadata } from 'next';
 import { SessionProvider } from 'next-auth/react';
-import { AutoRunH5AuthComponent } from './account/auto_run_h5_auth';
+import { AutoRun } from './components/auto_run';
 import { FrameComponent } from './components/frame';
 import { Version } from './components/version';
 import './globals.css';
-import { AutoRunRecord } from './recorder/auto_run_record';
 
 // 初始化数据库
 initDatabase().catch(console.error);
@@ -44,15 +41,8 @@ const menuItems = [
   },
   {
     key: '/account',
-    label: (
-      <div className="flex items-center gap-2">
-        <UserOutlined />
-        <div>账号</div>
-        <AuthComponent>
-          <AutoRunH5AuthComponent />
-        </AuthComponent>
-      </div>
-    ),
+    label: '账号',
+    icon: <UserOutlined />,
   },
   {
     key: '/auto_publish',
@@ -66,15 +56,8 @@ const menuItems = [
   },
   {
     key: '/task',
-    label: (
-      <div className="flex items-center gap-2">
-        <UnorderedListOutlined />
-        <div>发布任务</div>
-        <AuthComponent>
-          <AutoRunTaskComponent />
-        </AuthComponent>
-      </div>
-    ),
+    label: '发布任务',
+    icon: <UnorderedListOutlined />,
   },
   {
     key: '/publish',
@@ -86,15 +69,8 @@ const menuItems = [
   },
   {
     key: '/recorder',
-    label: (
-      <div className="flex items-center gap-2">
-        <VideoCameraOutlined />
-        <div>抖音直播录制</div>
-        <AuthComponent>
-          <AutoRunRecord />
-        </AuthComponent>
-      </div>
-    ),
+    label: '抖音直播录制',
+    icon: <VideoCameraOutlined />,
   },
   {
     type: 'divider',
@@ -108,7 +84,7 @@ const menuItems = [
 
 function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="h-screen w-screen flex flex-col bg-gray-200">
+    <div className="h-screen w-screen flex flex-col bg-gray-200 relative">
       <div
         className="px-4 py-2 text-center flex  items-center gap-5"
         style={{
@@ -137,6 +113,7 @@ function RootLayout({ children }: { children: React.ReactNode }) {
           <div className="bg-white rounded-md flex-1 p-4 overflow-y-auto">{children}</div>
         </div>
       </div>
+      <AutoRun />
     </div>
   );
 }
