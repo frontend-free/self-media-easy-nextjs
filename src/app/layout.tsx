@@ -40,6 +40,9 @@ const menuItems = [
     icon: <HomeOutlined />,
   },
   {
+    type: 'divider',
+  },
+  {
     key: '/account',
     label: (
       <div className="flex items-center gap-2">
@@ -62,11 +65,6 @@ const menuItems = [
     icon: <HomeOutlined />,
   },
   {
-    key: '/publish',
-    label: '手动发布',
-    icon: <SendOutlined />,
-  },
-  {
     key: '/task',
     label: (
       <div className="flex items-center gap-2">
@@ -79,9 +77,12 @@ const menuItems = [
     ),
   },
   {
-    key: '/setting',
-    label: '通用设置',
-    icon: <SettingOutlined />,
+    key: '/publish',
+    label: '手动发布',
+    icon: <SendOutlined />,
+  },
+  {
+    type: 'divider',
   },
   {
     key: '/recorder',
@@ -94,6 +95,14 @@ const menuItems = [
         </AuthComponent>
       </div>
     ),
+  },
+  {
+    type: 'divider',
+  },
+  {
+    key: '/setting',
+    label: '通用设置',
+    icon: <SettingOutlined />,
   },
 ] as MenuProps['items'];
 

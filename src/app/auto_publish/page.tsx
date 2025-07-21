@@ -77,7 +77,7 @@ function Page() {
   return (
     <div>
       <div className="mb-4">
-        <Alert message="授权成功会从目录随机挑选 2 个视频，并贴上广告，然后发布。" />
+        <Alert message="授权成功会从目录随机挑选 2 个视频，并随机贴上广告，之后发布。" />
       </div>
       <div>
         {data && (

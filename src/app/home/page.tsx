@@ -1,7 +1,7 @@
 'use client';
 
 import { LoadingButton } from '@/app/components/loading_button';
-import { Alert, App } from 'antd';
+import { Alert, App, Divider } from 'antd';
 import { useEffect, useState } from 'react';
 import { electronApi } from '../../electron/index';
 
@@ -88,6 +88,8 @@ function Page() {
     <div className="flex flex-col gap-2">
       <InstallBrowser />
       <FFMPEGCheck />
+      <Divider />
+      <div>敬请期待-视频统计数据</div>
     </div>
   );
 }
