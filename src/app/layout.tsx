@@ -119,7 +119,7 @@ function RootLayout({ children }: { children: React.ReactNode }) {
         <span className="font-bold text-lg">多媒体-驾K先锋</span>
         <span className="text-xs">给驾校/教练带来10-100倍招生广告效果！</span>
       </div>
-      <div className="flex-1 flex">
+      <div className="flex-1 flex overflow-auto">
         <div className="w-[220px] h-full flex flex-col gap-2">
           <div></div>
           <UserInfo />
