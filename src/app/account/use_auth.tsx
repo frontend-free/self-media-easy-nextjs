@@ -71,13 +71,13 @@ async function authedAndCreatePublish(accountId: string) {
     adTexts = validSchools.map((item) => {
       const arr: string[] = [];
       if (item.name) {
-        arr.push('驾校 ' + item.name);
+        arr.push(item.name);
       }
       if (item.address) {
-        arr.push('地址 ' + item.address);
+        arr.push('驾校地址 ' + item.address);
       }
       if (item.phone) {
-        arr.push('电话 ' + item.phone);
+        arr.push('驾校电话 ' + item.phone);
       }
       return arr.join('\n');
     });
