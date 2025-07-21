@@ -96,7 +96,7 @@ function Page() {
                 </div>
                 <div className="flex">
                   文案：
-                  <div className="line-clamp-2">
+                  <div className="line-clamp-3">
                     {record.publish.adText?.split('\n').map((item) => <div key={item}>{item}</div>)}
                   </div>
                 </div>
