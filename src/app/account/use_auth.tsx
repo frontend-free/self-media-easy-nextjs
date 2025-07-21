@@ -68,9 +68,19 @@ async function authedAndCreatePublish(accountId: string) {
       console.log('没有驾校信息');
     }
 
-    adTexts = validSchools.map((item) =>
-      [item.name, item.address, item.phone].filter(Boolean).join('\n'),
-    );
+    adTexts = validSchools.map((item) => {
+      const arr: string[] = [];
+      if (item.name) {
+        arr.push('驾校 ' + item.name);
+      }
+      if (item.address) {
+        arr.push('地址 ' + item.address);
+      }
+      if (item.phone) {
+        arr.push('电话 ' + item.phone);
+      }
+      return arr.join('\n');
+    });
 
     // 随机选择最多N个文案
     const randomAdTexts = adTexts
