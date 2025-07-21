@@ -7,7 +7,7 @@ import { CRUD } from '../components/crud';
 function Page() {
   return (
     <CRUD
-      title="学校"
+      title="驾校信息"
       columns={[
         {
           title: 'ID',

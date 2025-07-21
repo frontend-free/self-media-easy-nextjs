@@ -116,6 +116,12 @@ function Page() {
               ]}
             />
             <ProFormSwitch
+              name="autoAdText"
+              label="自动广告文案"
+              required
+              extra="自动取驾校信息作为文案，剪辑到视频左上角。"
+            />
+            <ProFormSwitch
               name="autoTitle"
               label="自动标题"
               required

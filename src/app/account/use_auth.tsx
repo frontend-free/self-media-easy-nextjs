@@ -7,6 +7,7 @@ import { App } from 'antd';
 import * as AccountActions from '../actions/account_actions';
 import * as AutoPublishActions from '../actions/auto_publish_actions';
 import * as PublishActions from '../actions/publish_actions';
+import * as SchoolActions from '../actions/school_actions';
 import { useIsDebug } from '../components/debug';
 import { isTitleValid } from '../components/form/pro_form_text_with_select';
 import { getFileName } from '../components/resource';
@@ -53,14 +54,41 @@ async function authedAndCreatePublish(accountId: string) {
     .sort(() => Math.random() - 0.5)
     .slice(0, autoPublishSetting.publishCount || 2);
 
+  let adTexts: string[] = [];
+  // 如果开启了自动广告
+  if (autoPublishSetting.autoAdText) {
+    const { data: schools } = await SchoolActions.pageSchools({
+      pageSize: 1000,
+      current: 1,
+    });
+
+    // 有名字则认为有效
+    const validSchools = schools.filter((item) => item.name);
+    if (validSchools.length === 0) {
+      console.log('没有驾校信息');
+    }
+
+    adTexts = validSchools.map((item) =>
+      [item.name, item.address, item.phone].filter(Boolean).join('\n'),
+    );
+
+    // 随机选择最多N个文案
+    const randomAdTexts = adTexts
+      .sort(() => Math.random() - 0.5)
+      .slice(0, autoPublishSetting.publishCount || 2);
+    adTexts = randomAdTexts;
+  }
+
   // 创建发布任务
-  randomFilePaths.forEach((filePath) => {
+  randomFilePaths.forEach((filePath, index) => {
     PublishActions.createPublish({
       resourceType: PublishResourceType.VIDEO,
       resourceOfVideo: filePath,
       // 如果开启了自动标题，则取文件名作为标题，否则用设置的标题，否则 undefined
       title: autoPublishSetting.autoTitle ? getFileName(filePath) : autoPublishSetting.title,
       description: '',
+      // 降级
+      adText: adTexts[index] || adTexts[0] || '',
       accountIds: [accountId],
       publishType: PublishType.OFFICIAL,
     });

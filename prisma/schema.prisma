@@ -204,6 +204,7 @@ model AutoPublishSetting {
   title               String? // 标题
   autoTitle           Boolean?  @default(false) // 是否自动生成标题
   publishCount        Int? @default(2) // 每个账号发布数量
+  autoAdText          Boolean?  @default(false) // 是否自动生成广告文案
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
