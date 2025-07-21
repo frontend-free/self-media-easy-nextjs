@@ -4,6 +4,7 @@ import { useIsDebug } from '@/app/components/debug';
 import { electronApi, EnumCode } from '@/electron';
 import { valueEnumPlatform } from '@/generated/enums';
 import { AccountStatus, TaskStatus } from '@/generated/prisma';
+import { SyncOutlined } from '@ant-design/icons';
 import { App, Button } from 'antd';
 import { useCallback, useEffect, useState } from 'react';
 import * as AccountActions from '../actions/account_actions';
@@ -248,9 +249,10 @@ function AutoRunTaskComponent() {
 
   return (
     <Button
-      type="primary"
+      type="text"
       size="small"
       className="text-white min-w-[20px] h-[20px]  rounded-full flex items-center justify-center overflow-hidden px-2"
+      icon={<SyncOutlined spin />}
     >
       {count > 99 ? '99+' : count} 待发布
     </Button>

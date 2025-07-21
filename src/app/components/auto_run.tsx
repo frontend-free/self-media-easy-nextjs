@@ -9,7 +9,7 @@ import { AuthComponent } from './auth';
 
 function AutoRun() {
   return (
-    <div className="absolute top-0 right-0 py-2 px-4 flex gap-2">
+    <div className="absolute top-0 right-0 py-2 px-4 flex items-center gap-2">
       <AuthComponent>
         <Button type="text" icon={<SyncOutlined spin />}>
           H5授权
@@ -21,11 +21,7 @@ function AutoRun() {
         </Button>
         <AutoRunRecord />
 
-        <div className="flex gap-2 items-center">
-          <Button type="text" icon={<SyncOutlined spin />}>
-            发布任务 <AutoRunTaskComponent />
-          </Button>
-        </div>
+        <AutoRunTaskComponent />
       </AuthComponent>
     </div>
   );
