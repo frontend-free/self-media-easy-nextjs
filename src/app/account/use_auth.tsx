@@ -74,10 +74,10 @@ async function authedAndCreatePublish(accountId: string) {
         arr.push(item.name);
       }
       if (item.phone) {
-        arr.push('驾校电话 ' + item.phone);
+        arr.push(item.phone);
       }
       if (item.address) {
-        arr.push('驾校地址 ' + item.address);
+        arr.push(item.address);
       }
       return arr.join('\n');
     });
