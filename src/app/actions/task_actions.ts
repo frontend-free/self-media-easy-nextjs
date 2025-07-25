@@ -122,7 +122,11 @@ export async function updateTask(data: UpdateTaskInput) {
     // 如果有学员ID，则奖励
     if (task.account.studentId) {
       // 奖励学时 10分钟
-      await SubjectActions.rewardsHours({ userId: task.account.studentId, second: 10 * 60 + '' });
+      await SubjectActions.rewardsHours({
+        accountId: task.account.id,
+        studentId: task.account.studentId,
+        type: 'video',
+      });
     }
   }
 

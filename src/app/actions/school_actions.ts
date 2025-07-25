@@ -3,7 +3,9 @@
 import { Prisma, School } from '@/generated/prisma';
 import { deleteModel, getModelById, needAuth, pageModel, prisma, updateModel } from './helper';
 
-export type UpdateSchoolInput = Partial<Pick<School, 'name' | 'address' | 'phone'>> & {
+export type UpdateSchoolInput = Partial<
+  Pick<School, 'name' | 'address' | 'phone' | 'authRewardHours' | 'videoRewardHours'>
+> & {
   id: string;
 };
 

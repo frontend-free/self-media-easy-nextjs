@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "School" ADD COLUMN "authRewardHours" INTEGER DEFAULT 840;
+ALTER TABLE "School" ADD COLUMN "videoRewardHours" INTEGER DEFAULT 600;

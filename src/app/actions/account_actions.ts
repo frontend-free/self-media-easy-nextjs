@@ -69,10 +69,16 @@ export async function pageAccounts(params: {
 export async function createAccount(data: CreateAccountInput) {
   const { sessionUser } = await needAuth();
 
-  // 如果携带了 studentId，
-  if (data.studentId) {
-    // 不阻塞。则奖励学时 14分钟
-    SubjectActions.rewardsHours({ userId: data.studentId, second: 14 * 60 + '' });
+  function rewardsHours(result: Account) {
+    // 如果携带了 studentId，
+    if (result.studentId) {
+      // 不阻塞。则奖励学时 14分钟
+      SubjectActions.rewardsHours({
+        accountId: result.id,
+        studentId: result.studentId,
+        type: 'auth',
+      });
+    }
   }
 
   // 如果有 平台 id 则先检查是否存在
@@ -93,15 +99,19 @@ export async function createAccount(data: CreateAccountInput) {
 
     // 存在则更新
     if (account) {
-      return await updateAccount({
+      const result = await updateAccount({
         id: account.id,
         ...data,
       });
+
+      rewardsHours(result);
+
+      return result;
     }
   }
 
   // 不存在则创建
-  return createModel<Prisma.AccountDelegate, Account>(
+  const result = await createModel<Prisma.AccountDelegate, Account>(
     {
       model: prisma.account,
       data,
@@ -110,6 +120,10 @@ export async function createAccount(data: CreateAccountInput) {
       withUser: true,
     },
   );
+
+  rewardsHours(result);
+
+  return result;
 }
 
 export async function getAccountById(id: string) {

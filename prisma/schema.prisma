@@ -219,6 +219,10 @@ model School {
   address String?
   phone String?
 
+  authRewardHours Int? @default(840) // 授权奖励学时 14分钟 14 * 60
+  videoRewardHours Int? @default(600) // 视频奖励学时 10分钟 10 * 60
+
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   deletedAt DateTime?
