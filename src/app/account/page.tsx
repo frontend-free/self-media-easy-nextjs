@@ -96,6 +96,10 @@ function Page() {
           title: '学员ID',
           dataIndex: 'studentId',
         },
+        {
+          title: '驾校ID',
+          dataIndex: 'schoolId',
+        },
       ]}
       detailForm={() => (
         <div>

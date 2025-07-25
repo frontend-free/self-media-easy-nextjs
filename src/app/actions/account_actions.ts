@@ -25,6 +25,7 @@ export type CreateAccountInput = Pick<
   | 'logs'
   | 'tagCoachId'
   | 'studentId'
+  | 'schoolId'
 >;
 
 export type UpdateAccountInput = Partial<

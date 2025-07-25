@@ -23,7 +23,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="h-screen w-screen items-center justify-center flex bg-gray-50">
+    <div className="h-screen w-screen items-center justify-center flex">
       <div className="p-8 bg-white rounded-lg shadow">
         <LoginForm
           title="驾K先锋-多媒体"

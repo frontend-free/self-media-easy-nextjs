@@ -72,7 +72,7 @@ function Add<T>({
         return true;
       })}
       modalProps={{
-        destroyOnClose: true,
+        destroyOnHidden: true,
       }}
     >
       {detailForm && detailForm({ type: 'create' })}
@@ -128,7 +128,7 @@ function Update<T>({
         return true;
       })}
       modalProps={{
-        destroyOnClose: true,
+        destroyOnHidden: true,
       }}
       onOpenChange={handleOpenChange}
     >

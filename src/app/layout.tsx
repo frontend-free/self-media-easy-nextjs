@@ -84,7 +84,7 @@ const menuItems = [
 
 function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="h-screen w-screen flex flex-col bg-gradient-to-br from-blue-100 to-cyan-100 relative">
+    <div className="h-screen w-screen flex flex-col relative">
       <div
         className="px-4 py-2 text-center flex  items-center gap-5"
         style={{
@@ -110,7 +110,7 @@ function RootLayout({ children }: { children: React.ReactNode }) {
         </div>
 
         <div className="flex-1 p-2 flex flex-col ">
-          <div className="bg-white rounded-md flex-1 p-4 overflow-y-auto">{children}</div>
+          <div className="bg-white rounded-lg flex-1 p-4 overflow-y-auto">{children}</div>
         </div>
       </div>
       <AutoRun />
@@ -121,7 +121,7 @@ function RootLayout({ children }: { children: React.ReactNode }) {
 function WrapRootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="zh-CN">
-      <body>
+      <body className="bg-gradient-to-br from-blue-300 to-cyan-300">
         <AntdRegistry>
           <ConfigProvider locale={zhCN}>
             <SessionProvider>

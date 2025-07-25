@@ -120,6 +120,7 @@ model Account {
   logs           String? // 授权日志 JSON
 
   studentId String? // 学员ID
+  schoolId  String? // 驾校ID
 
   tagCoachId String?
   tagCoach   TagCoach? @relation(fields: [tagCoachId], references: [id])

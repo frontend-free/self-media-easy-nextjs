@@ -117,7 +117,7 @@ const UserInfo = () => {
             return true;
           })}
           modalProps={{
-            destroyOnClose: true,
+            destroyOnHidden: true,
           }}
         >
           <ProFormText name="id" hidden />

@@ -36,6 +36,7 @@ function AutoRunH5AuthComponent() {
         platform: h5Auth.platform as EnumPlatform,
         h5AuthId: h5Auth.id,
         studentId: h5Auth.studentId,
+        schoolId: h5Auth.schoolId,
         silent: true,
       });
       // 更新状态

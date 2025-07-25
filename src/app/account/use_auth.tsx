@@ -12,8 +12,30 @@ import { useIsDebug } from '../components/debug';
 import { isTitleValid } from '../components/form/pro_form_text_with_select';
 import { getFileName } from '../components/resource';
 
+async function getAdText(schoolId: string): Promise<string | undefined> {
+  try {
+    const school = await SchoolActions.getSchoolById(schoolId);
+    // 如果没有有效信息
+    if (!school || !school.name || !school.phone || !school.address) {
+      return undefined;
+    }
+
+    return [school.name, school.phone, school.address].join('\n');
+  } catch (error) {
+    // 不报错，返回 undefined
+    console.error('获取驾校信息失败', error);
+    return undefined;
+  }
+}
+
 // 授权成功后，创建两个视频发布任务。
-async function authedAndCreatePublish(accountId: string) {
+async function authedAndCreatePublish({
+  accountId,
+  schoolId,
+}: {
+  accountId: string;
+  schoolId?: string;
+}) {
   // 获取自动发布目录
   const { data: autoPublishSetting, message: autoPublishSettingMessage } =
     await AutoPublishActions.getAutoPublishSetting();
@@ -54,43 +76,14 @@ async function authedAndCreatePublish(accountId: string) {
     .sort(() => Math.random() - 0.5)
     .slice(0, autoPublishSetting.publishCount || 2);
 
-  let adTexts: string[] = [];
+  let adText: string | undefined;
   // 如果开启了自动广告
-  if (autoPublishSetting.autoAdText) {
-    const { data: schools } = await SchoolActions.pageSchools({
-      pageSize: 1000,
-      current: 1,
-    });
-
-    // 有名字则认为有效
-    const validSchools = schools.filter((item) => item.name);
-    if (validSchools.length === 0) {
-      console.log('没有驾校信息');
-    }
-
-    adTexts = validSchools.map((item) => {
-      const arr: string[] = [];
-      if (item.name) {
-        arr.push(item.name);
-      }
-      if (item.phone) {
-        arr.push(item.phone);
-      }
-      if (item.address) {
-        arr.push(item.address);
-      }
-      return arr.join('\n');
-    });
-
-    // 随机选择最多N个文案
-    const randomAdTexts = adTexts
-      .sort(() => Math.random() - 0.5)
-      .slice(0, autoPublishSetting.publishCount || 2);
-    adTexts = randomAdTexts;
+  if (autoPublishSetting.autoAdText && schoolId) {
+    adText = await getAdText(schoolId);
   }
 
   // 创建发布任务
-  randomFilePaths.forEach((filePath, index) => {
+  randomFilePaths.forEach((filePath) => {
     PublishActions.createPublish({
       resourceType: PublishResourceType.VIDEO,
       resourceOfVideo: filePath,
@@ -98,7 +91,7 @@ async function authedAndCreatePublish(accountId: string) {
       title: autoPublishSetting.autoTitle ? getFileName(filePath) : autoPublishSetting.title,
       description: '',
       // 降级
-      adText: adTexts[index] || adTexts[0] || '',
+      adText: adText || '',
       accountIds: [accountId],
       publishType: PublishType.OFFICIAL,
     });
@@ -112,12 +105,14 @@ function useAuth() {
   const onAuth = async ({
     platform,
     studentId,
+    schoolId,
     h5AuthId,
     silent = false,
   }: {
     platform: EnumPlatform;
     h5AuthId?: string;
     studentId?: string;
+    schoolId?: string;
     silent?: boolean;
   }) => {
     const res = await electronApi.platformAuth({ platform, h5AuthId, isDebug });
@@ -135,12 +130,13 @@ function useAuth() {
         logs: JSON.stringify(res.data.logs || []),
 
         studentId,
+        schoolId,
       } as AccountActions.CreateAccountInput);
 
       // 带 studentId 则认为是 h5 授权来的。 随机发布视频。
       if (studentId) {
         // 不阻塞。
-        authedAndCreatePublish(account.id);
+        authedAndCreatePublish({ accountId: account.id, schoolId });
       }
 
       message.success('授权成功');

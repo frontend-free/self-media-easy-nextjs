@@ -1,7 +1,7 @@
 'use client';
 
 import * as SchoolActions from '@/app/actions/school_actions';
-import { ProFormText } from '@ant-design/pro-components';
+import { ProFormText, ProFormTextArea } from '@ant-design/pro-components';
 import { CRUD } from '../components/crud';
 
 function Page() {
@@ -20,12 +20,12 @@ function Page() {
           search: true,
         },
         {
-          title: '地址',
-          dataIndex: 'address',
-        },
-        {
           title: '电话',
           dataIndex: 'phone',
+        },
+        {
+          title: '地址',
+          dataIndex: 'address',
         },
       ]}
       request={async (params) => {
@@ -42,8 +42,8 @@ function Page() {
         <div>
           <ProFormText name="id" label="ID" disabled />
           <ProFormText name="name" label="驾校" required rules={[{ required: true }]} />
-          <ProFormText name="address" label="地址" />
           <ProFormText name="phone" label="电话" />
+          <ProFormTextArea name="address" label="地址" rows={4} extra="支持换行" />
         </div>
       )}
       requestDetail={async (id) => {
