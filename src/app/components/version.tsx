@@ -8,9 +8,9 @@ import { DebugWrapVersion } from './debug';
 import { LoadingButton } from './loading_button';
 
 async function getLatestAppVersion() {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_UPDATER_SERVER}/latest.json`).then((res) =>
-    res.json(),
-  );
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_UPDATER_SERVER}/latest.json?t=${Date.now()}`,
+  ).then((res) => res.json());
 
   return {
     latestVersion: res.version,
