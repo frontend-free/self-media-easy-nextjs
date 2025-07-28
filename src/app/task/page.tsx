@@ -33,7 +33,7 @@ function Page() {
 
       notification.info({
         key: task.id,
-        message: hasAdText ? '剪辑中...' : '发布中...',
+        message: hasAdText ? '剪辑贴入广告中...' : '发布中...',
         duration: 0,
       });
 
