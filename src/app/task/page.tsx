@@ -29,9 +29,11 @@ function Page() {
 
   const handlePublishTask = async (task: TaskWithRelations) => {
     try {
+      const hasAdText = !!task.publish.adText;
+
       notification.info({
         key: task.id,
-        message: '发布中',
+        message: hasAdText ? '剪辑中...' : '发布中...',
         duration: 0,
       });
 
