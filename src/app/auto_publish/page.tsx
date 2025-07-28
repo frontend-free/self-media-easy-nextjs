@@ -93,7 +93,7 @@ function Page() {
           >
             <ProFormDirectory
               name="resourceVideoDir"
-              label="视频目录"
+              label="视频目录（子目录有以驾校ID命名的，则优先取该目录下的视频）"
               required
               rules={[{ required: true }]}
             />

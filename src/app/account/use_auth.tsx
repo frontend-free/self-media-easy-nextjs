@@ -2,8 +2,9 @@
 
 import { electronApi } from '@/electron';
 import { EnumAccountStatus, EnumPlatform } from '@/generated/enums';
-import { PublishResourceType, PublishType } from '@/generated/prisma';
+import { AutoPublishSetting, PublishResourceType, PublishType } from '@/generated/prisma';
 import { App } from 'antd';
+import path from 'path';
 import * as AccountActions from '../actions/account_actions';
 import * as AutoPublishActions from '../actions/auto_publish_actions';
 import * as PublishActions from '../actions/publish_actions';
@@ -11,6 +12,61 @@ import * as SchoolActions from '../actions/school_actions';
 import { useIsDebug } from '../components/debug';
 import { isTitleValid } from '../components/form/pro_form_text_with_select';
 import { getFileName } from '../components/resource';
+
+async function getVideos({
+  autoPublishSetting,
+  schoolId,
+}: {
+  autoPublishSetting: AutoPublishSetting;
+  schoolId?: string;
+}): Promise<string[] | undefined> {
+  // 获取视频
+  let { data } = await electronApi.getDirectoryVideoFiles({
+    directory: autoPublishSetting.resourceVideoDir!,
+  });
+
+  // 如果 schoolId 存在，目录下有视频，则取 schoolId 目录下的
+  if (schoolId) {
+    const { data: dataSchool } = await electronApi.getDirectoryVideoFiles({
+      directory: path.join(autoPublishSetting.resourceVideoDir!, schoolId),
+    });
+
+    // 覆盖
+    if (dataSchool) {
+      console.log('取 schoolId 目录下的视频');
+      data = dataSchool;
+    }
+  }
+
+  if (!data) {
+    // nothing
+    console.log('没有获取到视频文件');
+    return undefined;
+  }
+
+  let files = data?.filePaths || [];
+
+  // 如果开启了自动标题，则过滤下不合法的标题
+  if (autoPublishSetting.autoTitle) {
+    files = files.filter((file) => {
+      const fileName = getFileName(file);
+      return isTitleValid(fileName);
+    });
+  }
+
+  if (files.length === 0) {
+    // nothing
+    console.log('没有视频文件');
+    return undefined;
+  }
+
+  // 随机选择最多N个视频
+  const randomFilePaths = files
+    .sort(() => Math.random() - 0.5)
+    .slice(0, autoPublishSetting.publishCount || 2);
+
+  return randomFilePaths;
+}
 
 async function getAdText(schoolId: string): Promise<string | undefined> {
   try {
@@ -44,37 +100,11 @@ async function authedAndCreatePublish({
     return;
   }
 
-  // 获取视频
-  const { data, message } = await electronApi.getDirectoryVideoFiles({
-    directory: autoPublishSetting.resourceVideoDir,
-  });
+  const videos = await getVideos({ autoPublishSetting, schoolId });
 
-  if (!data) {
-    // nothing
-    console.log('没有获取到视频文件', message);
+  if (!videos) {
     return;
   }
-
-  let files = data?.filePaths || [];
-
-  // 如果开启了自动标题，则过滤下不合法的标题
-  if (autoPublishSetting.autoTitle) {
-    files = files.filter((file) => {
-      const fileName = getFileName(file);
-      return isTitleValid(fileName);
-    });
-  }
-
-  if (files.length === 0) {
-    // nothing
-    console.log('没有视频文件');
-    return;
-  }
-
-  // 随机选择最多N个视频
-  const randomFilePaths = files
-    .sort(() => Math.random() - 0.5)
-    .slice(0, autoPublishSetting.publishCount || 2);
 
   let adText: string | undefined;
   // 如果开启了自动广告
@@ -83,7 +113,7 @@ async function authedAndCreatePublish({
   }
 
   // 创建发布任务
-  randomFilePaths.forEach((filePath) => {
+  videos.forEach((filePath) => {
     PublishActions.createPublish({
       resourceType: PublishResourceType.VIDEO,
       resourceOfVideo: filePath,
