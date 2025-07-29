@@ -21,6 +21,7 @@ function UsersList() {
           dataIndex: 'schoolId',
           key: 'schoolId',
           search: true,
+          ellipsis: true,
         },
         {
           title: '昵称',
