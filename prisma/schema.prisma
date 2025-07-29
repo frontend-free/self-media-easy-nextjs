@@ -217,7 +217,7 @@ model School {
   id String @id
   name String?
   address String?
-  phone String?
+  description String?
 
   authRewardHours Int? @default(840) // 授权奖励学时 14分钟 14 * 60
   videoRewardHours Int? @default(600) // 视频奖励学时 10分钟 10 * 60

@@ -72,11 +72,11 @@ async function getAdText(schoolId: string): Promise<string | undefined> {
   try {
     const school = await SchoolActions.getSchoolById(schoolId);
     // 如果没有有效信息
-    if (!school || !(school.name || school.phone || school.address)) {
+    if (!school || !(school.name || school.description || school.address)) {
       return undefined;
     }
 
-    return [school.name, school.phone, school.address].filter(Boolean).join('\n');
+    return [school.name, school.description, school.address].filter(Boolean).join('\n');
   } catch (error) {
     // 不报错，返回 undefined
     console.error('获取驾校信息失败', error);

@@ -20,8 +20,8 @@ function Page() {
           search: true,
         },
         {
-          title: '电话',
-          dataIndex: 'phone',
+          title: '驾校特色',
+          dataIndex: 'description',
         },
         {
           title: '地址',
@@ -53,7 +53,7 @@ function Page() {
         <div>
           <ProFormText name="id" label="ID" disabled />
           <ProFormText name="name" label="驾校" required rules={[{ required: true }]} />
-          <ProFormText name="phone" label="电话" />
+          <ProFormText name="description" label="驾校特色" />
           <ProFormTextArea name="address" label="地址" rows={4} extra="支持换行" />
           <ProFormDigit name="authRewardHours" label="授权奖励学时（秒）" min={60} max={14 * 60} />
           <ProFormDigit name="videoRewardHours" label="视频奖励学时（秒）" min={60} max={14 * 60} />
