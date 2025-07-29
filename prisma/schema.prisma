@@ -121,6 +121,7 @@ model Account {
 
   studentId String? // 学员ID
   schoolId  String? // 驾校ID
+  coachPhone String? // 教练手机号
 
   tagCoachId String?
   tagCoach   TagCoach? @relation(fields: [tagCoachId], references: [id])
@@ -141,6 +142,7 @@ model H5Auth {
   platform       Platform // 平台
   schoolId       String // 驾校ID
   studentId      String // 学员ID
+  coachPhone     String? // 教练手机号
   status H5AuthStatus @default(PENDING) // 状态
   qrcode String? // 二维码
   mobileCode String? // 手机验证码

@@ -37,6 +37,7 @@ function AutoRunH5AuthComponent() {
         h5AuthId: h5Auth.id,
         studentId: h5Auth.studentId,
         schoolId: h5Auth.schoolId,
+        coachPhone: h5Auth.coachPhone || undefined,
         silent: true,
       });
       // 更新状态

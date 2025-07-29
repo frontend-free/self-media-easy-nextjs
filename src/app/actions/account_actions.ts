@@ -26,12 +26,21 @@ export type CreateAccountInput = Pick<
   | 'tagCoachId'
   | 'studentId'
   | 'schoolId'
+  | 'coachPhone'
 >;
 
 export type UpdateAccountInput = Partial<
   Pick<
     Account,
-    'platformName' | 'platformAvatar' | 'status' | 'authInfo' | 'authedAt' | 'logs' | 'studentId'
+    | 'platformName'
+    | 'platformAvatar'
+    | 'status'
+    | 'authInfo'
+    | 'authedAt'
+    | 'logs'
+    | 'studentId'
+    | 'schoolId'
+    | 'coachPhone'
   >
 > & {
   id: string;

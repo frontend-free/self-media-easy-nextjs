@@ -20,6 +20,7 @@ async function getVideos({
   autoPublishSetting: AutoPublishSetting;
   schoolId?: string;
 }): Promise<string[] | undefined> {
+  console.log('getVideos', { autoPublishSetting, schoolId });
   // 获取视频
   let { data } = await electronApi.getDirectoryVideoFiles({
     directory: autoPublishSetting.resourceVideoDir!,
@@ -68,7 +69,14 @@ async function getVideos({
   return randomFilePaths;
 }
 
-async function getAdText(schoolId: string): Promise<string | undefined> {
+async function getAdText({
+  schoolId,
+  coachPhone,
+}: {
+  schoolId: string;
+  coachPhone?: string;
+}): Promise<string | undefined> {
+  console.log('getAdText', { schoolId, coachPhone });
   try {
     const school = await SchoolActions.getSchoolById(schoolId);
     // 如果没有有效信息
@@ -76,7 +84,7 @@ async function getAdText(schoolId: string): Promise<string | undefined> {
       return undefined;
     }
 
-    return [school.name, school.description, school.address].filter(Boolean).join('\n');
+    return [school.name, school.description, school.address, coachPhone].filter(Boolean).join('\n');
   } catch (error) {
     // 不报错，返回 undefined
     console.error('获取驾校信息失败', error);
@@ -88,9 +96,11 @@ async function getAdText(schoolId: string): Promise<string | undefined> {
 async function authedAndCreatePublish({
   accountId,
   schoolId,
+  coachPhone,
 }: {
   accountId: string;
   schoolId?: string;
+  coachPhone?: string;
 }) {
   // 获取自动发布目录
   const { data: autoPublishSetting, message: autoPublishSettingMessage } =
@@ -109,7 +119,7 @@ async function authedAndCreatePublish({
   let adText: string | undefined;
   // 如果开启了自动广告
   if (autoPublishSetting.autoAdText && schoolId) {
-    adText = await getAdText(schoolId);
+    adText = await getAdText({ schoolId, coachPhone });
   }
 
   // 创建发布任务
@@ -136,6 +146,7 @@ function useAuth() {
     platform,
     studentId,
     schoolId,
+    coachPhone,
     h5AuthId,
     silent = false,
   }: {
@@ -143,8 +154,10 @@ function useAuth() {
     h5AuthId?: string;
     studentId?: string;
     schoolId?: string;
+    coachPhone?: string;
     silent?: boolean;
   }) => {
+    console.log('onAuth', { platform, h5AuthId, studentId, schoolId, coachPhone, silent });
     const res = await electronApi.platformAuth({ platform, h5AuthId, isDebug });
 
     if (res.success && res.data) {
@@ -161,12 +174,13 @@ function useAuth() {
 
         studentId,
         schoolId,
+        coachPhone,
       } as AccountActions.CreateAccountInput);
 
       // 带 studentId 则认为是 h5 授权来的。 随机发布视频。
       if (studentId) {
         // 不阻塞。
-        authedAndCreatePublish({ accountId: account.id, schoolId });
+        authedAndCreatePublish({ accountId: account.id, schoolId, coachPhone });
       }
 
       message.success('授权成功');
