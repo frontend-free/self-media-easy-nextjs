@@ -84,7 +84,14 @@ async function getAdText({
       return undefined;
     }
 
-    return [school.name, school.description, school.address, coachPhone].filter(Boolean).join('\n');
+    return [
+      school.name,
+      school.description,
+      school.address,
+      coachPhone && `报名热线：${coachPhone}`,
+    ]
+      .filter(Boolean)
+      .join('\n');
   } catch (error) {
     // 不报错，返回 undefined
     console.error('获取驾校信息失败', error);
