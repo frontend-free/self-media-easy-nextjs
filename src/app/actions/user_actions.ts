@@ -12,7 +12,7 @@ import {
 } from './helper';
 
 export type UserDetail = Omit<User, 'password'>;
-export type CreateUserInput = Pick<User, 'name' | 'password' | 'schoolId'>;
+export type CreateUserInput = Pick<User, 'name' | 'password'>;
 export type UpdateUserInput = Partial<
   Pick<User, 'password' | 'avatar' | 'mobile' | 'nickname' | 'isAdmin'>
 > & { id: string; oldPassword?: string };
@@ -40,8 +40,7 @@ export async function createUser(data: CreateUserInput) {
     model: prisma.user,
     data: {
       ...data,
-      // 默认密码 123456
-      password: data.password || '123456',
+      password: data.password,
     },
   });
 }

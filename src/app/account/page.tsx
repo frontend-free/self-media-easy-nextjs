@@ -92,25 +92,10 @@ function Page() {
           dataIndex: 'authedAt',
           valueType: 'dateTime',
         },
-        {
-          title: '学员ID',
-          dataIndex: 'studentId',
-        },
-        {
-          title: '教练手机号',
-          dataIndex: 'coachPhone',
-        },
-        {
-          title: '驾校ID',
-          dataIndex: 'schoolId',
-        },
       ]}
       detailForm={() => (
         <div>
           <ProFormText name="id" label="ID" hidden />
-          <ProFormText name="studentId" label="学员ID" />
-          <ProFormText name="coachPhone" label="教练手机号" />
-          <ProFormText name="schoolId" label="驾校ID" />
         </div>
       )}
       request={async (params) => {

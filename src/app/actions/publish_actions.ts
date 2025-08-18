@@ -6,7 +6,7 @@ import * as TaskActions from './task_actions';
 
 export type CreatePublishInput = Pick<
   Publish,
-  'resourceType' | 'resourceOfVideo' | 'title' | 'description' | 'publishType' | 'adText'
+  'resourceType' | 'resourceOfVideo' | 'title' | 'description' | 'publishType'
 > & { accountIds: string[] };
 
 export async function pagePublishes(params: { pageSize: number; current: number; title?: string }) {

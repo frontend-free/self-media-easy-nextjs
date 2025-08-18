@@ -1,8 +1,7 @@
 'use client';
 
-import * as H5AuthActions from '@/app/actions/h5_auth_actions';
 import { EnumPlatform } from '@/generated/enums';
-import { H5AuthStatus, Platform, PublishType } from '@/generated/prisma';
+import { Platform, PublishType } from '@/generated/prisma';
 import { electronApiOfRecorder } from './electron_recorder';
 import { ElectronApiResult, getElectron } from './helper';
 
@@ -31,15 +30,8 @@ const electronApi = {
   openAtLogin: async (params?: { open: boolean }): ElectronApiResult<{ open: boolean } | void> => {
     return await getElectron().ipcRenderer.invoke('openAtLogin', params);
   },
-  minimizeWindow: async (): ElectronApiResult<void> => {
-    return await getElectron().ipcRenderer.invoke('minimizeWindow');
-  },
-  closeWindow: async (): ElectronApiResult<void> => {
-    return await getElectron().ipcRenderer.invoke('closeWindow');
-  },
   platformAuth: async (params: {
     platform: EnumPlatform;
-    h5AuthId?: string;
     isDebug?: boolean;
   }): ElectronApiResult<{
     code: EnumCode;
@@ -68,7 +60,6 @@ const electronApi = {
     authInfo: string;
     resourceOfVideo: string;
     title?: string;
-    adText?: string;
     description?: string;
     publishType?: PublishType;
     isDebug?: boolean;
@@ -96,12 +87,6 @@ const electronApi = {
   }> => {
     return await getElectron().ipcRenderer.invoke('getDirectoryVideoFiles', params);
   },
-  checkPlaywrightBrowser: async (): Promise<void> => {
-    await getElectron().ipcRenderer.invoke('checkPlaywrightBrowser');
-  },
-  installPlaywrightBrowser: async (): Promise<void> => {
-    await getElectron().ipcRenderer.invoke('installPlaywrightBrowser');
-  },
   checkFfmpeg: async (): ElectronApiResult<string> => {
     return await getElectron().ipcRenderer.invoke('checkFfmpeg');
   },
@@ -127,82 +112,5 @@ Object.keys(electronApi).forEach((key) => {
     };
   }
 });
-
-async function handleH5Auth(
-  _,
-  arg: {
-    type: H5AuthStatus;
-    data: {
-      h5AuthId: string;
-      qrcode?: string;
-    };
-  },
-) {
-  console.log('handleH5Auth', arg);
-  const {
-    type,
-    data: { h5AuthId, qrcode },
-  } = arg;
-
-  if (type === H5AuthStatus.QRCODE) {
-    await H5AuthActions.updateH5Auth({
-      id: h5AuthId,
-      qrcode,
-      status: H5AuthStatus.QRCODE,
-    });
-  } else if (type === H5AuthStatus.MOBILE_CODE) {
-    await H5AuthActions.updateH5Auth({
-      id: h5AuthId,
-      status: H5AuthStatus.MOBILE_CODE,
-    });
-  }
-}
-
-async function handleMobileCode(_, arg: { h5AuthId: string; resultKey: string }) {
-  console.log('handleMobileCode', arg);
-  const { h5AuthId, resultKey } = arg;
-
-  let timer: any = null;
-
-  async function fetchMobileCode() {
-    const { success, data } = await H5AuthActions.getH5AuthById({ id: h5AuthId });
-
-    // 获取到 mobile，则发送。
-    if (success && data && data.mobileCode) {
-      getElectron().ipcRenderer.invoke(resultKey, {
-        mobileCode: data.mobileCode,
-      });
-
-      // 清理
-      clearInterval(timer);
-    } else {
-      // 啥也不做
-    }
-  }
-
-  // 轮训获取数据
-  timer = setInterval(fetchMobileCode, 2000);
-  // 超时
-  setTimeout(
-    () => {
-      clearInterval(timer);
-    },
-    1000 * 60 * 1,
-  );
-}
-
-function on() {
-  if (!electronApi.isElectron()) {
-    return;
-  }
-
-  const electron = getElectron();
-
-  electron.ipcRenderer.on('h5Auth', handleH5Auth);
-
-  electron.ipcRenderer.on('h5AuthMobileCode', handleMobileCode);
-}
-
-on();
 
 export { electronApi, EnumCode };

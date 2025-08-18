@@ -22,25 +22,10 @@ export type CreateAccountInput = Pick<
   | 'status'
   | 'authedAt'
   | 'logs'
-  | 'tagCoachId'
-  | 'studentId'
-  | 'schoolId'
-  | 'coachPhone'
 >;
 
 export type UpdateAccountInput = Partial<
-  Pick<
-    Account,
-    | 'platformName'
-    | 'platformAvatar'
-    | 'status'
-    | 'authInfo'
-    | 'authedAt'
-    | 'logs'
-    | 'studentId'
-    | 'schoolId'
-    | 'coachPhone'
-  >
+  Pick<Account, 'platformName' | 'platformAvatar' | 'status' | 'authInfo' | 'authedAt' | 'logs'>
 > & {
   id: string;
 };
@@ -51,7 +36,6 @@ export async function pageAccounts(params: {
   platformName?: string;
   platform?: Platform;
   status?: AccountStatus;
-  tagCoachId?: string;
 }) {
   return pageModel<Prisma.AccountDelegate, Account>(
     {
@@ -61,10 +45,6 @@ export async function pageAccounts(params: {
         platformName: { contains: params.platformName },
         platform: params.platform,
         status: params.status,
-        tagCoachId: params.tagCoachId,
-      },
-      include: {
-        tagCoach: true,
       },
       orderBy: { authedAt: 'desc' },
     },
@@ -125,7 +105,6 @@ export async function getAccountById(id: string) {
       id,
       include: {
         user: true,
-        tagCoach: true,
       },
     },
     {

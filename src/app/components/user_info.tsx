@@ -13,7 +13,6 @@ import { UserAvatar } from './avatar';
 import { handleFinish } from './crud';
 
 function UserDropdown({
-  user,
   children,
   setShow,
 }: {
@@ -38,7 +37,7 @@ function UserDropdown({
         items: [
           {
             key: `info`,
-            label: '修改信息',
+            label: '修改信息和密码',
             onClick: () => {
               setShow(true);
             },
@@ -47,13 +46,6 @@ function UserDropdown({
             key: 'logout',
             label: '退出',
             onClick: handleLogout,
-          },
-          user?.isAdmin && {
-            key: 'user_manage',
-            label: '用户管理',
-            onClick: () => {
-              router.push('/admin/users');
-            },
           },
         ].filter(Boolean) as MenuProps['items'],
       }}
@@ -85,13 +77,12 @@ const UserInfo = () => {
 
   return (
     <div className="p-2 pl-4">
-      <UserDropdown setShow={setShow} user={user}>
+      <UserDropdown setShow={setShow}>
         <div className="flex gap-2 items-center cursor-pointer">
           <div className="flex flex-1 gap-2 items-center">
             <UserAvatar size={30} src={user?.avatar || undefined} />
             <div className="flex-1 flex flex-col">
               <div className="text-black">{user?.nickname || user?.name}</div>
-              <div className="text-xs text-gray-500">{user?.schoolId}</div>
             </div>
           </div>
           <div>

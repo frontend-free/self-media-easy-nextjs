@@ -54,19 +54,6 @@ enum TaskStatus {
   CANCELLED
 }
 
-enum H5AuthStatus {
-  // 等待处理
-  PENDING
-  // 扫码中
-  QRCODE
-  // 等待输入验证码
-  MOBILE_CODE
-  // 成功
-  SUCCESS
-  // 失败
-  FAILED
-}
-
 // 用户模型
 model User {
   id       String  @id @default(uuid())
@@ -75,35 +62,16 @@ model User {
   avatar   String?
   mobile   String?
   nickname String?
-  schoolId String?
   isAdmin  Boolean @default(false)
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
 
-  tagCoachList       TagCoach[]
   Account            Account[]
   publishes          Publish[]
   tasks              Task[]
-  autoPublishSetting AutoPublishSetting[]
   setting            Setting[]
-  h5Auths            H5Auth[]
-  schools            School[]
-}
-
-// 标签-教练
-model TagCoach {
-  id   String @id @default(uuid())
-  name String
-
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  deletedAt DateTime?
-
-  userId  String
-  user    User      @relation(fields: [userId], references: [id])
-  account Account[]
 }
 
 // 账号
@@ -118,13 +86,6 @@ model Account {
   authedAt       DateTime // 授权时间
   logs           String? // 授权日志 JSON
 
-  studentId String? // 学员ID
-  schoolId  String? // 驾校ID
-  coachPhone String? // 教练手机号
-
-  tagCoachId String?
-  tagCoach   TagCoach? @relation(fields: [tagCoachId], references: [id])
-
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
@@ -135,25 +96,6 @@ model Account {
   publishes Publish[]
 }
 
-// H5 授权
-model H5Auth {
-  id String @id @default(uuid())
-  platform       Platform // 平台
-  schoolId       String // 驾校ID
-  studentId      String // 学员ID
-  coachPhone     String? // 教练手机号
-  status H5AuthStatus @default(PENDING) // 状态
-  qrcode String? // 二维码
-  mobileCode String? // 手机验证码
-
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  deletedAt DateTime?
-
-  userId    String
-  user      User      @relation(fields: [userId], references: [id])
-}
-
 // 发布
 model Publish {
   id              String              @id @default(uuid())
@@ -161,7 +103,6 @@ model Publish {
   resourceOfVideo String? // 视频资源
   title           String? // 标题
   description     String? // 描述
-  adText          String? // 广告文案 \n 换行
   publishType     PublishType // 发布类型
 
   accounts Account[]
@@ -196,40 +137,6 @@ model Task {
 
   publishId String
   publish   Publish @relation(fields: [publishId], references: [id])
-}
-
-// 自动发布设置
-model AutoPublishSetting {
-  id String @id // 使用 userId 作为主键
-
-  resourceVideoDir    String? // 视频资源目录
-  title               String? // 标题
-  autoTitle           Boolean?  @default(false) // 是否自动生成标题
-  publishCount        Int? @default(2) // 每个账号发布数量
-  autoAdText          Boolean?  @default(true) // 是否自动生成广告文案
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  user User @relation(fields: [id], references: [id])
-}
-
-model School {
-  id String @id
-  name String?
-  address String?
-  description String?
-
-  authRewardHours Int? @default(840) // 授权奖励学时 14分钟 14 * 60
-  videoRewardHours Int? @default(600) // 视频奖励学时 10分钟 10 * 60
-
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  deletedAt DateTime?
-
-  userId String
-  user User @relation(fields: [userId], references: [id])
 }
 
 model Setting {

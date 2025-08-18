@@ -115,14 +115,6 @@ function Page() {
             ),
           },
           {
-            title: '文案',
-            dataIndex: 'adText',
-            render: (value) => {
-              const adText = value as string | undefined;
-              return <div>{adText?.split('\n').map((item) => <div key={item}>{item}</div>)}</div>;
-            },
-          },
-          {
             title: '账号发布状态',
             dataIndex: 'tasks',
             render: (value) => {
@@ -166,26 +158,14 @@ function Page() {
               initialValue={PublishResourceType.VIDEO}
               disabled
             />
-            <ProFormFiles
-              name="resourceOfVideo"
-              label="视频"
-              required
-              rules={[{ required: true }]}
-            />
+            <ProFormFiles name="resourceOfVideo" label="视频" rules={[{ required: true }]} />
 
-            <ProFormSelectAccounts
-              name="accountIds"
-              label="账号"
-              required
-              rules={[{ required: true }]}
-            />
+            <ProFormSelectAccounts name="accountIds" label="账号" rules={[{ required: true }]} />
 
             <ProFormTextWithSelect name="title" label="标题" />
 
             {/* 先屏蔽 */}
             <ProFormTextArea name="description" label="描述" hidden />
-
-            <ProFormTextArea name="adText" label="广告文案" extra="换行代表多行文案" />
 
             {/* 先屏蔽 */}
             <ProFormRadio.Group

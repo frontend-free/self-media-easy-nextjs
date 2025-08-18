@@ -73,7 +73,6 @@ async function runAutoTask({
     resourceOfVideo: resourceOfVideo!,
     title: task.publish?.title || undefined,
     description: task.publish?.description || undefined,
-    adText: task.publish?.adText || undefined,
     publishType: task.publish?.publishType || undefined,
     isDebug,
   });

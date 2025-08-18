@@ -18,16 +18,16 @@ import zhCN from 'antd/locale/zh_CN';
 import type { Metadata } from 'next';
 import { SessionProvider } from 'next-auth/react';
 import { AutoRun } from './components/auto_run';
-import { FrameComponent } from './components/frame';
 import { Version } from './components/version';
+import { globalConfig } from './config';
 import './globals.css';
 
 // 初始化数据库
 initDatabase().catch(console.error);
 
 export const metadata: Metadata = {
-  title: '短视频工具',
-  description: '',
+  title: globalConfig.title,
+  description: globalConfig.description,
 };
 
 const menuItems = [
@@ -45,24 +45,14 @@ const menuItems = [
     icon: <UserOutlined />,
   },
   {
-    key: '/auto_publish',
-    label: '授权自动发布设置',
-    icon: <SettingOutlined />,
-  },
-  {
-    key: '/school',
-    label: '驾校信息',
-    icon: <HomeOutlined />,
+    key: '/publish',
+    label: '手动发布',
+    icon: <SendOutlined />,
   },
   {
     key: '/task',
     label: '发布任务',
     icon: <UnorderedListOutlined />,
-  },
-  {
-    key: '/publish',
-    label: '手动发布',
-    icon: <SendOutlined />,
   },
   {
     type: 'divider',
@@ -85,14 +75,9 @@ const menuItems = [
 function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="h-screen w-screen flex flex-col relative">
-      <div
-        className="px-4 py-2 text-center flex  items-center gap-5"
-        style={{
-          // @ts-expect-error 类型错误
-          WebkitAppRegion: 'drag',
-        }}
-      >
-        <span className="font-bold text-lg">短视频工具</span>
+      <div className="px-4 py-2 text-center flex  items-center gap-5">
+        <span className="font-bold text-lg">{globalConfig.title}</span>
+        <span className="text-xs text-desc">{globalConfig.description}</span>
       </div>
       <div className="flex-1 flex overflow-auto">
         <div className="w-[220px] h-full flex flex-col gap-2">
@@ -102,12 +87,10 @@ function RootLayout({ children }: { children: React.ReactNode }) {
             <div className="flex-1">
               <AppMenu items={menuItems} />
             </div>
-            <FrameComponent />
             <Version />
           </div>
           <div></div>
         </div>
-
         <div className="flex-1 p-2 flex flex-col ">
           <div className="bg-white rounded-lg flex-1 p-4 overflow-y-auto">{children}</div>
         </div>
