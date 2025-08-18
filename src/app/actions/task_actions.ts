@@ -166,19 +166,3 @@ export async function stopTasksOfPending() {
     },
   });
 }
-
-// 获取今天账号发布成功的任务数量
-export async function getTaskCountOfPublishByAccountId(accountId: string) {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-
-  return prisma.task.count({
-    where: {
-      accountId,
-      status: TaskStatus.SUCCESS,
-      endAt: {
-        gte: today,
-      },
-    },
-  });
-}
