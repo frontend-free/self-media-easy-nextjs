@@ -6,11 +6,10 @@ import { useEffect, useState } from 'react';
 interface TextWithSelectProps {
   value?: string;
   onChange: (value: string) => void;
-  autoTitle?: boolean;
 }
 
 function TextWithSelect(props: TextWithSelectProps) {
-  const { value, onChange, autoTitle } = props;
+  const { value, onChange } = props;
 
   const [options, setOptions] = useState<{ label: string; value: string }[]>([]);
 
@@ -31,8 +30,7 @@ function TextWithSelect(props: TextWithSelectProps) {
         onChange(value);
       }}
       allowClear
-      disabled={autoTitle}
-      placeholder={autoTitle ? '自动按文件名生成标题' : '请输入标题'}
+      placeholder={'请输入标题'}
     />
   );
 }

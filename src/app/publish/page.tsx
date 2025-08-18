@@ -62,7 +62,6 @@ function Files(props: FilesProps) {
             <div>
               {/* 抖音 16G 1h; 视频号 4G 2h; */}
               <div>1. 视频文件大小不超过4G，时长在60分钟以内。否则可能影响发布。</div>
-              <div>2. 请不要随意移动选中的资源，否则影响发布。</div>
             </div>
           }
           type="info"

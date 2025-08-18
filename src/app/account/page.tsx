@@ -25,7 +25,7 @@ function Add({ refCRUD }) {
   return (
     <>
       <Modal title="账号" open={open} onCancel={() => setOpen(false)} destroyOnClose footer={null}>
-        <Alert message="不要异地登录，容易掉线！" type="warning" />
+        <Alert message="异地登录，容易掉线！" type="warning" />
         <div className="flex flex-row flex-wrap gap-2 p-10 ">
           {listPlatform.map((item) => (
             <div

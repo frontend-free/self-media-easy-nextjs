@@ -77,13 +77,13 @@ function Version() {
 
   return (
     <div>
-      <div className="px-2 py-2 flex items-center justify-between gap-1">
+      <div className="px-2 py-2 flex flex-col  gap-1">
         <DebugWrapVersion>
-          <div>版本 v{version}</div>
+          <div className="text-center">版本 v{version}</div>
         </DebugWrapVersion>
         <LoadingButton
           type="text"
-          // className="!px-0"
+          className="!px-0"
           onClick={async () => {
             await getLatestVersion({ silent: false });
           }}
