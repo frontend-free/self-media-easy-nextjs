@@ -12,7 +12,6 @@ import {
   prisma,
   updateModel,
 } from './helper';
-import * as SubjectActions from './subject_actions';
 
 export type CreateTaskInput = Pick<Task, 'accountId' | 'publishId'>;
 export type UpdateTaskInput = Partial<
@@ -112,22 +111,13 @@ export async function updateTask(data: UpdateTaskInput) {
 
   // 发布成功奖励学时
   if (data.status === TaskStatus.SUCCESS) {
-    const task = (await getModelById<Prisma.TaskDelegate, Task>({
+    (await getModelById<Prisma.TaskDelegate, Task>({
       model: prisma.task,
       id: result.id,
       include: {
         account: true,
       },
     })) as TaskWithRelations;
-    // 如果有学员ID，则奖励
-    if (task.account.studentId) {
-      // 奖励学时 10分钟
-      await SubjectActions.rewardsHours({
-        accountId: task.account.id,
-        studentId: task.account.studentId,
-        type: 'video',
-      });
-    }
   }
 
   return result;

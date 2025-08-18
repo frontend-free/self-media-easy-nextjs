@@ -26,7 +26,7 @@ import './globals.css';
 initDatabase().catch(console.error);
 
 export const metadata: Metadata = {
-  title: '驾K先锋-多媒体',
+  title: '短视频工具',
   description: '',
 };
 
@@ -92,8 +92,7 @@ function RootLayout({ children }: { children: React.ReactNode }) {
           WebkitAppRegion: 'drag',
         }}
       >
-        <span className="font-bold text-lg">多媒体-驾K先锋</span>
-        <span className="text-xs">给驾校/教练带来10-100倍招生广告效果！</span>
+        <span className="font-bold text-lg">短视频工具</span>
       </div>
       <div className="flex-1 flex overflow-auto">
         <div className="w-[220px] h-full flex flex-col gap-2">

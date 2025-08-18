@@ -6,7 +6,13 @@
 
 ```text
 DATABASE_URL="file:./dev.db"
-NEXT_PUBLIC_UPDATER_SERVER="https://live-app.sanljt.cn/subject-media-electron"
+NEXT_PUBLIC_UPDATER_SERVER=""
+```
+
+初始化 prisma 数据库
+
+```bash
+npx prisma migrate dev --name init
 ```
 
 准备 auth 密钥
@@ -27,8 +33,8 @@ pnpm dev
 准备 db。创建 `.env` 文件并添加以下内容：
 
 ```text
-DATABASE_URL="file:./prisma/prod.db"
-NEXT_PUBLIC_UPDATER_SERVER="https://live-app.sanljt.cn/subject-media-electron"
+DATABASE_URL="file:./prod.db"
+NEXT_PUBLIC_UPDATER_SERVER=""
 ```
 
 准备 auth 密钥

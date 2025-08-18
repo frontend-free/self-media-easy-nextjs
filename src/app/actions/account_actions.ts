@@ -11,7 +11,6 @@ import {
   prisma,
   updateModel,
 } from './helper';
-import * as SubjectActions from './subject_actions';
 
 export type CreateAccountInput = Pick<
   Account,
@@ -78,18 +77,6 @@ export async function pageAccounts(params: {
 export async function createAccount(data: CreateAccountInput) {
   const { sessionUser } = await needAuth();
 
-  function rewardsHours(result: Account) {
-    // 如果携带了 studentId，
-    if (result.studentId) {
-      // 不阻塞。则奖励学时 14分钟
-      SubjectActions.rewardsHours({
-        accountId: result.id,
-        studentId: result.studentId,
-        type: 'auth',
-      });
-    }
-  }
-
   // 如果有 平台 id 则先检查是否存在
   if (data.platform && data.platformId) {
     const account = await findFirstModel<Prisma.AccountDelegate, Account>(
@@ -113,8 +100,6 @@ export async function createAccount(data: CreateAccountInput) {
         ...data,
       });
 
-      rewardsHours(result);
-
       return result;
     }
   }
@@ -129,8 +114,6 @@ export async function createAccount(data: CreateAccountInput) {
       withUser: true,
     },
   );
-
-  rewardsHours(result);
 
   return result;
 }
