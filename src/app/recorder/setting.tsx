@@ -71,7 +71,7 @@ function Detail({
       <RoomId disabled={!!data?.roomId} />
       <ProFormText name="description" label="备注" />
       <ProFormSwitch name="auto" label="自动录制" />
-      <ProFormTextWithSelect name="title" label="自动标题" />
+      <ProFormTextWithSelect name="title" label="标题" />
     </ModalForm>
   );
 }
@@ -172,12 +172,9 @@ function Records({ data, refresh }) {
   return (
     <div className="flex flex-col gap-2">
       <div>
-        <div>
+        <div className="">
           <span className="text-red-500">*</span>
           <span>录制视频存放目录：</span>
-          <span className="text-gray-500">
-            (请不要和自动发布目录配置一致，因为录制文件可能没完成！)
-          </span>
         </div>
         <div className="flex items-center gap-2">
           <Button

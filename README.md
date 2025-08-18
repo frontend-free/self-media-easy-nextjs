@@ -43,12 +43,6 @@ NEXT_PUBLIC_UPDATER_SERVER=""
 npx auth secret
 ```
 
-部署
-
-- 服务器 47.105.58.181
-- 前往 /home/ecs-user/apps
-- 运行 `./deploy.sh`，即自动部署
-
 ## 技术栈
 
 - next.js
