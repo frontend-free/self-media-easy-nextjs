@@ -6,22 +6,10 @@ CREATE TABLE "User" (
     "avatar" TEXT,
     "mobile" TEXT,
     "nickname" TEXT,
-    "schoolId" TEXT,
     "isAdmin" BOOLEAN NOT NULL DEFAULT false,
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" DATETIME NOT NULL,
     "deletedAt" DATETIME
-);
-
--- CreateTable
-CREATE TABLE "TagCoach" (
-    "id" TEXT NOT NULL PRIMARY KEY,
-    "name" TEXT NOT NULL,
-    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" DATETIME NOT NULL,
-    "deletedAt" DATETIME,
-    "userId" TEXT NOT NULL,
-    CONSTRAINT "TagCoach_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
 -- CreateTable
@@ -35,33 +23,11 @@ CREATE TABLE "Account" (
     "status" TEXT DEFAULT 'UNAUTHED',
     "authedAt" DATETIME NOT NULL,
     "logs" TEXT,
-    "studentId" TEXT,
-    "schoolId" TEXT,
-    "coachPhone" TEXT,
-    "tagCoachId" TEXT,
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" DATETIME NOT NULL,
     "deletedAt" DATETIME,
     "userId" TEXT NOT NULL,
-    CONSTRAINT "Account_tagCoachId_fkey" FOREIGN KEY ("tagCoachId") REFERENCES "TagCoach" ("id") ON DELETE SET NULL ON UPDATE CASCADE,
     CONSTRAINT "Account_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
-);
-
--- CreateTable
-CREATE TABLE "H5Auth" (
-    "id" TEXT NOT NULL PRIMARY KEY,
-    "platform" TEXT NOT NULL,
-    "schoolId" TEXT NOT NULL,
-    "studentId" TEXT NOT NULL,
-    "coachPhone" TEXT,
-    "status" TEXT NOT NULL DEFAULT 'PENDING',
-    "qrcode" TEXT,
-    "mobileCode" TEXT,
-    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" DATETIME NOT NULL,
-    "deletedAt" DATETIME,
-    "userId" TEXT NOT NULL,
-    CONSTRAINT "H5Auth_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
 -- CreateTable
@@ -71,7 +37,6 @@ CREATE TABLE "Publish" (
     "resourceOfVideo" TEXT,
     "title" TEXT,
     "description" TEXT,
-    "adText" TEXT,
     "publishType" TEXT NOT NULL,
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" DATETIME NOT NULL,
@@ -97,34 +62,6 @@ CREATE TABLE "Task" (
     CONSTRAINT "Task_accountId_fkey" FOREIGN KEY ("accountId") REFERENCES "Account" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
     CONSTRAINT "Task_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
     CONSTRAINT "Task_publishId_fkey" FOREIGN KEY ("publishId") REFERENCES "Publish" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
-);
-
--- CreateTable
-CREATE TABLE "AutoPublishSetting" (
-    "id" TEXT NOT NULL PRIMARY KEY,
-    "resourceVideoDir" TEXT,
-    "title" TEXT,
-    "autoTitle" BOOLEAN DEFAULT false,
-    "publishCount" INTEGER DEFAULT 2,
-    "autoAdText" BOOLEAN DEFAULT true,
-    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" DATETIME NOT NULL,
-    CONSTRAINT "AutoPublishSetting_id_fkey" FOREIGN KEY ("id") REFERENCES "User" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
-);
-
--- CreateTable
-CREATE TABLE "School" (
-    "id" TEXT NOT NULL PRIMARY KEY,
-    "name" TEXT,
-    "address" TEXT,
-    "description" TEXT,
-    "authRewardHours" INTEGER DEFAULT 840,
-    "videoRewardHours" INTEGER DEFAULT 600,
-    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" DATETIME NOT NULL,
-    "deletedAt" DATETIME,
-    "userId" TEXT NOT NULL,
-    CONSTRAINT "School_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
 -- CreateTable
