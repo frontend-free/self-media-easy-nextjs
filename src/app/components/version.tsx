@@ -83,7 +83,6 @@ function Version() {
         </DebugWrapVersion>
         <LoadingButton
           type="text"
-          className="!px-0"
           onClick={async () => {
             await getLatestVersion({ silent: false });
           }}
