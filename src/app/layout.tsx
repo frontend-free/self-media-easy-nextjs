@@ -103,7 +103,7 @@ function RootLayout({ children }: { children: React.ReactNode }) {
 function WrapRootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="zh-CN">
-      <body className="bg-gradient-to-br from-blue-300 to-cyan-300">
+      <body className="bg-gradient-to-br from-blue-200 to-cyan-200">
         <AntdRegistry>
           <ConfigProvider locale={zhCN}>
             <SessionProvider>

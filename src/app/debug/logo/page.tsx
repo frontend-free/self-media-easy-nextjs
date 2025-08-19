@@ -2,7 +2,17 @@
 
 import { useEffect, useRef } from 'react';
 
-function PureLogo({ image }: { image?: string }) {
+function PureLogo({
+  text,
+  subText,
+  type,
+  image,
+}: {
+  text: string;
+  subText: string;
+  type: 'app' | 'logo';
+  image?: string;
+}) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   const handleExport = () => {
@@ -11,7 +21,7 @@ function PureLogo({ image }: { image?: string }) {
 
     // 创建下载链接
     const link = document.createElement('a');
-    link.download = 'logo.png';
+    link.download = `${type}.png`;
     link.href = canvas.toDataURL('image/png');
     link.click();
   };
@@ -29,7 +39,11 @@ function PureLogo({ image }: { image?: string }) {
     canvas.height = size;
 
     // 绘制内部内容区域
-    const contentSize = Math.round(size * 0.78); // 苹果图标风格通常内容区域约占总尺寸的78%
+    // 苹果图标风格通常内容区域约占总尺寸的78%
+    let contentSize = size;
+    if (type === 'app') {
+      contentSize = Math.round(size * 0.78);
+    }
     const contentX = (size - contentSize) / 2;
     const contentY = (size - contentSize) / 2;
 
@@ -54,24 +68,28 @@ function PureLogo({ image }: { image?: string }) {
       ctx.roundRect(contentX, contentY, contentSize, contentSize, contentSize * 0.23);
       ctx.fill();
 
-      // 绘制文字
-      ctx.fillStyle = 'white';
-      ctx.font = 'bold 42px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText('短视频', size / 2, size / 2);
+      const fontSize = (contentSize * 0.9) / text.length;
+      const descFontSize = fontSize * 0.4;
 
       // 绘制文字
       ctx.fillStyle = 'white';
-      ctx.font = 'bold 24px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+      ctx.font = `bold ${fontSize}px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif`;
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      ctx.fillText('工具', size / 2, size - 24 / 2 - 68);
+      ctx.fillText(text, size / 2, size / 2);
+
+      // 绘制文字
+      ctx.fillStyle = 'white';
+      ctx.font = `bold ${descFontSize}px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(subText, size / 2, size / 2 + fontSize / 2 + descFontSize);
     }
-  }, [image]);
+  }, [image, subText, text, type]);
 
   return (
-    <div className="p-8">
+    <div className="flex items-center gap-4 p-8">
+      <div>{type}</div>
       <canvas ref={canvasRef} className="shadow-lg" />
       <button
         onClick={handleExport}
@@ -86,7 +104,8 @@ function PureLogo({ image }: { image?: string }) {
 function Page() {
   return (
     <div className="p-8">
-      <PureLogo />
+      <PureLogo type="app" text="短视频" subText="工具" />
+      <PureLogo type="logo" text="短视频" subText="工具" />
     </div>
   );
 }
