@@ -251,7 +251,7 @@ function AutoRunTaskComponent() {
       type="text"
       size="small"
       className="text-white min-w-[20px] h-[20px]  rounded-full flex items-center justify-center overflow-hidden px-2"
-      icon={<SyncOutlined spin />}
+      icon={<SyncOutlined spin={count > 0} />}
     >
       {count > 99 ? '99+' : count} 待发布
     </Button>

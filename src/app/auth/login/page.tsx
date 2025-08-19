@@ -32,8 +32,7 @@ export default function LoginPage() {
         <LoginForm onFinish={handleFinish(onFinish)}>
           <div className="mb-10 flex flex-col items-center gap-2">
             <Image src={logo} alt="logo" className="w-[100px] h-[100px]" />
-            <span className="text-2xl font-bold">{globalConfig.title}</span>
-            <span className="text-sm text-gray-500 text-center">{globalConfig.description}</span>
+            <span className="text-sm text-center">{globalConfig.description}</span>
           </div>
           <ProFormText
             name="name"

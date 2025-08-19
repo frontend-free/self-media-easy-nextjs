@@ -19,7 +19,7 @@ function AppMenu({ items }: { items: MenuProps['items'] }) {
       onClick={(e) => {
         router.push(e.key);
       }}
-      mode="inline"
+      mode="vertical"
     />
   );
 }

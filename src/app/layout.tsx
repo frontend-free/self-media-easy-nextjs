@@ -80,8 +80,7 @@ function RootLayout({ children }: { children: React.ReactNode }) {
         <span className="text-xs text-desc">{globalConfig.description}</span>
       </div>
       <div className="flex-1 flex overflow-auto">
-        <div className="w-[180px] h-full flex flex-col gap-2">
-          <div></div>
+        <div className="w-[150px] h-full flex flex-col gap-2">
           <UserInfo />
           <div className="flex-1 flex flex-col">
             <div className="flex-1">

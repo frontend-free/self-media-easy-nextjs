@@ -77,9 +77,9 @@ function Version() {
 
   return (
     <div>
-      <div className="px-2 py-2 flex flex-col  gap-1">
+      <div className="px-2 py-2 flex flex-col items-center gap-1">
         <DebugWrapVersion>
-          <div className="text-center">版本 v{version}</div>
+          <div className="text-center">v{version}</div>
         </DebugWrapVersion>
         <LoadingButton
           type="text"
@@ -88,7 +88,7 @@ function Version() {
             await getLatestVersion({ silent: false });
           }}
         >
-          检查更新
+          检查
         </LoadingButton>
       </div>
     </div>

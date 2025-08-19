@@ -1,10 +1,14 @@
 'use client';
 
 import { electronApi } from '@/electron';
-import { useCallback, useEffect } from 'react';
+import { SyncOutlined } from '@ant-design/icons';
+import { Button } from 'antd';
+import { useCallback, useEffect, useState } from 'react';
 import * as SettingActions from '../actions/setting_actions';
 
 function useDoAutoCheckAndRecord() {
+  const [isRunning, setIsRunning] = useState(false);
+
   const doAutoCheckAndRecord = useCallback(async () => {
     const { success, data } = await SettingActions.getSetting();
 
@@ -16,6 +20,9 @@ function useDoAutoCheckAndRecord() {
     const recorderList = data.recorderList ? JSON.parse(data.recorderList) : [];
 
     const items = recorderList.filter((item) => item.auto);
+
+    setIsRunning(items.length > 0);
+
     for (const item of items) {
       await electronApi.autoCheckAndRecord({
         roomId: item.roomId,
@@ -25,11 +32,11 @@ function useDoAutoCheckAndRecord() {
     }
   }, []);
 
-  return { doAutoCheckAndRecord };
+  return { doAutoCheckAndRecord, isRunning };
 }
 
 function AutoRunRecord() {
-  const { doAutoCheckAndRecord } = useDoAutoCheckAndRecord();
+  const { doAutoCheckAndRecord, isRunning } = useDoAutoCheckAndRecord();
 
   useEffect(() => {
     // 一分钟检查一次 autoCheckAndRecord
@@ -45,7 +52,11 @@ function AutoRunRecord() {
     };
   }, [doAutoCheckAndRecord]);
 
-  return null;
+  return (
+    <Button type="text" icon={<SyncOutlined spin={isRunning} />}>
+      抖音直播录制
+    </Button>
+  );
 }
 
 export { AutoRunRecord, useDoAutoCheckAndRecord };
