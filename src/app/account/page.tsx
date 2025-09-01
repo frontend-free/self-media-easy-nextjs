@@ -1,5 +1,8 @@
 'use client';
 
+import { CRUD } from '@/components/crud';
+import { LoadingButton } from '@/components/loading_button';
+import { Platform } from '@/components/platform';
 import {
   EnumAccountStatus,
   EnumPlatform,
@@ -11,9 +14,6 @@ import { ProFormText } from '@ant-design/pro-components';
 import { Alert, App, Button, Modal } from 'antd';
 import { useRef, useState } from 'react';
 import * as AccountActions from '../actions/account_actions';
-import { CRUD } from '../components/crud';
-import { LoadingButton } from '../components/loading_button';
-import { Platform } from '../components/platform';
 import { useAuth } from './use_auth';
 
 function Add({ refCRUD }) {

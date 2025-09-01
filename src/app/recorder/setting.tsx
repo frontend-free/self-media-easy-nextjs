@@ -1,5 +1,7 @@
 'use client';
 
+import { ProFormTextWithSelect } from '@/components/form/pro_form_text_with_select';
+import { LoadingButton } from '@/components/loading_button';
 import { electronApi } from '@/electron';
 import { RecorderInfo } from '@/electron/electron_recorder';
 import { TagRecorderStatus } from '@/generated/enums';
@@ -10,8 +12,6 @@ import { App, Button, Divider, Tag, Tooltip } from 'antd';
 import Image from 'next/image';
 import { useEffect, useMemo, useState } from 'react';
 import * as SettingActions from '../actions/setting_actions';
-import { ProFormTextWithSelect } from '../components/form/pro_form_text_with_select';
-import { LoadingButton } from '../components/loading_button';
 import { useDoAutoCheckAndRecord } from './auto_run_record';
 import Img from './image.png';
 
@@ -80,7 +80,7 @@ function RecordItem({ item, onItem, info }) {
   useEffect(() => {}, []);
 
   return (
-    <div key={item.roomId} className="flex gap-4 items-center c-border-bottom p-2">
+    <div key={item.roomId} className="c-border-bottom flex items-center gap-4 p-2">
       <div>
         {item.roomId} {item.description ? `(${item.description})` : ''}
       </div>

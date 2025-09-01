@@ -1,11 +1,11 @@
 'use client';
 
+import { useIsDebug } from '@/components/debug';
 import { electronApi } from '@/electron';
 import { EnumAccountStatus, EnumPlatform } from '@/generated/enums';
+import { handleRequestRes } from '@/lib/request';
 import { App } from 'antd';
 import * as AccountActions from '../actions/account_actions';
-import { useIsDebug } from '../components/debug';
-import { handleRequestRes } from '../lib/request';
 
 function useAuth() {
   const { modal, message } = App.useApp();

@@ -1,8 +1,11 @@
-import { AppMenu } from '@/app/components/menu';
-import { AdminPathComponent, AuthPathComponent } from '@/app/components/path';
-import { UserInfo } from '@/app/components/user_info';
-import { ErrorComponent } from '@/app/lib/error';
-import { initDatabase } from '@/app/lib/init_db';
+import { AutoRun } from '@/components/auto_run';
+import { AppMenu } from '@/components/menu';
+import { PageLayout } from '@/components/page_layout';
+import { AdminPathComponent, AuthPathComponent } from '@/components/path';
+import { UserInfo } from '@/components/user_info';
+import { Version } from '@/components/version';
+import { ErrorComponent } from '@/lib/error';
+import { initDatabase } from '@/lib/init_db';
 import {
   HomeOutlined,
   SendOutlined,
@@ -17,9 +20,6 @@ import { App, ConfigProvider, MenuProps } from 'antd';
 import zhCN from 'antd/locale/zh_CN';
 import type { Metadata } from 'next';
 import { SessionProvider } from 'next-auth/react';
-import { AutoRun } from './components/auto_run';
-import { PageLayout } from './components/page_layout';
-import { Version } from './components/version';
 import { globalConfig } from './config';
 import './globals.css';
 

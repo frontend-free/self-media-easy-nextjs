@@ -1,6 +1,6 @@
 'use client';
 
-import { useIsDebug } from '@/app/components/debug';
+import { useIsDebug } from '@/components/debug';
 import { electronApi, EnumCode } from '@/electron';
 import { valueEnumPlatform } from '@/generated/enums';
 import { AccountStatus, TaskStatus } from '@/generated/prisma';
@@ -250,7 +250,7 @@ function AutoRunTaskComponent() {
     <Button
       type="text"
       size="small"
-      className="text-white min-w-[20px] h-[20px]  rounded-full flex items-center justify-center overflow-hidden px-2"
+      className="flex h-[20px] min-w-[20px] items-center justify-center overflow-hidden rounded-full px-2 text-white"
       icon={<SyncOutlined spin={count > 0} />}
     >
       {count > 99 ? '99+' : count} 待发布

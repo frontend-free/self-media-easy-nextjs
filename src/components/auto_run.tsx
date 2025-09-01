@@ -1,7 +1,7 @@
 'use client';
 
-import { AutoRunRecord } from '../recorder/auto_run_record';
-import { AutoRunTaskComponent } from '../task/auto_run_task';
+import { AutoRunRecord } from '@/app/recorder/auto_run_record';
+import { AutoRunTaskComponent } from '@/app/task/auto_run_task';
 import { AuthComponent } from './auth';
 
 function AutoRun() {

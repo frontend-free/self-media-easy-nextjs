@@ -1,6 +1,6 @@
 'use client';
 
-import { handleRequestRes } from '@/app/lib/request';
+import { handleRequestRes } from '@/lib/request';
 import type {
   ActionType,
   ProColumns,

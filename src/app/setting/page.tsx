@@ -1,6 +1,6 @@
 'use client';
 
-import { LoadingButton } from '@/app/components/loading_button';
+import { LoadingButton } from '@/components/loading_button';
 import { electronApi } from '@/electron';
 import { Alert, App, Button, Divider, Switch } from 'antd';
 import { useEffect, useState } from 'react';

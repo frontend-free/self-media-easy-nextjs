@@ -1,9 +1,9 @@
 'use client';
 
 import * as AuthActions from '@/app/actions/auth_actions';
-import { handleFinish } from '@/app/components/crud';
 import { globalConfig } from '@/app/config';
 import logo from '@/assets/logo.png';
+import { handleFinish } from '@/components/crud';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { LoginForm, ProFormText } from '@ant-design/pro-components';
 import Image from 'next/image';
@@ -27,12 +27,12 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="h-screen w-screen items-center justify-center flex shadow-lg">
-      <div className="p-8 bg-white rounded-lg shadow">
+    <div className="flex h-screen w-screen items-center justify-center shadow-lg">
+      <div className="rounded-lg bg-white p-8 shadow">
         <LoginForm onFinish={handleFinish(onFinish)}>
           <div className="mb-10 flex flex-col items-center gap-2">
-            <Image src={logo} alt="logo" className="w-[100px] h-[100px]" />
-            <span className="text-sm text-center">{globalConfig.description}</span>
+            <Image src={logo} alt="logo" className="h-[100px] w-[100px]" />
+            <span className="text-center text-sm">{globalConfig.description}</span>
           </div>
           <ProFormText
             name="name"

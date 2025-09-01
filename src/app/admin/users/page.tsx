@@ -2,7 +2,7 @@
 
 import type { UserDetail } from '@/app/actions/user_actions';
 import * as UserActions from '@/app/actions/user_actions';
-import { CRUD } from '@/app/components/crud';
+import { CRUD } from '@/components/crud';
 import { ProFormSwitch, ProFormText } from '@ant-design/pro-components';
 
 function UsersList() {

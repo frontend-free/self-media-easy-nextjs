@@ -1,7 +1,7 @@
 import * as AccountActions from '@/app/actions/account_actions';
-import { handleRequestRes } from '@/app/lib/request';
 import { EnumAccountStatus, EnumPlatform } from '@/generated/enums';
 import { Account } from '@/generated/prisma';
+import { handleRequestRes } from '@/lib/request';
 import { ProFormSelect } from '@ant-design/pro-components';
 import { Platform } from '../platform';
 

@@ -1,7 +1,7 @@
 'use client';
 
+import { useIsDebug } from '@/components/debug';
 import { App, Switch } from 'antd';
-import { useIsDebug } from '../components/debug';
 
 function Page() {
   const { isDebug, setIsDebug } = useIsDebug();

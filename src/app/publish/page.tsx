@@ -1,7 +1,10 @@
 'use client';
 
 import * as PublishActions from '@/app/actions/publish_actions';
-import { CRUD } from '@/app/components/crud';
+import { CRUD } from '@/components/crud';
+import { ProFormSelectAccounts } from '@/components/form/pro_form_select_accounts';
+import { ProFormTextWithSelect } from '@/components/form/pro_form_text_with_select';
+import { Resource } from '@/components/resource';
 import { electronApi } from '@/electron';
 import {
   EnumPlatform,
@@ -20,9 +23,6 @@ import {
 } from '@ant-design/pro-components';
 import { Alert, Button } from 'antd';
 import { TaskWithRelations } from '../actions/task_actions';
-import { ProFormSelectAccounts } from '../components/form/pro_form_select_accounts';
-import { ProFormTextWithSelect } from '../components/form/pro_form_text_with_select';
-import { Resource } from '../components/resource';
 
 interface FilesProps {
   value?: string;
