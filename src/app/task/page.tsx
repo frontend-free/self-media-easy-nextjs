@@ -38,7 +38,7 @@ function Page() {
   }, []);
 
   return (
-    <div className="p-4">
+    <div>
       <CRUD<TaskWithRelations>
         ref={refCRUD}
         columns={[
@@ -90,16 +90,16 @@ function Page() {
           {
             title: '时间',
             dataIndex: 'endAt',
-            valueType: 'dateTime',
             render: (_, record: TaskWithRelations) => {
               return (
                 <div>
                   <div>
-                    新建
-                    {record.createdAt ? dayjs(record.createdAt).format('YYYY-MM-DD HH:mm:ss') : ''}
+                    新建&nbsp;
+                    {record.createdAt ? dayjs(record.createdAt).format('MM-DD HH:mm') : ''}
                   </div>
                   <div>
-                    发布{record.endAt ? dayjs(record.endAt).format('YYYY-MM-DD HH:mm:ss') : ''}
+                    发布&nbsp;
+                    {record.endAt ? dayjs(record.endAt).format('MM-DD HH:mm') : ''}
                   </div>
                 </div>
               );
@@ -133,7 +133,7 @@ function Page() {
             <>
               <LoadingButton
                 type="link"
-                className="!px-0"
+                className="!p-0"
                 disabled={
                   record.account.status !== AccountStatus.AUTHED ||
                   record.account.deletedAt !== null

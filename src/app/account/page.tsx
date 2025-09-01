@@ -13,7 +13,8 @@ import {
 } from '@/generated/enums';
 import { Account, AccountStatus } from '@/generated/prisma';
 import { ProFormText } from '@ant-design/pro-components';
-import { App, Button, Modal } from 'antd';
+import { Button, Modal } from 'antd';
+import dayjs from 'dayjs';
 import { useRef, useState } from 'react';
 import { useAuth } from './use_auth';
 
@@ -58,7 +59,6 @@ function Add({ refCRUD }) {
 
 function Page() {
   const refCRUD = useRef<any | undefined>(undefined);
-  const { modal } = App.useApp();
 
   const { onAuth, onAuthCheck } = useAuth();
 
@@ -88,7 +88,9 @@ function Page() {
         {
           title: '授权时间',
           dataIndex: 'authedAt',
-          valueType: 'dateTime',
+          render: (_, record) => {
+            return dayjs(record.authedAt).format('MM-DD HH:mm');
+          },
         },
       ]}
       detailForm={() => (

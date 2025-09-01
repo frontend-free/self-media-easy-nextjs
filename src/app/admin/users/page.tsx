@@ -4,6 +4,7 @@ import type { UserDetail } from '@/app/actions/user_actions';
 import * as UserActions from '@/app/actions/user_actions';
 import { CRUD } from '@/components/crud';
 import { ProFormSwitch, ProFormText } from '@ant-design/pro-components';
+import dayjs from 'dayjs';
 
 function UsersList() {
   return (
@@ -45,7 +46,9 @@ function UsersList() {
           title: '创建时间',
           dataIndex: 'createdAt',
           key: 'createdAt',
-          valueType: 'dateTime',
+          render: (_, record) => {
+            return dayjs(record.createdAt).format('MM-DD HH:mm');
+          },
         },
       ]}
       detailForm={({ type }) => (

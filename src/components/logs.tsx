@@ -1,14 +1,12 @@
 'use client';
 
-import { App, Button } from 'antd';
+import { App } from 'antd';
 
 function CheckLogs({ value }: { value?: string | null }) {
   const { modal } = App.useApp();
 
   return (
-    <Button
-      type="link"
-      className="!px-0"
+    <a
       onClick={() => {
         modal.info({
           title: '日志',
@@ -29,7 +27,7 @@ function CheckLogs({ value }: { value?: string | null }) {
       }}
     >
       查看日志
-    </Button>
+    </a>
   );
 }
 

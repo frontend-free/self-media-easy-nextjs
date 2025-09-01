@@ -24,6 +24,8 @@ import {
   ProFormTextArea,
 } from '@ant-design/pro-components';
 import { Alert, Button } from 'antd';
+import cn from 'classnames';
+import dayjs from 'dayjs';
 import { useEffect, useRef } from 'react';
 import { globalEventKey } from '../config';
 
@@ -128,13 +130,19 @@ function Page() {
 
               return (
                 <div className="flex flex-col gap-1">
-                  {tasks.map((item) => (
-                    <div key={item.id} className="flex flex-row items-center gap-1">
+                  {tasks.map((item, index) => (
+                    <div
+                      key={item.id}
+                      className={cn('flex flex-row items-center', {
+                        'c-border-top mt-1 pt-1': index !== 0,
+                      })}
+                    >
                       <Platform
                         name={item.account.platformName || ''}
                         value={item.account.platform as EnumPlatform}
                         status={item.account.status as AccountStatus}
                         deletedAt={item.account.deletedAt || undefined}
+                        className="flex-1"
                       />
                       <TagTaskStatus value={item.status} />
                     </div>
@@ -151,7 +159,9 @@ function Page() {
           {
             title: '发布时间',
             dataIndex: 'createdAt',
-            valueType: 'dateTime',
+            render: (_, record) => {
+              return dayjs(record.createdAt).format('MM-DD HH:mm');
+            },
           },
         ]}
         detailForm={() => (

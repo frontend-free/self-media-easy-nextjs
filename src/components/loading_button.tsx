@@ -9,11 +9,16 @@ function LoadingButton({ onClick, ...rest }: ButtonProps) {
 
   const handleClick = useCallback(
     (event) => {
-      setLoading(true);
+      const res = onClick?.(event);
 
-      Promise.resolve(onClick && onClick(event)).finally(() => {
-        setLoading(false);
-      });
+      // @ts-expect-error 先忽略
+      if (res?.then) {
+        setLoading(true);
+
+        Promise.resolve(res).finally(() => {
+          setLoading(false);
+        });
+      }
     },
     [onClick],
   );

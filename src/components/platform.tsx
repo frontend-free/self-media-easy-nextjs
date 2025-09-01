@@ -9,20 +9,26 @@ function Platform({
   status,
   deletedAt,
   size = 20,
+  className,
 }: {
   value: EnumPlatform;
   name?: string;
   status?: AccountStatus;
   size?: number;
   deletedAt?: Date;
+  className?: string;
 }) {
   const platform = valueEnumPlatform[value];
 
   return (
     <div
-      className={cn('flex flex-row items-center gap-1', {
-        'opacity-50': status === AccountStatus.INVALID || deletedAt,
-      })}
+      className={cn(
+        'flex flex-row items-center gap-1',
+        {
+          'opacity-50': status === AccountStatus.INVALID || deletedAt,
+        },
+        className,
+      )}
     >
       <Image src={platform.data.icon} alt={platform.text} width={size} height={size} />
 
