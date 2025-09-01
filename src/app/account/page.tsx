@@ -95,6 +95,7 @@ function Page() {
       }}
       disabledCreate
       disabledUpdate
+      deleteButtonText="取消授权"
       requestDelete={async (id) => {
         return await AccountActions.deleteAccount(id);
       }}
@@ -138,7 +139,12 @@ function Page() {
                   title: '日志',
                   width: 800,
                   content: (
-                    <div>
+                    <div
+                      className="overflow-y-auto"
+                      style={{
+                        maxHeight: 'calc(100vh - 300px)',
+                      }}
+                    >
                       <pre className="whitespace-pre-wrap">
                         {JSON.stringify(JSON.parse(record.logs || ''), null, 2).replace(
                           /\\n/g,

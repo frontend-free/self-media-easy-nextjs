@@ -17,6 +17,7 @@ interface CRUDProps<T> {
   disabledCreate?: boolean;
   requestCreate?: (createValues: Partial<T>) => Promise<ServerActionResult<void>>;
   disabledDelete?: boolean;
+  deleteButtonText?: string;
   requestDelete?: (id: string, data: T) => Promise<ServerActionResult<void>>;
   disabledUpdate?: boolean;
   requestDetail?: (id: string, data: T) => Promise<ServerActionResult<T>>;

@@ -65,7 +65,8 @@ function Add<T>({
       autoFocusFirstInput
       trigger={<Button type="primary">新增</Button>}
       onFinish={handleFinish(async (values) => {
-        await requestCreate!(values as T);
+        const res = await requestCreate!(values as T);
+        await handleRequestRes(res);
 
         message.success('新增成功');
 
@@ -104,7 +105,9 @@ function Update<T>({
         const id = (data as any).id;
 
         const res = await requestDetail?.(id, data);
-        formRef.current?.setFieldsValue(res);
+        await handleRequestRes(res);
+
+        formRef.current?.setFieldsValue(res?.data);
       }
     },
     [data, requestDetail],
@@ -121,7 +124,8 @@ function Update<T>({
         </Button>
       }
       onFinish={handleFinish(async (values) => {
-        await requestUpdate!(values as Partial<T> & { id: string });
+        const res = await requestUpdate!(values as Partial<T> & { id: string });
+        await handleRequestRes(res);
 
         message.success('修改成功');
 
@@ -148,6 +152,7 @@ function CRUD<T extends Record<string, any>>({
   disabledCreate,
   requestCreate,
   disabledDelete,
+  deleteButtonText = '删除',
   requestDelete,
   disabledUpdate,
   requestDetail,
@@ -193,24 +198,25 @@ function CRUD<T extends Record<string, any>>({
               className="!px-0"
               onClick={() => {
                 modal.confirm({
-                  title: '确定删除吗？',
+                  title: `确定${deleteButtonText}吗？`,
                   onOk: async () => {
                     const res = await requestDelete!(record.id, record);
                     await handleRequestRes(res);
 
-                    message.success('删除成功');
+                    message.success(`${deleteButtonText}成功`);
                     actionRef.current?.reload();
                   },
                 });
               }}
             >
-              删除
+              {deleteButtonText}
             </LoadingButton>
           ),
         ],
       },
     ].filter(Boolean) as ProColumns<T>[];
   }, [
+    deleteButtonText,
     detailForm,
     disabledDelete,
     disabledUpdate,
@@ -274,10 +280,11 @@ function CRUD<T extends Record<string, any>>({
         btnText: '批量删除',
         danger: true,
         onClick: async (_, { selectedRows }) => {
-          await requestDeletes(
+          const res = await requestDeletes(
             selectedRows.map((item) => item.id),
             selectedRows,
           );
+          await handleRequestRes(res);
         },
       };
       bas.push(batchDeleteAction);

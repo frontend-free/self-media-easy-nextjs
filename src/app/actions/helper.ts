@@ -293,13 +293,15 @@ export async function deleteModel<D>(
     where.userId = sessionUser.id;
   }
 
-  const result = await model.update({
-    data: { deletedAt: new Date() },
-    where: { id, ...where },
-  });
+  try {
+    await model.update({
+      data: { deletedAt: new Date() },
+      where: { id, ...where },
+    });
+  } catch (err) {
+    console.log('err', err);
 
-  if (!result) {
-    throw new Error(`数据不存在`);
+    throw new Error(`删除失败，数据不存在`);
   }
 }
 
