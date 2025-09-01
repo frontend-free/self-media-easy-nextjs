@@ -24,6 +24,8 @@ import {
   ProFormTextArea,
 } from '@ant-design/pro-components';
 import { Alert, Button } from 'antd';
+import { useEffect, useRef } from 'react';
+import { globalEventKey } from '../config';
 
 interface FilesProps {
   value?: string;
@@ -82,12 +84,27 @@ function ProFormFiles(props) {
 }
 
 function Page() {
+  const refCRUD = useRef<any | undefined>(undefined);
+
+  useEffect(() => {
+    const handler = () => {
+      refCRUD?.current?.reload();
+    };
+
+    window.addEventListener(globalEventKey.REFRESH_PUBLISH, handler);
+
+    return () => {
+      window.removeEventListener(globalEventKey.REFRESH_PUBLISH, handler);
+    };
+  }, []);
+
   return (
     <div>
       <div className="px-4 pt-4">
         <Alert message={<div>新建发布后，会自动排队并运行发布任务，请等待。</div>} type="info" />
       </div>
       <CRUD
+        ref={refCRUD}
         columns={[
           {
             title: '视频',
@@ -110,7 +127,7 @@ function Page() {
               const tasks = value as TaskWithRelations[];
 
               return (
-                <div>
+                <div className="flex flex-col gap-1">
                   {tasks.map((item) => (
                     <div key={item.id} className="flex flex-row items-center gap-1">
                       <Platform

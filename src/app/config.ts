@@ -9,6 +9,7 @@ const globalStorageKey = {
 
 const globalEventKey = {
   REFRESH_TASK: 'REFRESH_TASK',
+  REFRESH_PUBLISH: 'REFRESH_PUBLISH',
 };
 
 export { globalConfig, globalEventKey, globalStorageKey };

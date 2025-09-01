@@ -202,6 +202,7 @@ function useRunAutoTaskWithUI({ isDebug }: { isDebug?: boolean }) {
           });
 
           window.dispatchEvent(new Event(globalEventKey.REFRESH_TASK));
+          window.dispatchEvent(new Event(globalEventKey.REFRESH_PUBLISH));
         },
         onError: (error) => {
           notification.error({
@@ -216,6 +217,7 @@ function useRunAutoTaskWithUI({ isDebug }: { isDebug?: boolean }) {
           });
 
           window.dispatchEvent(new Event(globalEventKey.REFRESH_TASK));
+          window.dispatchEvent(new Event(globalEventKey.REFRESH_PUBLISH));
         },
       });
     },
