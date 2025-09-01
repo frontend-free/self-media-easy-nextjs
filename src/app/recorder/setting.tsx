@@ -214,9 +214,6 @@ function Records({ data, refresh }) {
         >
           <Button type="primary">添加直播间</Button>
         </Detail>
-        <span className="text-gray-500">
-          请根据自身网络情况设置录制直播间数量，一般同时直播 3 个左右。
-        </span>
         <div className="flex-1"></div>
         <span className="text-gray-500">默认一分钟扫描一次</span>
         <LoadingButton

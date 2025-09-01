@@ -25,7 +25,7 @@ function Add({ refCRUD }) {
   return (
     <>
       <Modal
-        title="新建账号"
+        title="添加账号"
         open={open}
         onCancel={() => setOpen(false)}
         destroyOnHidden
@@ -50,7 +50,7 @@ function Add({ refCRUD }) {
         </div>
       </Modal>
       <Button type="primary" onClick={() => setOpen(true)}>
-        新建账号
+        添加账号
       </Button>
     </>
   );

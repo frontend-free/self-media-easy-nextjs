@@ -23,7 +23,7 @@ function RecorderPage() {
   }, []);
 
   return (
-    <div>
+    <div className="p-4">
       <Records data={data} refresh={refresh} />
     </div>
   );
