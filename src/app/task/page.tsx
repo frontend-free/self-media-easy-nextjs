@@ -9,6 +9,7 @@ import { Platform } from '@/components/platform';
 import { Resource } from '@/components/resource';
 import { EnumPlatform, valueEnumPlatform, valueEnumTaskStatus } from '@/generated/enums';
 import { AccountStatus, PublishResourceType } from '@/generated/prisma';
+import { handleRequestRes } from '@/lib/request';
 import { App, Button } from 'antd';
 import dayjs from 'dayjs';
 import { useEffect, useRef } from 'react';
@@ -147,7 +148,7 @@ function Page() {
               modal.confirm({
                 title: '确定停止待运行任务？',
                 onOk: async () => {
-                  await TaskActions.stopTasksOfPending();
+                  handleRequestRes(await TaskActions.stopTasksOfPending());
                   refCRUD?.current?.reload();
                 },
               });

@@ -27,7 +27,10 @@ async function runAutoTask({
   onError?: (error: Error) => void;
   isDebug?: boolean;
 }) {
-  const task = await TaskActions.getTaskById(id);
+  const taskRes = handleRequestRes(await TaskActions.getTaskById(id));
+
+  const task = taskRes.data!;
+
   console.log('runAutoTask task', id, task);
 
   const platform = task.account?.platform;
@@ -49,24 +52,28 @@ async function runAutoTask({
 
   if (error) {
     // 更新任务状态
-    await TaskActions.updateTask({
-      id: task.id,
-      status: TaskStatus.CANCELLED,
-      remark: error,
-      logs: JSON.stringify([error]),
-    });
+    handleRequestRes(
+      await TaskActions.updateTask({
+        id: task.id,
+        status: TaskStatus.CANCELLED,
+        remark: error,
+        logs: JSON.stringify([error]),
+      }),
+    );
 
     onError?.(new Error(error));
     return;
   }
 
   // 发布，更新状态
-  await TaskActions.updateTask({
-    id: task.id,
-    status: TaskStatus.PUBLISHING,
-    remark: '',
-    startAt: new Date(),
-  });
+  handleRequestRes(
+    await TaskActions.updateTask({
+      id: task.id,
+      status: TaskStatus.PUBLISHING,
+      remark: '',
+      startAt: new Date(),
+    }),
+  );
 
   // 发布
   const res = await electronApi.platformPublish({
@@ -83,12 +90,14 @@ async function runAutoTask({
 
   // 成功更新任务
   if (res.success) {
-    await TaskActions.updateTask({
-      id: task.id,
-      status: TaskStatus.SUCCESS,
-      logs: JSON.stringify(res.data?.logs || []),
-      endAt: new Date(),
-    });
+    handleRequestRes(
+      await TaskActions.updateTask({
+        id: task.id,
+        status: TaskStatus.SUCCESS,
+        logs: JSON.stringify(res.data?.logs || []),
+        endAt: new Date(),
+      }),
+    );
 
     onSuccess?.();
   }
@@ -99,32 +108,37 @@ async function runAutoTask({
       // 可能账号被删除，try catch 下
       try {
         // 更新账号状态
-        const res2 = await AccountActions.updateAccount({
-          id: task.accountId,
-          status: AccountStatus.INVALID,
-        });
-        await handleRequestRes(res2);
+        handleRequestRes(
+          await AccountActions.updateAccount({
+            id: task.accountId,
+            status: AccountStatus.INVALID,
+          }),
+        );
       } catch (error) {
         console.error('更新账号状态失败', error);
       }
 
       // 更新任务状态
-      await TaskActions.updateTask({
-        id: task.id,
-        status: TaskStatus.FAILED,
-        remark: '账号授权失效',
-        logs: JSON.stringify(res.data?.logs || []),
-        endAt: new Date(),
-      });
+      handleRequestRes(
+        await TaskActions.updateTask({
+          id: task.id,
+          status: TaskStatus.FAILED,
+          remark: '账号授权失效',
+          logs: JSON.stringify(res.data?.logs || []),
+          endAt: new Date(),
+        }),
+      );
     } else {
       // 更新任务状态
-      await TaskActions.updateTask({
-        id: task.id,
-        status: TaskStatus.FAILED,
-        remark: '请查看日志',
-        logs: JSON.stringify(res.data?.logs || []),
-        endAt: new Date(),
-      });
+      handleRequestRes(
+        await TaskActions.updateTask({
+          id: task.id,
+          status: TaskStatus.FAILED,
+          remark: '请查看日志',
+          logs: JSON.stringify(res.data?.logs || []),
+          endAt: new Date(),
+        }),
+      );
     }
 
     onError?.(new Error('发布失败'));

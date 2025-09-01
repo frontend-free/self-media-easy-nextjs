@@ -1,9 +1,11 @@
 'use client';
 
-const handleRequestRes = async (res) => {
+const handleRequestRes = (res) => {
   if (!res.success) {
     throw new Error(res.message);
   }
+
+  return res;
 };
 
 export { handleRequestRes };

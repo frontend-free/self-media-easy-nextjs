@@ -23,18 +23,19 @@ function useAuth() {
     const res = await electronApi.platformAuth({ platform, isDebug });
 
     if (res.success && res.data) {
-      const res2 = await AccountActions.createAccount({
-        platform,
-        platformId: res.data.platformId || null,
-        platformName: res.data.platformName || null,
-        platformAvatar: res.data.platformAvatar || null,
+      handleRequestRes(
+        await AccountActions.createAccount({
+          platform,
+          platformId: res.data.platformId || null,
+          platformName: res.data.platformName || null,
+          platformAvatar: res.data.platformAvatar || null,
 
-        status: EnumAccountStatus.AUTHED,
-        authInfo: res.data.authInfo || null,
-        authedAt: new Date(),
-        logs: JSON.stringify(res.data.logs || []),
-      } as AccountActions.CreateAccountInput);
-      await handleRequestRes(res2);
+          status: EnumAccountStatus.AUTHED,
+          authInfo: res.data.authInfo || null,
+          authedAt: new Date(),
+          logs: JSON.stringify(res.data.logs || []),
+        } as AccountActions.CreateAccountInput),
+      );
 
       message.success('授权成功');
     } else {
@@ -64,12 +65,13 @@ function useAuth() {
     } else {
       message.error('账号授权信息无效');
       if (status === EnumAccountStatus.AUTHED) {
-        const res2 = await AccountActions.updateAccount({
-          id,
-          status: EnumAccountStatus.INVALID,
-          logs: JSON.stringify(res.data?.logs || []),
-        });
-        await handleRequestRes(res2);
+        handleRequestRes(
+          await AccountActions.updateAccount({
+            id,
+            status: EnumAccountStatus.INVALID,
+            logs: JSON.stringify(res.data?.logs || []),
+          }),
+        );
       }
     }
   };

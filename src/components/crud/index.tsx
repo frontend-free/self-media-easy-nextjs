@@ -67,8 +67,7 @@ function Add<T>({
       autoFocusFirstInput
       trigger={<Button type="primary">{createButtonText}</Button>}
       onFinish={handleFinish(async (values) => {
-        const res = await requestCreate!(values as T);
-        await handleRequestRes(res);
+        handleRequestRes(await requestCreate!(values as T));
 
         message.success('新建成功');
 
@@ -126,8 +125,7 @@ function Update<T>({
         </Button>
       }
       onFinish={handleFinish(async (values) => {
-        const res = await requestUpdate!(values as Partial<T> & { id: string });
-        await handleRequestRes(res);
+        handleRequestRes(await requestUpdate!(values as Partial<T> & { id: string }));
 
         message.success('修改成功');
 
@@ -208,8 +206,7 @@ function CRUD<T extends Record<string, any>>({
                 modal.confirm({
                   title: `确定${deleteButtonText}吗？`,
                   onOk: async () => {
-                    const res = await requestDelete!(record.id, record);
-                    await handleRequestRes(res);
+                    handleRequestRes(await requestDelete!(record.id, record));
 
                     message.success(`${deleteButtonText}成功`);
                     actionRef.current?.reload();
@@ -288,11 +285,12 @@ function CRUD<T extends Record<string, any>>({
         btnText: '批量删除',
         danger: true,
         onClick: async (_, { selectedRows }) => {
-          const res = await requestDeletes(
-            selectedRows.map((item) => item.id),
-            selectedRows,
+          handleRequestRes(
+            await requestDeletes(
+              selectedRows.map((item) => item.id),
+              selectedRows,
+            ),
           );
-          await handleRequestRes(res);
         },
       };
       bas.push(batchDeleteAction);

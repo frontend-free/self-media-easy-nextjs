@@ -150,6 +150,7 @@ export async function deleteTask(id: string) {
 
 export async function stopTasksOfPending() {
   return wrapServerAction(async () => {
+    throw new Error('test');
     const { sessionUser } = await needAuth();
 
     const tasks = await prisma.task.findMany({
