@@ -34,7 +34,6 @@ function useAuth() {
         authedAt: new Date(),
         logs: JSON.stringify(res.data.logs || []),
       } as AccountActions.CreateAccountInput);
-
       await handleRequestRes(res2);
 
       message.success('授权成功');
@@ -65,11 +64,12 @@ function useAuth() {
     } else {
       message.error('账号授权信息无效');
       if (status === EnumAccountStatus.AUTHED) {
-        await AccountActions.updateAccount({
+        const res2 = await AccountActions.updateAccount({
           id,
           status: EnumAccountStatus.INVALID,
           logs: JSON.stringify(res.data?.logs || []),
         });
+        await handleRequestRes(res2);
       }
     }
   };

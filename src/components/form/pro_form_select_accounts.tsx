@@ -18,7 +18,6 @@ function ProFormSelectAccounts(props) {
           current: 1,
           status: EnumAccountStatus.AUTHED,
         });
-
         await handleRequestRes(res);
 
         return res.data?.data.map((item) => ({

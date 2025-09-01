@@ -4,6 +4,7 @@ import { useIsDebug } from '@/components/debug';
 import { electronApi, EnumCode } from '@/electron';
 import { valueEnumPlatform } from '@/generated/enums';
 import { AccountStatus, TaskStatus } from '@/generated/prisma';
+import { handleRequestRes } from '@/lib/request';
 import { SyncOutlined } from '@ant-design/icons';
 import { App, Button } from 'antd';
 import { useCallback, useEffect, useState } from 'react';
@@ -97,10 +98,11 @@ async function runAutoTask({
       // 可能账号被删除，try catch 下
       try {
         // 更新账号状态
-        await AccountActions.updateAccount({
+        const res2 = await AccountActions.updateAccount({
           id: task.accountId,
           status: AccountStatus.INVALID,
         });
+        await handleRequestRes(res2);
       } catch (error) {
         console.error('更新账号状态失败', error);
       }
