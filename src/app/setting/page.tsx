@@ -20,6 +20,7 @@ function InstallBrowser() {
           >
             点我安装 Chrome
           </Button>
+          。
         </div>
       }
     />
@@ -30,18 +31,20 @@ function FFMPEGCheck() {
   const [isInstalled, setIsInstalled] = useState(false);
   const { message } = App.useApp();
 
-  const checkFfmpeg = async () => {
+  const checkFfmpeg = async ({ silent }: { silent?: boolean } = {}) => {
     const res = await electronApi.checkFfmpeg();
     setIsInstalled(!!res.data);
 
     if (!res.data) {
-      message.error('请确保本地已安装好 ffmpeg 插件');
+      if (!silent) {
+        message.error('请确保本地已安装好 ffmpeg 插件');
+      }
     }
     return res;
   };
 
   useEffect(() => {
-    checkFfmpeg();
+    checkFfmpeg({ silent: true });
   }, []);
 
   return (
@@ -100,7 +103,7 @@ function OpenAtLogin() {
   }, []);
 
   return (
-    <div className="flex items-center gap-2">
+    <div>
       <div>开机自启动</div>
       <Switch
         checked={open}
@@ -116,7 +119,8 @@ function OpenAtLogin() {
 
 function SettingPage() {
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2 p-4">
+      <h1 className="text-2xl font-bold">首次使用，请先进行设置。</h1>
       <InstallBrowser />
       <FFMPEGCheck />
       <Divider />
