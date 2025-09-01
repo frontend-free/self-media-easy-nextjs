@@ -6,13 +6,12 @@ import { AuthComponent } from './auth';
 
 function AutoRun() {
   return (
-    <div className="absolute top-0 right-0 py-2 px-4 flex items-center gap-2">
-      <AuthComponent>
+    <AuthComponent>
+      <div className="flex items-center gap-2">
         <AutoRunRecord />
-
         <AutoRunTaskComponent />
-      </AuthComponent>
-    </div>
+      </div>
+    </AuthComponent>
   );
 }
 

@@ -61,7 +61,6 @@ function Page() {
   return (
     <CRUD<TaskWithRelations>
       ref={refCRUD}
-      title="任务"
       columns={[
         {
           title: '平台',

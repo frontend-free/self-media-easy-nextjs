@@ -8,7 +8,6 @@ import { ProFormSwitch, ProFormText } from '@ant-design/pro-components';
 function UsersList() {
   return (
     <CRUD<UserDetail>
-      title="用户管理"
       columns={[
         {
           title: '用户名',

@@ -76,20 +76,18 @@ function Version() {
   }, [version]);
 
   return (
-    <div>
-      <div className="px-2 py-2 flex flex-col items-center gap-1">
-        <DebugWrapVersion>
-          <div className="text-center">v{version}</div>
-        </DebugWrapVersion>
-        <LoadingButton
-          type="text"
-          onClick={async () => {
-            await getLatestVersion({ silent: false });
-          }}
-        >
-          检查
-        </LoadingButton>
-      </div>
+    <div className="flex items-center gap-1 px-2 py-2">
+      <DebugWrapVersion>
+        <div className="text-center">v{version}</div>
+      </DebugWrapVersion>
+      <LoadingButton
+        type="text"
+        onClick={async () => {
+          await getLatestVersion({ silent: false });
+        }}
+      >
+        检查更新
+      </LoadingButton>
     </div>
   );
 }

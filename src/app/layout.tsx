@@ -74,27 +74,28 @@ const menuItems = [
 
 function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="h-screen w-screen flex flex-col relative">
-      <div className="px-4 py-2 text-center flex  items-center gap-5">
-        <span className="font-bold text-lg">{globalConfig.title}</span>
-        <span className="text-xs text-desc">{globalConfig.description}</span>
-      </div>
-      <div className="flex-1 flex overflow-auto">
-        <div className="w-[150px] h-full flex flex-col gap-2">
+    <div className="relative flex h-screen w-screen flex-col">
+      <div className="flex flex-1 overflow-auto">
+        <div className="flex h-full w-[150px] flex-col gap-2">
           <UserInfo />
-          <div className="flex-1 flex flex-col">
+          <div className="flex flex-1 flex-col">
             <div className="flex-1">
               <AppMenu items={menuItems} />
             </div>
-            <Version />
           </div>
-          <div></div>
         </div>
-        <div className="flex-1 p-2 flex flex-col ">
-          <div className="bg-white rounded-lg flex-1 p-4 overflow-y-auto">{children}</div>
+        <div className="flex flex-1 flex-col p-2">
+          <div className="flex-1 overflow-y-auto rounded-lg bg-white p-4">{children}</div>
         </div>
       </div>
-      <AutoRun />
+      <div className="flex items-center gap-5 px-4 pb-2">
+        <div className="flex flex-1 items-center gap-2">
+          <span className="text-lg font-bold">{globalConfig.title}</span>
+          <span className="text-desc text-xs">{globalConfig.description}</span>
+          <AutoRun />
+        </div>
+        <Version />
+      </div>
     </div>
   );
 }

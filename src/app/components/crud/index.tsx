@@ -11,6 +11,7 @@ import { App, Button } from 'antd';
 import dynamic from 'next/dynamic';
 import { Fragment, RefObject, useCallback, useImperativeHandle, useMemo, useRef } from 'react';
 import { LoadingButton } from '../loading_button';
+import './style.scss';
 import type { CRUDProps } from './types';
 import { useRowSelection } from './use_row_selection';
 
@@ -140,7 +141,6 @@ function Update<T>({
 function CRUD<T extends Record<string, any>>({
   ref,
   rowKey,
-  title,
   columns,
   request,
   detailForm,
@@ -166,12 +166,8 @@ function CRUD<T extends Record<string, any>>({
 
   const { modal, message } = App.useApp();
 
-  const newColumns: ProColumns<T>[] = useMemo(() => {
+  const operateColumns = useMemo(() => {
     return [
-      ...columns.map((column) => ({
-        search: false,
-        ...column,
-      })),
       (!disabledDelete || !disabledUpdate || renderOperate) && {
         title: '操作',
         key: 'action',
@@ -212,7 +208,6 @@ function CRUD<T extends Record<string, any>>({
       },
     ].filter(Boolean) as ProColumns<T>[];
   }, [
-    columns,
     detailForm,
     disabledDelete,
     disabledUpdate,
@@ -223,6 +218,35 @@ function CRUD<T extends Record<string, any>>({
     requestDetail,
     requestUpdate,
   ]);
+
+  const newColumns: ProColumns<T>[] = useMemo(() => {
+    return [
+      ...columns.map((column) => ({
+        search: false,
+        ...column,
+      })),
+      ...operateColumns,
+    ]
+      .filter(Boolean)
+      .map((column) => {
+        if (column.search) {
+          return {
+            // 隐藏 label
+            formItemProps: {
+              label: '',
+            },
+            // 设置 placeholder
+            fieldProps: {
+              placeholder:
+                column.valueType === 'select' ? `请选择${column.title}` : `请输入${column.title}`,
+              ...column.fieldProps,
+            },
+            ...column,
+          };
+        }
+        return column;
+      }) as ProColumns<T>[];
+  }, [columns, operateColumns]);
 
   const handleRequest = useCallback(
     async (params) => {
@@ -263,8 +287,8 @@ function CRUD<T extends Record<string, any>>({
 
   return (
     <ProTable<T>
-      cardBordered
-      headerTitle={title}
+      bordered
+      cardBordered={false}
       actionRef={actionRef}
       rowKey={rowKey || 'id'}
       columns={newColumns}

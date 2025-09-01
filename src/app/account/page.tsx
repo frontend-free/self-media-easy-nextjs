@@ -60,7 +60,6 @@ function Page() {
   return (
     <CRUD<Account>
       ref={refCRUD}
-      title="账号"
       columns={[
         {
           title: '平台',

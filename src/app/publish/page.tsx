@@ -96,7 +96,6 @@ function Page() {
         className="mb-4"
       />
       <CRUD
-        title="发布"
         columns={[
           {
             title: '标题',
