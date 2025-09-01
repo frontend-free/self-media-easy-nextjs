@@ -3,7 +3,6 @@
 import { EnumPlatform } from '@/generated/enums';
 import { Account, AccountStatus, Prisma, Publish, Task, TaskStatus } from '@/generated/prisma';
 import {
-  batchDeleteModel,
   createModel,
   deleteModel,
   getModelById,
@@ -11,6 +10,7 @@ import {
   pageModel,
   prisma,
   updateModel,
+  wrapServerAction,
 } from './helper';
 
 export type CreateTaskInput = Pick<Task, 'accountId' | 'publishId'>;
@@ -40,129 +40,137 @@ export async function pageTasks(params: {
   };
   status?: TaskStatus;
 }) {
-  return pageModel<Prisma.TaskDelegate, TaskWithRelations>(
-    {
-      model: prisma.task,
-      params,
-      where: {
-        status: params.status,
-        account: {
-          platform: params.account?.platform,
-          platformName: { contains: params.account?.platformName },
-          status: params.account?.status,
-          deletedAt: params.account?.deletedAt,
+  return wrapServerAction(async () => {
+    return pageModel<Prisma.TaskDelegate, TaskWithRelations>(
+      {
+        model: prisma.task,
+        params,
+        where: {
+          status: params.status,
+          account: {
+            platform: params.account?.platform,
+            platformName: {
+              // 避免 空字符串 没法匹配
+              contains: params.account?.platformName || undefined,
+            },
+            status: params.account?.status,
+            deletedAt: params.account?.deletedAt,
+          },
+          publish: {
+            title: { contains: params.publish?.title || undefined },
+          },
         },
-        publish: {
-          title: { contains: params.publish?.title },
+        include: {
+          account: true,
+          publish: true,
         },
       },
-      include: {
-        account: true,
-        publish: true,
+      {
+        withUser: true,
       },
-    },
-    {
-      withUser: true,
-    },
-  );
+    );
+  });
 }
 
 export async function createTasksForPublish(data: CreateTaskInput) {
-  return createModel<Prisma.TaskDelegate, Task>(
-    {
-      model: prisma.task,
-      data,
-    },
-    {
-      withUser: true,
-    },
-  );
+  return wrapServerAction(async () => {
+    return createModel<Prisma.TaskDelegate, Task>(
+      {
+        model: prisma.task,
+        data,
+      },
+      {
+        withUser: true,
+      },
+    );
+  });
 }
 
 export async function getTaskById(id: string) {
-  return getModelById<Prisma.TaskDelegate, TaskWithRelations>(
-    {
-      model: prisma.task,
-      id,
-      include: {
-        account: true,
-        publish: true,
+  return wrapServerAction(async () => {
+    return getModelById<Prisma.TaskDelegate, TaskWithRelations>(
+      {
+        model: prisma.task,
+        id,
+        include: {
+          account: true,
+          publish: true,
+        },
       },
-    },
-    {
-      withUser: true,
-    },
-  );
+      {
+        withUser: true,
+      },
+    );
+  });
 }
 
 export async function updateTask(data: UpdateTaskInput) {
-  const result = await updateModel<Prisma.TaskDelegate, Task, UpdateTaskInput>(
-    {
-      model: prisma.task,
-      data,
-      include: {
-        account: true,
+  return wrapServerAction(async () => {
+    const result = await updateModel<Prisma.TaskDelegate, Task, UpdateTaskInput>(
+      {
+        model: prisma.task,
+        data,
+        include: {
+          account: true,
+        },
       },
-    },
-    {
-      withUser: true,
-    },
-  );
-
-  // 发布成功奖励学时
-  if (data.status === TaskStatus.SUCCESS) {
-    (await getModelById<Prisma.TaskDelegate, Task>({
-      model: prisma.task,
-      id: result.id,
-      include: {
-        account: true,
+      {
+        withUser: true,
       },
-    })) as TaskWithRelations;
-  }
+    );
 
-  return result;
+    // 发布成功奖励学时
+    if (data.status === TaskStatus.SUCCESS) {
+      (await getModelById<Prisma.TaskDelegate, Task>({
+        model: prisma.task,
+        id: result.id,
+        include: {
+          account: true,
+        },
+      })) as TaskWithRelations;
+    }
+
+    return result;
+  });
 }
 
 export async function deleteTask(id: string) {
-  return deleteModel<Prisma.TaskDelegate>(
-    {
-      model: prisma.task,
-      id,
-    },
-    {
-      withUser: true,
-    },
-  );
-}
-
-export async function batchDeleteTasks(ids: string[]) {
-  return batchDeleteModel<Prisma.TaskDelegate>({
-    model: prisma.task,
-    ids,
+  return wrapServerAction(async () => {
+    return deleteModel<Prisma.TaskDelegate>(
+      {
+        model: prisma.task,
+        id,
+      },
+      {
+        withUser: true,
+      },
+    );
   });
 }
 
 export async function stopTasksOfPending() {
-  const { sessionUser } = await needAuth();
+  return wrapServerAction(async () => {
+    const { sessionUser } = await needAuth();
 
-  const tasks = await prisma.task.findMany({
-    where: {
-      status: TaskStatus.PENDING,
-      userId: sessionUser.id,
-      deletedAt: null,
-    },
-  });
+    const tasks = await prisma.task.findMany({
+      where: {
+        status: TaskStatus.PENDING,
+        userId: sessionUser.id,
+        deletedAt: null,
+      },
+    });
 
-  if (tasks.length === 0) {
-    return;
-  }
+    if (tasks.length === 0) {
+      return;
+    }
 
-  await prisma.task.updateMany({
-    where: {
-      id: { in: tasks.map((task) => task.id) },
-    },
-    data: {
-      status: TaskStatus.CANCELLED,
-    },
+    await prisma.task.updateMany({
+      where: {
+        id: { in: tasks.map((task) => task.id) },
+      },
+      data: {
+        status: TaskStatus.CANCELLED,
+      },
+    });
   });
 }

@@ -52,23 +52,25 @@ function Add<T>({
   actionRef,
   requestCreate,
   detailForm,
+  createButtonText,
 }: {
   actionRef: RefObject<ActionType | undefined>;
   requestCreate: CRUDProps<T>['requestCreate'];
   detailForm: CRUDProps<T>['detailForm'];
+  createButtonText: CRUDProps<T>['createButtonText'];
 }) {
   const { message } = App.useApp();
 
   return (
     <ModalForm
-      title="新增"
+      title={createButtonText}
       autoFocusFirstInput
-      trigger={<Button type="primary">新增</Button>}
+      trigger={<Button type="primary">{createButtonText}</Button>}
       onFinish={handleFinish(async (values) => {
         const res = await requestCreate!(values as T);
         await handleRequestRes(res);
 
-        message.success('新增成功');
+        message.success('新建成功');
 
         actionRef.current?.reload();
 
@@ -149,16 +151,22 @@ function CRUD<T extends Record<string, any>>({
   columns,
   request,
   detailForm,
+
   disabledCreate,
+  createButtonText = '新建',
   requestCreate,
+
   disabledDelete,
   deleteButtonText = '删除',
   requestDelete,
+
   disabledUpdate,
   requestDetail,
   requestUpdate,
+
   toolBarRenderPre,
   renderOperate,
+
   enableBatchDelete,
   requestDeletes,
 }: CRUDProps<T>) {
@@ -312,6 +320,7 @@ function CRUD<T extends Record<string, any>>({
             <Add<T>
               key="add"
               actionRef={actionRef}
+              createButtonText={createButtonText}
               requestCreate={requestCreate}
               detailForm={detailForm}
             />

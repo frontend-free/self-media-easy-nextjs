@@ -5,6 +5,7 @@ import { TaskWithRelations } from '@/app/actions/task_actions';
 import { CRUD } from '@/components/crud';
 import { ProFormSelectAccounts } from '@/components/form/pro_form_select_accounts';
 import { ProFormTextWithSelect } from '@/components/form/pro_form_text_with_select';
+import { Platform } from '@/components/platform';
 import { Resource } from '@/components/resource';
 import { electronApi } from '@/electron';
 import {
@@ -82,25 +83,12 @@ function ProFormFiles(props) {
 
 function Page() {
   return (
-    <div className="flex flex-col gap-4">
-      <Alert
-        message={
-          <div>
-            <div>新建发布后</div>
-            <div>1 软件会自动运行发布任务，请不要关闭软件。</div>
-            <div>2 不要随意移动选中的资源，否则影响发布。</div>
-          </div>
-        }
-        type="info"
-        className="mb-4"
-      />
+    <div>
+      <div className="px-4 pt-4">
+        <Alert message={<div>新建发布后，会自动排队并运行发布任务，请等待。</div>} type="info" />
+      </div>
       <CRUD
         columns={[
-          {
-            title: '标题',
-            dataIndex: 'title',
-            search: true,
-          },
           {
             title: '视频',
             dataIndex: 'resourceOfVideo',
@@ -116,7 +104,7 @@ function Page() {
             dataIndex: 'tasks',
             render: (value) => {
               if (!value) {
-                return null;
+                return '-';
               }
 
               const tasks = value as TaskWithRelations[];
@@ -139,6 +127,11 @@ function Page() {
             },
           },
           {
+            title: '标题',
+            dataIndex: 'title',
+            search: true,
+          },
+          {
             title: '创建时间',
             dataIndex: 'createdAt',
             valueType: 'dateTime',
@@ -148,12 +141,13 @@ function Page() {
           <div>
             <ProFormText name="id" label="ID" hidden />
 
+            {/* 先屏蔽 */}
             <ProFormField
               name="resourceType"
               label="资源类型"
               valueEnum={valueEnumPublishResourceType}
               initialValue={PublishResourceType.VIDEO}
-              disabled
+              hidden
             />
             <ProFormFiles name="resourceOfVideo" label="视频" rules={[{ required: true }]} />
 
@@ -175,20 +169,16 @@ function Page() {
           </div>
         )}
         request={async (params) => {
-          const res = await PublishActions.pagePublishes(params);
-          return res;
+          return await PublishActions.pagePublishes(params);
         }}
+        createButtonText="新建发布"
         requestCreate={async (values) => {
-          await PublishActions.createPublish(values as PublishActions.CreatePublishInput);
+          return await PublishActions.createPublish(values as PublishActions.CreatePublishInput);
         }}
         requestDelete={async (id) => {
-          await PublishActions.deletePublish(id);
+          return await PublishActions.deletePublish(id);
         }}
         disabledUpdate
-        enableBatchDelete
-        requestDeletes={async (ids) => {
-          await PublishActions.batchDeletePublishes(ids);
-        }}
       />
     </div>
   );

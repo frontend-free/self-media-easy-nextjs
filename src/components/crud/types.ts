@@ -15,10 +15,13 @@ interface CRUDProps<T> {
   detailForm?: (props: { type: 'create' | 'update' }) => ReactNode;
 
   disabledCreate?: boolean;
-  requestCreate?: (createValues: Partial<T>) => Promise<ServerActionResult<void>>;
+  createButtonText?: string;
+  requestCreate?: (createValues: Partial<T>) => Promise<ServerActionResult<T>>;
+
   disabledDelete?: boolean;
   deleteButtonText?: string;
   requestDelete?: (id: string, data: T) => Promise<ServerActionResult<void>>;
+
   disabledUpdate?: boolean;
   requestDetail?: (id: string, data: T) => Promise<ServerActionResult<T>>;
   requestUpdate?: (updateValues: Partial<T> & { id: string }) => Promise<ServerActionResult<void>>;

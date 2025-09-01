@@ -12,6 +12,7 @@ import { AccountStatus, PublishResourceType } from '@/generated/prisma';
 import { App, Button } from 'antd';
 import dayjs from 'dayjs';
 import { useEffect, useRef } from 'react';
+import { globalEventKey } from '../config';
 import { runAutoTask } from './auto_run_task';
 
 function Page() {
@@ -21,9 +22,14 @@ function Page() {
   const { isDebug } = useIsDebug();
 
   useEffect(() => {
-    // @ts-expect-error 先忽略
-    window._refreshTask = () => {
+    function refreshTask() {
       refCRUD?.current?.reload();
+    }
+
+    window.addEventListener(globalEventKey.REFRESH_TASK, refreshTask);
+
+    return () => {
+      window.removeEventListener(globalEventKey.REFRESH_TASK, refreshTask);
     };
   }, []);
 
@@ -59,150 +65,148 @@ function Page() {
   };
 
   return (
-    <CRUD<TaskWithRelations>
-      ref={refCRUD}
-      columns={[
-        {
-          title: '平台',
-          dataIndex: ['account', 'platform'],
-          hidden: true,
-          valueEnum: valueEnumPlatform,
-          search: true,
-        },
-        {
-          title: '平台账号',
-          dataIndex: ['account', 'platformName'],
-          search: true,
-          render: (_, record: TaskWithRelations) => (
-            <Platform
-              name={record.account.platformName || ''}
-              value={record.account.platform as EnumPlatform}
-              status={record.account.status as AccountStatus}
-              deletedAt={record.account.deletedAt || undefined}
-            />
-          ),
-        },
-        {
-          title: '标题',
-          dataIndex: ['publish', 'title'],
-          search: true,
-          render: (_, record: TaskWithRelations) => {
-            return (
-              <div>
-                <div className="flex">
-                  标题：
-                  <div className="line-clamp-2">{record.publish.title || '-'}</div>
-                </div>
-                <Resource
-                  resourceType={PublishResourceType.VIDEO}
-                  resourceOfVideo={record.publish.resourceOfVideo as string}
-                />
-              </div>
-            );
+    <div className="p-4">
+      <CRUD<TaskWithRelations>
+        ref={refCRUD}
+        columns={[
+          {
+            title: '平台',
+            dataIndex: ['account', 'platform'],
+            hidden: true,
+            valueEnum: valueEnumPlatform,
+            search: true,
           },
-        },
-        {
-          title: '状态',
-          dataIndex: 'status',
-          valueEnum: valueEnumTaskStatus,
-          search: true,
-        },
-        {
-          title: '备注',
-          dataIndex: 'remark',
-        },
-        {
-          title: '时间',
-          dataIndex: 'endAt',
-          valueType: 'dateTime',
-          render: (_, record: TaskWithRelations) => {
-            return (
-              <div>
-                <div>
-                  发布 {record.endAt ? dayjs(record.endAt).format('YYYY-MM-DD HH:mm:ss') : ''}
-                </div>
-                <div>
-                  创建{' '}
-                  {record.createdAt ? dayjs(record.createdAt).format('YYYY-MM-DD HH:mm:ss') : ''}
-                </div>
-              </div>
-            );
+          {
+            title: '平台账号',
+            dataIndex: ['account', 'platformName'],
+            search: true,
+            render: (_, record: TaskWithRelations) => (
+              <Platform
+                name={record.account.platformName || ''}
+                value={record.account.platform as EnumPlatform}
+                status={record.account.status as AccountStatus}
+                deletedAt={record.account.deletedAt || undefined}
+              />
+            ),
           },
-        },
-      ]}
-      request={async (params) => {
-        const res = await TaskActions.pageTasks(params);
-        return res;
-      }}
-      toolBarRenderPre={
-        <Button
-          danger
-          onClick={() => {
-            modal.confirm({
-              title: '确定停止待运行任务？',
-              onOk: async () => {
-                await TaskActions.stopTasksOfPending();
-                refCRUD?.current?.reload();
-              },
-            });
-          }}
-        >
-          停止待运行任务
-        </Button>
-      }
-      disabledCreate
-      disabledDelete
-      disabledUpdate
-      renderOperate={({ record }) => {
-        return (
-          <>
-            <LoadingButton
-              type="link"
-              className="!px-0"
-              disabled={
-                record.account.status !== AccountStatus.AUTHED || record.account.deletedAt !== null
-              }
-              onClick={async () => {
-                modal.confirm({
-                  title: '确定手动发布吗？',
-                  onOk: () => {
-                    handlePublishTask(record);
-                  },
-                });
-              }}
-            >
-              手动发布
-            </LoadingButton>
-            <Button
-              type="link"
-              className="!px-0"
-              onClick={() => {
-                modal.info({
-                  title: '日志',
-                  width: 800,
-                  content: (
-                    <div>
-                      <pre className="whitespace-pre-wrap">
-                        {JSON.stringify(JSON.parse(record.logs || ''), null, 2).replace(
-                          /\\n/g,
-                          '\n',
-                        )}
-                      </pre>
-                    </div>
-                  ),
-                });
-              }}
-            >
-              查看日志
-            </Button>
-          </>
-        );
-      }}
-      enableBatchDelete
-      requestDeletes={async (ids) => {
-        await TaskActions.batchDeleteTasks(ids);
-      }}
-    />
+          {
+            title: '标题',
+            dataIndex: ['publish', 'title'],
+            search: true,
+            render: (_, record: TaskWithRelations) => {
+              return (
+                <div>
+                  <div className="flex">
+                    标题：
+                    <div className="line-clamp-2">{record.publish.title || '-'}</div>
+                  </div>
+                  <Resource
+                    resourceType={PublishResourceType.VIDEO}
+                    resourceOfVideo={record.publish.resourceOfVideo as string}
+                  />
+                </div>
+              );
+            },
+          },
+          {
+            title: '状态',
+            dataIndex: 'status',
+            valueEnum: valueEnumTaskStatus,
+            search: true,
+          },
+          {
+            title: '备注',
+            dataIndex: 'remark',
+          },
+          {
+            title: '时间',
+            dataIndex: 'endAt',
+            valueType: 'dateTime',
+            render: (_, record: TaskWithRelations) => {
+              return (
+                <div>
+                  <div>
+                    发布 {record.endAt ? dayjs(record.endAt).format('YYYY-MM-DD HH:mm:ss') : ''}
+                  </div>
+                  <div>
+                    创建{' '}
+                    {record.createdAt ? dayjs(record.createdAt).format('YYYY-MM-DD HH:mm:ss') : ''}
+                  </div>
+                </div>
+              );
+            },
+          },
+        ]}
+        request={async (params) => {
+          return await TaskActions.pageTasks(params);
+        }}
+        toolBarRenderPre={
+          <Button
+            danger
+            onClick={() => {
+              modal.confirm({
+                title: '确定停止待运行任务？',
+                onOk: async () => {
+                  await TaskActions.stopTasksOfPending();
+                  refCRUD?.current?.reload();
+                },
+              });
+            }}
+          >
+            停止待运行任务
+          </Button>
+        }
+        disabledCreate
+        disabledDelete
+        disabledUpdate
+        renderOperate={({ record }) => {
+          return (
+            <>
+              <LoadingButton
+                type="link"
+                className="!px-0"
+                disabled={
+                  record.account.status !== AccountStatus.AUTHED ||
+                  record.account.deletedAt !== null
+                }
+                onClick={async () => {
+                  modal.confirm({
+                    title: '确定手动发布吗？',
+                    onOk: () => {
+                      handlePublishTask(record);
+                    },
+                  });
+                }}
+              >
+                手动发布
+              </LoadingButton>
+              <Button
+                type="link"
+                className="!px-0"
+                onClick={() => {
+                  modal.info({
+                    title: '日志',
+                    width: 800,
+                    content: (
+                      <div>
+                        <pre className="whitespace-pre-wrap">
+                          {JSON.stringify(JSON.parse(record.logs || ''), null, 2).replace(
+                            /\\n/g,
+                            '\n',
+                          )}
+                        </pre>
+                      </div>
+                    ),
+                  });
+                }}
+              >
+                查看日志
+              </Button>
+            </>
+          );
+        }}
+      />
+    </div>
   );
 }
 

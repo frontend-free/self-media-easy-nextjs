@@ -12,7 +12,7 @@ import {
 } from '@/generated/enums';
 import { Account, AccountStatus } from '@/generated/prisma';
 import { ProFormText } from '@ant-design/pro-components';
-import { Alert, App, Button, Modal } from 'antd';
+import { App, Button, Modal } from 'antd';
 import { useRef, useState } from 'react';
 import { useAuth } from './use_auth';
 
@@ -23,8 +23,13 @@ function Add({ refCRUD }) {
 
   return (
     <>
-      <Modal title="账号" open={open} onCancel={() => setOpen(false)} destroyOnClose footer={null}>
-        <Alert message="异地登录，容易掉线！" type="warning" />
+      <Modal
+        title="新建账号"
+        open={open}
+        onCancel={() => setOpen(false)}
+        destroyOnHidden
+        footer={null}
+      >
         <div className="flex flex-row flex-wrap gap-2 p-10">
           {listPlatform.map((item) => (
             <div
@@ -44,7 +49,7 @@ function Add({ refCRUD }) {
         </div>
       </Modal>
       <Button type="primary" onClick={() => setOpen(true)}>
-        新增
+        新建账号
       </Button>
     </>
   );

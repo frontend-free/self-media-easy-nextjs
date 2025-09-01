@@ -1,4 +1,5 @@
 import * as PublishActions from '@/app/actions/publish_actions';
+import { handleRequestRes } from '@/lib/request';
 import { ProForm } from '@ant-design/pro-components';
 import { AutoComplete } from 'antd';
 import { useEffect, useState } from 'react';
@@ -14,7 +15,10 @@ function TextWithSelect(props: TextWithSelectProps) {
   const [options, setOptions] = useState<{ label: string; value: string }[]>([]);
 
   useEffect(() => {
-    PublishActions.getPublishTitles().then((titles) => {
+    PublishActions.getPublishTitles().then(async (res) => {
+      await handleRequestRes(res);
+
+      const titles = res.data || [];
       setOptions(titles.map((title) => ({ label: title, value: title })));
     });
   }, [value]);

@@ -10,6 +10,7 @@ import { handleRequestRes } from '@/lib/request';
 import { SyncOutlined } from '@ant-design/icons';
 import { App, Button } from 'antd';
 import { useCallback, useEffect, useState } from 'react';
+import { globalEventKey } from '../config';
 
 const maxRunCount = 1;
 let runningTaskIds: string[] = [];
@@ -211,12 +212,15 @@ function AutoRunTaskComponent() {
           status: AccountStatus.AUTHED,
         },
       });
+      await handleRequestRes(tasksRes);
+
+      const tasks = tasksRes.data?.data || [];
 
       // 设置任务数
-      setCount(tasksRes.data.length);
+      setCount(tasks.length);
 
       // 获取到需要运行的任务
-      const toRunTasks = tasksRes.data.slice(-maxRunCount - runningTaskIds.length);
+      const toRunTasks = tasks.slice(-maxRunCount - runningTaskIds.length);
 
       for (const task of toRunTasks) {
         runningTaskIds.push(task.id);
@@ -230,8 +234,7 @@ function AutoRunTaskComponent() {
         runningTaskIds = runningTaskIds.filter((id) => id !== task.id);
 
         // 刷新列表数据
-        // @ts-expect-error 先忽略
-        window._refreshTask?.();
+        window.dispatchEvent(new Event(globalEventKey.REFRESH_TASK));
       }
     }, INTERVAL);
   }, [doPublishTask]);

@@ -44,7 +44,10 @@ export async function pageAccounts(params: {
         model: prisma.account,
         params,
         where: {
-          platformName: { contains: params.platformName },
+          platformName: {
+            // 避免 空字符串 没法匹配
+            contains: params.platformName || undefined,
+          },
           platform: params.platform,
           status: params.status,
         },
