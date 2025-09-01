@@ -31,6 +31,7 @@ function DebugWrapVersion({ children }: { children: React.ReactNode }) {
 
   return (
     <div
+      className="flex gap-1"
       onClick={() => {
         clearTimeout(refTimer.current);
 
@@ -45,8 +46,8 @@ function DebugWrapVersion({ children }: { children: React.ReactNode }) {
         }, 1000);
       }}
     >
-      {isDebug && <div className="text-red-500">isDebug</div>}
       {children}
+      {isDebug && <div className="text-red-500">isDebug</div>}
     </div>
   );
 }

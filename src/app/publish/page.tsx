@@ -130,13 +130,8 @@ function Page() {
 
               return (
                 <div className="flex flex-col gap-1">
-                  {tasks.map((item, index) => (
-                    <div
-                      key={item.id}
-                      className={cn('flex flex-row items-center', {
-                        'c-border-top mt-1 pt-1': index !== 0,
-                      })}
-                    >
+                  {tasks.map((item) => (
+                    <div key={item.id} className={cn('flex flex-row items-center gap-1')}>
                       <Platform
                         name={item.account.platformName || ''}
                         value={item.account.platform as EnumPlatform}

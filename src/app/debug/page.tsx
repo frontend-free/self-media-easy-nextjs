@@ -8,7 +8,7 @@ function Page() {
   const { message } = App.useApp();
 
   return (
-    <div>
+    <div className="p-4">
       isDebug:
       <Switch
         checked={isDebug}
