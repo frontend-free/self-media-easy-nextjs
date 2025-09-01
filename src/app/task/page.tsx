@@ -8,7 +8,12 @@ import { LoadingButton } from '@/components/loading_button';
 import { CheckLogs } from '@/components/logs';
 import { Platform } from '@/components/platform';
 import { Resource } from '@/components/resource';
-import { EnumPlatform, valueEnumPlatform, valueEnumTaskStatus } from '@/generated/enums';
+import {
+  EnumPlatform,
+  TagTaskStatus,
+  valueEnumPlatform,
+  valueEnumTaskStatus,
+} from '@/generated/enums';
 import { AccountStatus, PublishResourceType } from '@/generated/prisma';
 import { handleRequestRes } from '@/lib/request';
 import { App, Button } from 'antd';
@@ -82,6 +87,9 @@ function Page() {
             dataIndex: 'status',
             valueEnum: valueEnumTaskStatus,
             search: true,
+            render: (_, record: TaskWithRelations) => {
+              return <TagTaskStatus value={record.status} />;
+            },
           },
           {
             title: '备注',
@@ -138,7 +146,7 @@ function Page() {
                   record.account.status !== AccountStatus.AUTHED ||
                   record.account.deletedAt !== null
                 }
-                onClick={async () => {
+                onClick={() => {
                   modal.confirm({
                     title: '确定再次发布吗？',
                     onOk: async () => {

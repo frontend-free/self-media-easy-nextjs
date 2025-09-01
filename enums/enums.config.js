@@ -46,23 +46,23 @@ const enums = {
   TaskStatus: {
     PENDING: {
       text: '等待发布',
-      color: '#2db7f5',
+      color: 'default',
     },
     PUBLISHING: {
       text: '发布中',
-      color: 'blue',
+      color: 'processing',
     },
     SUCCESS: {
       text: '发布成功',
-      color: 'green',
+      color: 'success',
     },
     FAILED: {
       text: '发布失败',
-      color: 'red',
+      color: 'error',
     },
     CANCELLED: {
       text: '已取消',
-      color: 'gray',
+      color: 'default',
     },
   },
   RecorderStatus: {

@@ -194,27 +194,27 @@ export const valueEnumTaskStatus = {
   [EnumTaskStatus.PENDING]: {
     text: '等待发布',
     value: 'PENDING',
-    color: '#2db7f5',
+    color: 'default',
   },
   [EnumTaskStatus.PUBLISHING]: {
     text: '发布中',
     value: 'PUBLISHING',
-    color: 'blue',
+    color: 'processing',
   },
   [EnumTaskStatus.SUCCESS]: {
     text: '发布成功',
     value: 'SUCCESS',
-    color: 'green',
+    color: 'success',
   },
   [EnumTaskStatus.FAILED]: {
     text: '发布失败',
     value: 'FAILED',
-    color: 'red',
+    color: 'error',
   },
   [EnumTaskStatus.CANCELLED]: {
     text: '已取消',
     value: 'CANCELLED',
-    color: 'gray',
+    color: 'default',
   },
 };
 
