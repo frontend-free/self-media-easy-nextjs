@@ -6,7 +6,7 @@
     "build-enums": "free-scripts build-code -i ./enums/enums.config.js -o ./src/generated -t antd && prettier ./src/generated --write",
     "release": "git fetch && git reset --hard origin/master && pnpm i && pnpm build && pm2 restart nextjs",
     "prebuild": "npx prisma migrate deploy; npx prisma generate;",
-    "build": "NODE_OPTIONS=\"--max-old-space-size=4096\" next build --no-mangling",
+    "build": "next build --no-mangling",
     "start": "next start",
     "lint": "next lint",
     "clean": "rm -rf .next && rm -rf node_modules && rm -rf pnpm-lock.yaml",
