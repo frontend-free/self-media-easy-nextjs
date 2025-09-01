@@ -76,7 +76,7 @@ const menuItems = [
 function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <PageLayout
-      className="!h-screen !w-screen bg-gradient-to-br from-blue-200 to-cyan-200"
+      className="!h-screen !w-screen"
       direction="vertical"
       end={
         <div className="flex items-center gap-4 pb-2 pl-4">
@@ -107,7 +107,7 @@ function RootLayout({ children }: { children: React.ReactNode }) {
 function WrapRootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="zh-CN">
-      <body className="">
+      <body className="bg-gradient-to-br from-blue-200 to-cyan-200">
         <AntdRegistry>
           <ConfigProvider locale={zhCN}>
             <SessionProvider>
