@@ -1,5 +1,6 @@
 'use client';
 
+import * as SettingActions from '@/app/actions/setting_actions';
 import { ProFormTextWithSelect } from '@/components/form/pro_form_text_with_select';
 import { LoadingButton } from '@/components/loading_button';
 import { electronApi } from '@/electron';
@@ -11,7 +12,6 @@ import { usePrevious } from 'ahooks';
 import { App, Button, Divider, Tag, Tooltip } from 'antd';
 import Image from 'next/image';
 import { useEffect, useMemo, useState } from 'react';
-import * as SettingActions from '../actions/setting_actions';
 import { useDoAutoCheckAndRecord } from './auto_run_record';
 import Img from './image.png';
 

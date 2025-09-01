@@ -1,5 +1,6 @@
 'use client';
 
+import * as AccountActions from '@/app/actions/account_actions';
 import { CRUD } from '@/components/crud';
 import { LoadingButton } from '@/components/loading_button';
 import { Platform } from '@/components/platform';
@@ -13,7 +14,6 @@ import { Account, AccountStatus } from '@/generated/prisma';
 import { ProFormText } from '@ant-design/pro-components';
 import { Alert, App, Button, Modal } from 'antd';
 import { useRef, useState } from 'react';
-import * as AccountActions from '../actions/account_actions';
 import { useAuth } from './use_auth';
 
 function Add({ refCRUD }) {

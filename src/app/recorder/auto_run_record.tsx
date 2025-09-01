@@ -1,10 +1,10 @@
 'use client';
 
+import * as SettingActions from '@/app/actions/setting_actions';
 import { electronApi } from '@/electron';
 import { SyncOutlined } from '@ant-design/icons';
 import { Button } from 'antd';
 import { useCallback, useEffect, useState } from 'react';
-import * as SettingActions from '../actions/setting_actions';
 
 function useDoAutoCheckAndRecord() {
   const [isRunning, setIsRunning] = useState(false);

@@ -1,5 +1,7 @@
 'use client';
 
+import type { TaskWithRelations } from '@/app/actions/task_actions';
+import * as TaskActions from '@/app/actions/task_actions';
 import { CRUD } from '@/components/crud';
 import { useIsDebug } from '@/components/debug';
 import { LoadingButton } from '@/components/loading_button';
@@ -10,8 +12,6 @@ import { AccountStatus, PublishResourceType } from '@/generated/prisma';
 import { App, Button } from 'antd';
 import dayjs from 'dayjs';
 import { useEffect, useRef } from 'react';
-import type { TaskWithRelations } from '../actions/task_actions';
-import * as TaskActions from '../actions/task_actions';
 import { runAutoTask } from './auto_run_task';
 
 function Page() {

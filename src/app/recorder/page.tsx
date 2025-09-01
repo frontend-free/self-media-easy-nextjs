@@ -1,8 +1,8 @@
 'use client';
 
+import * as SettingActions from '@/app/actions/setting_actions';
 import { Setting } from '@/generated/prisma';
 import { useCallback, useEffect, useState } from 'react';
-import * as SettingActions from '../actions/setting_actions';
 import { Records } from './setting';
 
 function RecorderPage() {

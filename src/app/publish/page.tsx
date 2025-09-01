@@ -1,6 +1,7 @@
 'use client';
 
 import * as PublishActions from '@/app/actions/publish_actions';
+import { TaskWithRelations } from '@/app/actions/task_actions';
 import { CRUD } from '@/components/crud';
 import { ProFormSelectAccounts } from '@/components/form/pro_form_select_accounts';
 import { ProFormTextWithSelect } from '@/components/form/pro_form_text_with_select';
@@ -22,7 +23,6 @@ import {
   ProFormTextArea,
 } from '@ant-design/pro-components';
 import { Alert, Button } from 'antd';
-import { TaskWithRelations } from '../actions/task_actions';
 
 interface FilesProps {
   value?: string;

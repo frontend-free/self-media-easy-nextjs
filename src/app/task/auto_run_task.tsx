@@ -1,5 +1,7 @@
 'use client';
 
+import * as AccountActions from '@/app/actions/account_actions';
+import * as TaskActions from '@/app/actions/task_actions';
 import { useIsDebug } from '@/components/debug';
 import { electronApi, EnumCode } from '@/electron';
 import { valueEnumPlatform } from '@/generated/enums';
@@ -8,8 +10,6 @@ import { handleRequestRes } from '@/lib/request';
 import { SyncOutlined } from '@ant-design/icons';
 import { App, Button } from 'antd';
 import { useCallback, useEffect, useState } from 'react';
-import * as AccountActions from '../actions/account_actions';
-import * as TaskActions from '../actions/task_actions';
 
 const maxRunCount = 1;
 let runningTaskIds: string[] = [];
