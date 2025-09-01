@@ -22,7 +22,6 @@ import { Alert, Button } from 'antd';
 import { TaskWithRelations } from '../actions/task_actions';
 import { ProFormSelectAccounts } from '../components/form/pro_form_select_accounts';
 import { ProFormTextWithSelect } from '../components/form/pro_form_text_with_select';
-import { PlatformWithName } from '../components/platform';
 import { Resource } from '../components/resource';
 
 interface FilesProps {
@@ -33,7 +32,7 @@ interface FilesProps {
 function Files(props: FilesProps) {
   return (
     <div>
-      <div className="flex flex-row gap-2 items-center">
+      <div className="flex flex-row items-center gap-2">
         <Button
           onClick={async () => {
             const res = await electronApi.showOpenDialogOfOpenFile();
@@ -126,7 +125,7 @@ function Page() {
                 <div>
                   {tasks.map((item) => (
                     <div key={item.id} className="flex flex-row items-center gap-2">
-                      <PlatformWithName
+                      <Platform
                         name={item.account.platformName || ''}
                         value={item.account.platform as EnumPlatform}
                         status={item.account.status as AccountStatus}

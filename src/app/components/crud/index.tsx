@@ -1,5 +1,6 @@
 'use client';
 
+import { handleRequestRes } from '@/app/lib/request';
 import type {
   ActionType,
   ProColumns,
@@ -194,7 +195,9 @@ function CRUD<T extends Record<string, any>>({
                 modal.confirm({
                   title: '确定删除吗？',
                   onOk: async () => {
-                    await requestDelete!(record.id, record);
+                    const res = await requestDelete!(record.id, record);
+                    await handleRequestRes(res);
+
                     message.success('删除成功');
                     actionRef.current?.reload();
                   },
@@ -238,7 +241,7 @@ function CRUD<T extends Record<string, any>>({
             // 设置 placeholder
             fieldProps: {
               placeholder:
-                column.valueType === 'select' ? `请选择${column.title}` : `请输入${column.title}`,
+                column.valueType === 'select' ? `选择${column.title}` : `输入${column.title}`,
               ...column.fieldProps,
             },
             ...column,
@@ -251,10 +254,13 @@ function CRUD<T extends Record<string, any>>({
   const handleRequest = useCallback(
     async (params) => {
       const res = await request(params);
+      await handleRequestRes(res);
+
+      const data = res.data;
       return {
-        data: res.data,
-        success: res.success,
-        total: res.total,
+        data: data?.data || [],
+        total: data?.total || 0,
+        success: true,
       };
     },
     [request],
@@ -286,34 +292,35 @@ function CRUD<T extends Record<string, any>>({
   });
 
   return (
-    <ProTable<T>
-      bordered
-      cardBordered={false}
-      actionRef={actionRef}
-      rowKey={rowKey || 'id'}
-      columns={newColumns}
-      request={handleRequest}
-      toolBarRender={() => [
-        toolBarRenderPre,
-        !disabledCreate && (
-          <Add<T>
-            key="add"
-            actionRef={actionRef}
-            requestCreate={requestCreate}
-            detailForm={detailForm}
-          />
-        ),
-      ]}
-      options={false}
-      search={{
-        labelWidth: 'auto',
-        defaultCollapsed: false,
-      }}
-      scroll={getTableScroll(newColumns)}
-      rowSelection={rowSelection}
-      tableAlertRender={tableAlertRender}
-      tableAlertOptionRender={tableAlertOptionRender}
-    />
+    <div className="cb-custom-crud">
+      <ProTable<T>
+        cardBordered={false}
+        actionRef={actionRef}
+        rowKey={rowKey || 'id'}
+        columns={newColumns}
+        request={handleRequest}
+        toolBarRender={() => [
+          toolBarRenderPre,
+          !disabledCreate && (
+            <Add<T>
+              key="add"
+              actionRef={actionRef}
+              requestCreate={requestCreate}
+              detailForm={detailForm}
+            />
+          ),
+        ]}
+        options={false}
+        search={{
+          labelWidth: 'auto',
+          defaultCollapsed: false,
+        }}
+        scroll={getTableScroll(newColumns)}
+        rowSelection={rowSelection}
+        tableAlertRender={tableAlertRender}
+        tableAlertOptionRender={tableAlertOptionRender}
+      />
+    </div>
   );
 }
 

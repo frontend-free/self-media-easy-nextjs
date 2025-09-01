@@ -5,6 +5,7 @@ import { EnumAccountStatus, EnumPlatform } from '@/generated/enums';
 import { App } from 'antd';
 import * as AccountActions from '../actions/account_actions';
 import { useIsDebug } from '../components/debug';
+import { handleRequestRes } from '../lib/request';
 
 function useAuth() {
   const { modal, message } = App.useApp();
@@ -22,7 +23,7 @@ function useAuth() {
     const res = await electronApi.platformAuth({ platform, isDebug });
 
     if (res.success && res.data) {
-      await AccountActions.createAccount({
+      const res2 = await AccountActions.createAccount({
         platform,
         platformId: res.data.platformId || null,
         platformName: res.data.platformName || null,
@@ -34,6 +35,8 @@ function useAuth() {
         logs: JSON.stringify(res.data.logs || []),
       } as AccountActions.CreateAccountInput);
 
+      await handleRequestRes(res2);
+
       message.success('授权成功');
     } else {
       if (!silent) {
@@ -42,7 +45,7 @@ function useAuth() {
           content: (
             <div>
               <div>{res.message || '未知错误'}</div>
-              <pre className="whitespace-pre-wrap max-h-[500px] overflow-y-auto">
+              <pre className="max-h-[500px] overflow-y-auto whitespace-pre-wrap">
                 {JSON.stringify(res.data, null, 2)}
               </pre>
             </div>

@@ -10,7 +10,7 @@ import * as TaskActions from '../actions/task_actions';
 import { CRUD } from '../components/crud';
 import { useIsDebug } from '../components/debug';
 import { LoadingButton } from '../components/loading_button';
-import { PlatformWithName } from '../components/platform';
+import { Platform } from '../components/platform';
 import { Resource } from '../components/resource';
 import { runAutoTask } from './auto_run_task';
 
@@ -74,7 +74,7 @@ function Page() {
           dataIndex: ['account', 'platformName'],
           search: true,
           render: (_, record: TaskWithRelations) => (
-            <PlatformWithName
+            <Platform
               name={record.account.platformName || ''}
               value={record.account.platform as EnumPlatform}
               status={record.account.status as AccountStatus}

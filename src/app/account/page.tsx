@@ -4,7 +4,6 @@ import {
   EnumAccountStatus,
   EnumPlatform,
   listPlatform,
-  valueEnumAccountStatus,
   valueEnumPlatform,
 } from '@/generated/enums';
 import { Account, AccountStatus } from '@/generated/prisma';
@@ -14,7 +13,7 @@ import { useRef, useState } from 'react';
 import * as AccountActions from '../actions/account_actions';
 import { CRUD } from '../components/crud';
 import { LoadingButton } from '../components/loading_button';
-import { Platform, PlatformWithName } from '../components/platform';
+import { Platform } from '../components/platform';
 import { useAuth } from './use_auth';
 
 function Add({ refCRUD }) {
@@ -26,18 +25,18 @@ function Add({ refCRUD }) {
     <>
       <Modal title="账号" open={open} onCancel={() => setOpen(false)} destroyOnClose footer={null}>
         <Alert message="异地登录，容易掉线！" type="warning" />
-        <div className="flex flex-row flex-wrap gap-2 p-10 ">
+        <div className="flex flex-row flex-wrap gap-2 p-10">
           {listPlatform.map((item) => (
             <div
               key={item.value}
-              className="flex flex-col items-center cursor-pointer gap-2 w-[100px]"
+              className="flex w-[100px] cursor-pointer flex-col items-center gap-2"
               onClick={async () => {
                 await onAuth({ platform: item.value });
                 setOpen(false);
                 refCRUD.current?.reload();
               }}
             >
-              <Platform value={item.value} />
+              <Platform value={item.value} size={50} />
               <div>{item.label}</div>
               <div className="text-sm text-gray-500">{item.originData.desc}</div>
             </div>
@@ -73,18 +72,12 @@ function Page() {
           dataIndex: 'platformName',
           search: true,
           render: (_, record: Account) => (
-            <PlatformWithName
+            <Platform
               name={record.platformName || ''}
               value={record.platform as EnumPlatform}
               status={record.status as AccountStatus}
             />
           ),
-        },
-        {
-          title: '状态',
-          dataIndex: 'status',
-          valueEnum: valueEnumAccountStatus,
-          search: true,
         },
         {
           title: '授权时间',
@@ -98,19 +91,12 @@ function Page() {
         </div>
       )}
       request={async (params) => {
-        const res = await AccountActions.pageAccounts(params);
-        return res;
+        return await AccountActions.pageAccounts(params);
       }}
       disabledCreate
-      requestUpdate={async (values) => {
-        await AccountActions.updateAccount(values);
-      }}
+      disabledUpdate
       requestDelete={async (id) => {
-        await AccountActions.deleteAccount(id);
-      }}
-      requestDetail={async (id) => {
-        const res = await AccountActions.getAccountById(id);
-        return res;
+        return await AccountActions.deleteAccount(id);
       }}
       toolBarRenderPre={<Add refCRUD={refCRUD} />}
       renderOperate={({ record }) => {

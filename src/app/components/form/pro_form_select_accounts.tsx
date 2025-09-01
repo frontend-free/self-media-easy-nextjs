@@ -1,8 +1,9 @@
 import * as AccountActions from '@/app/actions/account_actions';
+import { handleRequestRes } from '@/app/lib/request';
 import { EnumAccountStatus, EnumPlatform } from '@/generated/enums';
 import { Account } from '@/generated/prisma';
 import { ProFormSelect } from '@ant-design/pro-components';
-import { PlatformWithName } from '../platform';
+import { Platform } from '../platform';
 
 function ProFormSelectAccounts(props) {
   /* eslint-disable-next-line */
@@ -18,7 +19,9 @@ function ProFormSelectAccounts(props) {
           status: EnumAccountStatus.AUTHED,
         });
 
-        return res.data.map((item) => ({
+        await handleRequestRes(res);
+
+        return res.data?.data.map((item) => ({
           label: item.platformName,
           value: item.id,
           originData: item,
@@ -29,10 +32,7 @@ function ProFormSelectAccounts(props) {
         optionRender: (option) => {
           const account = option.data.originData as Account;
           return (
-            <PlatformWithName
-              name={account.platformName || ''}
-              value={account.platform as EnumPlatform}
-            />
+            <Platform name={account.platformName || ''} value={account.platform as EnumPlatform} />
           );
         },
       }}

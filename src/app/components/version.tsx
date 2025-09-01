@@ -76,7 +76,7 @@ function Version() {
   }, [version]);
 
   return (
-    <div className="flex items-center gap-1 px-2 py-2">
+    <div className="flex items-center gap-1">
       <DebugWrapVersion>
         <div className="text-center">v{version}</div>
       </DebugWrapVersion>

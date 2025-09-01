@@ -9,9 +9,9 @@ export interface ServerActionResult<T> {
   message?: string;
 }
 
-export async function wrapServerAction<T>(fn: () => Promise<T>): Promise<ServerActionResult<T>> {
+export async function wrapServerAction<T>(fun: () => Promise<T>): Promise<ServerActionResult<T>> {
   try {
-    const data = await fn();
+    const data = await fun();
 
     return {
       success: true,
@@ -68,7 +68,6 @@ export interface PageParams {
 export interface PageResult<T> {
   data: T[];
   total: number;
-  success: boolean;
   pageSize: number;
   current: number;
 }
@@ -139,7 +138,6 @@ export async function pageModel<D, R>(
   return {
     data,
     total,
-    success: true,
     pageSize,
     current,
   };

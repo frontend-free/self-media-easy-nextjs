@@ -10,6 +10,7 @@ import {
   pageModel,
   prisma,
   updateModel,
+  wrapServerAction,
 } from './helper';
 
 export type CreateAccountInput = Pick<
@@ -37,102 +38,120 @@ export async function pageAccounts(params: {
   platform?: Platform;
   status?: AccountStatus;
 }) {
-  return pageModel<Prisma.AccountDelegate, Account>(
-    {
-      model: prisma.account,
-      params,
-      where: {
-        platformName: { contains: params.platformName },
-        platform: params.platform,
-        status: params.status,
+  return wrapServerAction(async () => {
+    return pageModel<Prisma.AccountDelegate, Account>(
+      {
+        model: prisma.account,
+        params,
+        where: {
+          platformName: { contains: params.platformName },
+          platform: params.platform,
+          status: params.status,
+        },
+        orderBy: { authedAt: 'desc' },
       },
-      orderBy: { authedAt: 'desc' },
-    },
-    {
-      withUser: true,
-    },
-  );
+      {
+        withUser: true,
+      },
+    );
+  });
 }
 
 export async function createAccount(data: CreateAccountInput) {
-  const { sessionUser } = await needAuth();
+  return wrapServerAction(async () => {
+    const { sessionUser } = await needAuth();
 
-  // 如果有 平台 id 则先检查是否存在
-  if (data.platform && data.platformId) {
-    const account = await findFirstModel<Prisma.AccountDelegate, Account>(
+    // 如果有 平台 id 则先检查是否存在
+    if (data.platform && data.platformId) {
+      const account = await findFirstModel<Prisma.AccountDelegate, Account>(
+        {
+          model: prisma.account,
+          where: {
+            platform: data.platform,
+            platformId: data.platformId,
+            userId: sessionUser.id,
+          },
+        },
+        {
+          withUser: true,
+        },
+      );
+
+      // 存在则更新
+      if (account) {
+        const result = await updateModel<Prisma.AccountDelegate, Account, UpdateAccountInput>(
+          {
+            model: prisma.account,
+            data: {
+              id: account.id,
+              ...data,
+            },
+          },
+          {
+            withUser: true,
+          },
+        );
+
+        return result;
+      }
+    }
+
+    // 不存在则创建
+    const result = await createModel<Prisma.AccountDelegate, Account>(
       {
         model: prisma.account,
-        where: {
-          platform: data.platform,
-          platformId: data.platformId,
-          userId: sessionUser.id,
-        },
+        data,
       },
       {
         withUser: true,
       },
     );
 
-    // 存在则更新
-    if (account) {
-      const result = await updateAccount({
-        id: account.id,
-        ...data,
-      });
-
-      return result;
-    }
-  }
-
-  // 不存在则创建
-  const result = await createModel<Prisma.AccountDelegate, Account>(
-    {
-      model: prisma.account,
-      data,
-    },
-    {
-      withUser: true,
-    },
-  );
-
-  return result;
+    return result;
+  });
 }
 
 export async function getAccountById(id: string) {
-  return getModelById<Prisma.AccountDelegate, Account>(
-    {
-      model: prisma.account,
-      id,
-      include: {
-        user: true,
+  return wrapServerAction(async () => {
+    return getModelById<Prisma.AccountDelegate, Account>(
+      {
+        model: prisma.account,
+        id,
+        include: {
+          user: true,
+        },
       },
-    },
-    {
-      withUser: true,
-    },
-  );
+      {
+        withUser: true,
+      },
+    );
+  });
 }
 
 export async function updateAccount(data: UpdateAccountInput) {
-  return updateModel<Prisma.AccountDelegate, Account, UpdateAccountInput>(
-    {
-      model: prisma.account,
-      data,
-    },
-    {
-      withUser: true,
-    },
-  );
+  return wrapServerAction(async () => {
+    return updateModel<Prisma.AccountDelegate, Account, UpdateAccountInput>(
+      {
+        model: prisma.account,
+        data,
+      },
+      {
+        withUser: true,
+      },
+    );
+  });
 }
 
 export async function deleteAccount(id: string) {
-  return deleteModel<Prisma.AccountDelegate>(
-    {
-      model: prisma.account,
-      id,
-    },
-    {
-      withUser: true,
-    },
-  );
+  return wrapServerAction(async () => {
+    return deleteModel<Prisma.AccountDelegate>(
+      {
+        model: prisma.account,
+        id,
+      },
+      {
+        withUser: true,
+      },
+    );
+  });
 }
