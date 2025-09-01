@@ -72,18 +72,16 @@ export async function pageTasks(params: {
   });
 }
 
-export async function createTasksForPublish(data: CreateTaskInput) {
-  return wrapServerAction(async () => {
-    return createModel<Prisma.TaskDelegate, Task>(
-      {
-        model: prisma.task,
-        data,
-      },
-      {
-        withUser: true,
-      },
-    );
-  });
+export async function _createTasksForPublish(data: CreateTaskInput) {
+  return createModel<Prisma.TaskDelegate, Task>(
+    {
+      model: prisma.task,
+      data,
+    },
+    {
+      withUser: true,
+    },
+  );
 }
 
 export async function getTaskById(id: string) {

@@ -1,6 +1,7 @@
 'use server';
 
-import { Prisma, Publish, Task } from '@/generated/prisma';
+import { _createTasksForPublish } from '@/app/actions/task_actions';
+import { Prisma, Publish } from '@/generated/prisma';
 import { createModel, deleteModel, needAuth, pageModel, prisma, wrapServerAction } from './helper';
 
 export type CreatePublishInput = Pick<
@@ -58,12 +59,9 @@ export async function createPublish(data: CreatePublishInput) {
     const publishId = publish.id;
 
     for (const accountId of data.accountIds) {
-      await createModel<Prisma.TaskDelegate, Task>({
-        model: prisma.task,
-        data: {
-          publishId,
-          accountId,
-        },
+      await _createTasksForPublish({
+        publishId,
+        accountId,
       });
     }
 
