@@ -1,9 +1,9 @@
 'use server';
 
-import * as UserActions from '@/app/actions/user_actions';
+import { UserDetail } from '@/app/actions/user_actions';
 import { signIn, signOut } from '@/auth';
-import { User } from '@/generated/prisma';
-import { needAuth, prisma, wrapServerAction } from './helper';
+import { Prisma, User } from '@/generated/prisma';
+import { getModelById, needAuth, prisma, wrapServerAction } from './helper';
 
 export async function login({ name, password }: { name: string; password: string }) {
   return wrapServerAction(async () => {
@@ -27,7 +27,10 @@ export async function getUser() {
   return wrapServerAction(async () => {
     const { sessionUser } = await needAuth();
 
-    const user = await UserActions.getUserById(sessionUser.id);
+    const user = await getModelById<Prisma.UserDelegate, UserDetail>({
+      model: prisma.user,
+      id: sessionUser.id,
+    });
 
     return user as User;
   });

@@ -22,10 +22,14 @@ function UsersList() {
           search: true,
         },
         {
+          title: '备注',
+          dataIndex: 'remark',
+          key: 'remark',
+        },
+        {
           title: '手机号',
           dataIndex: 'mobile',
           key: 'mobile',
-          search: true,
         },
         {
           title: '管理员',
@@ -53,32 +57,27 @@ function UsersList() {
             rules={[{ required: true }]}
             disabled={type === 'update'}
           />
-          <ProFormText name="password" label="密码" rules={[{ required: true }]} />
+          <ProFormText name="password" label="密码" rules={[{ required: type === 'create' }]} />
           <ProFormText name="nickname" label="昵称" />
           <ProFormText name="mobile" label="手机号" />
+          <ProFormText name="remark" label="备注" />
           <ProFormSwitch name="isAdmin" label="是否为管理员" />
         </>
       )}
       request={async (params) => {
-        const res = await UserActions.pageUsers(params);
-        return {
-          data: res.data,
-          total: res.total,
-          success: res.success,
-        };
+        return await UserActions.pageUsers(params);
       }}
       requestCreate={async (values) => {
-        await UserActions.createUser(values as UserActions.CreateUserInput);
+        return await UserActions.createUser(values as UserActions.CreateUserInput);
       }}
       requestDelete={async (id) => {
-        await UserActions.deleteUser(id);
+        return await UserActions.deleteUser(id);
       }}
       requestDetail={async (id) => {
-        const res = await UserActions.getUserById(id);
-        return res;
+        return await UserActions.getUserById(id);
       }}
       requestUpdate={async (values) => {
-        await UserActions.updateUser(values as UserActions.UpdateUserInput);
+        return await UserActions.updateUser(values as UserActions.UpdateUserInput);
       }}
     />
   );

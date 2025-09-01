@@ -112,7 +112,7 @@ function Page() {
               return (
                 <div>
                   {tasks.map((item) => (
-                    <div key={item.id} className="flex flex-row items-center gap-2">
+                    <div key={item.id} className="flex flex-row items-center gap-1">
                       <Platform
                         name={item.account.platformName || ''}
                         value={item.account.platform as EnumPlatform}
@@ -132,7 +132,7 @@ function Page() {
             search: true,
           },
           {
-            title: '创建时间',
+            title: '发布时间',
             dataIndex: 'createdAt',
             valueType: 'dateTime',
           },

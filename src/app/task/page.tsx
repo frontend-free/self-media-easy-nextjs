@@ -5,6 +5,7 @@ import * as TaskActions from '@/app/actions/task_actions';
 import { CRUD } from '@/components/crud';
 import { useIsDebug } from '@/components/debug';
 import { LoadingButton } from '@/components/loading_button';
+import { CheckLogs } from '@/components/logs';
 import { Platform } from '@/components/platform';
 import { Resource } from '@/components/resource';
 import { EnumPlatform, valueEnumPlatform, valueEnumTaskStatus } from '@/generated/enums';
@@ -14,13 +15,15 @@ import { App, Button } from 'antd';
 import dayjs from 'dayjs';
 import { useEffect, useRef } from 'react';
 import { globalEventKey } from '../config';
-import { runAutoTask } from './auto_run_task';
+import { useRunAutoTaskWithUI } from './auto_run_task';
 
 function Page() {
   const refCRUD = useRef<any | undefined>(undefined);
 
-  const { notification, modal } = App.useApp();
+  const { modal } = App.useApp();
   const { isDebug } = useIsDebug();
+
+  const { runTask } = useRunAutoTaskWithUI({ isDebug });
 
   useEffect(() => {
     function refreshTask() {
@@ -34,37 +37,6 @@ function Page() {
     };
   }, []);
 
-  const handlePublishTask = async (task: TaskWithRelations) => {
-    try {
-      notification.info({
-        key: task.id,
-        message: '发布中...',
-        duration: 0,
-      });
-
-      await runAutoTask({
-        id: task.id,
-        isDebug,
-        onSuccess: () => {
-          notification.success({
-            key: task.id,
-            message: '发布成功',
-            duration: 4.5,
-          });
-        },
-        onError: (error) => {
-          notification.error({
-            key: task.id,
-            message: `发布失败 ${error.message}`,
-            duration: 4.5,
-          });
-        },
-      });
-    } finally {
-      refCRUD?.current?.reload();
-    }
-  };
-
   return (
     <div className="p-4">
       <CRUD<TaskWithRelations>
@@ -76,6 +48,16 @@ function Page() {
             hidden: true,
             valueEnum: valueEnumPlatform,
             search: true,
+          },
+          {
+            title: '视频',
+            dataIndex: ['publish', 'resourceOfVideo'],
+            render: (_, record: TaskWithRelations) => (
+              <Resource
+                resourceType={PublishResourceType.VIDEO}
+                resourceOfVideo={record.publish.resourceOfVideo as string}
+              />
+            ),
           },
           {
             title: '平台账号',
@@ -94,20 +76,6 @@ function Page() {
             title: '标题',
             dataIndex: ['publish', 'title'],
             search: true,
-            render: (_, record: TaskWithRelations) => {
-              return (
-                <div>
-                  <div className="flex">
-                    标题：
-                    <div className="line-clamp-2">{record.publish.title || '-'}</div>
-                  </div>
-                  <Resource
-                    resourceType={PublishResourceType.VIDEO}
-                    resourceOfVideo={record.publish.resourceOfVideo as string}
-                  />
-                </div>
-              );
-            },
           },
           {
             title: '状态',
@@ -127,11 +95,11 @@ function Page() {
               return (
                 <div>
                   <div>
-                    发布 {record.endAt ? dayjs(record.endAt).format('YYYY-MM-DD HH:mm:ss') : ''}
+                    新建
+                    {record.createdAt ? dayjs(record.createdAt).format('YYYY-MM-DD HH:mm:ss') : ''}
                   </div>
                   <div>
-                    创建{' '}
-                    {record.createdAt ? dayjs(record.createdAt).format('YYYY-MM-DD HH:mm:ss') : ''}
+                    发布{record.endAt ? dayjs(record.endAt).format('YYYY-MM-DD HH:mm:ss') : ''}
                   </div>
                 </div>
               );
@@ -154,7 +122,7 @@ function Page() {
               });
             }}
           >
-            停止待运行任务
+            一键停止待运行任务
           </Button>
         }
         disabledCreate
@@ -172,37 +140,16 @@ function Page() {
                 }
                 onClick={async () => {
                   modal.confirm({
-                    title: '确定手动发布吗？',
-                    onOk: () => {
-                      handlePublishTask(record);
+                    title: '确定再次发布吗？',
+                    onOk: async () => {
+                      await runTask(record.id);
                     },
                   });
                 }}
               >
-                手动发布
+                再次发布
               </LoadingButton>
-              <Button
-                type="link"
-                className="!px-0"
-                onClick={() => {
-                  modal.info({
-                    title: '日志',
-                    width: 800,
-                    content: (
-                      <div>
-                        <pre className="whitespace-pre-wrap">
-                          {JSON.stringify(JSON.parse(record.logs || ''), null, 2).replace(
-                            /\\n/g,
-                            '\n',
-                          )}
-                        </pre>
-                      </div>
-                    ),
-                  });
-                }}
-              >
-                查看日志
-              </Button>
+              <CheckLogs value={record.logs} />
             </>
           );
         }}

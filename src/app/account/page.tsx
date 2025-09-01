@@ -3,6 +3,7 @@
 import * as AccountActions from '@/app/actions/account_actions';
 import { CRUD } from '@/components/crud';
 import { LoadingButton } from '@/components/loading_button';
+import { CheckLogs } from '@/components/logs';
 import { Platform } from '@/components/platform';
 import {
   EnumAccountStatus,
@@ -136,33 +137,7 @@ function Page() {
                 检查授权
               </LoadingButton>
             )}
-            <Button
-              type="link"
-              className="!px-0"
-              onClick={() => {
-                modal.info({
-                  title: '日志',
-                  width: 800,
-                  content: (
-                    <div
-                      className="overflow-y-auto"
-                      style={{
-                        maxHeight: 'calc(100vh - 300px)',
-                      }}
-                    >
-                      <pre className="whitespace-pre-wrap">
-                        {JSON.stringify(JSON.parse(record.logs || ''), null, 2).replace(
-                          /\\n/g,
-                          '\n',
-                        )}
-                      </pre>
-                    </div>
-                  ),
-                });
-              }}
-            >
-              查看日志
-            </Button>
+            <CheckLogs value={record.logs} />
           </>
         );
       }}

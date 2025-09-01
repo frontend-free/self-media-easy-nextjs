@@ -24,7 +24,7 @@ interface CRUDProps<T> {
 
   disabledUpdate?: boolean;
   requestDetail?: (id: string, data: T) => Promise<ServerActionResult<T>>;
-  requestUpdate?: (updateValues: Partial<T> & { id: string }) => Promise<ServerActionResult<void>>;
+  requestUpdate?: (updateValues: Partial<T> & { id: string }) => Promise<ServerActionResult<T>>;
 
   toolBarRenderPre?: ReactNode;
   renderOperate?: (params: { record: T }) => ReactNode;
