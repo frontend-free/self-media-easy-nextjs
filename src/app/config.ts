@@ -8,6 +8,7 @@ const globalStorageKey = {
 };
 
 const globalEventKey = {
+  AUTO_RUN_TASK: 'AUTO_RUN_TASK',
   REFRESH_TASK: 'REFRESH_TASK',
   REFRESH_PUBLISH: 'REFRESH_PUBLISH',
 };

@@ -137,7 +137,12 @@ function Page() {
         }}
         createButtonText="新建发布"
         requestCreate={async (values) => {
-          return await PublishActions.createPublish(values as PublishActions.CreatePublishInput);
+          const res = await PublishActions.createPublish(
+            values as PublishActions.CreatePublishInput,
+          );
+          // 新建后立马触发任务运行
+          window.dispatchEvent(new Event(globalEventKey.AUTO_RUN_TASK));
+          return res;
         }}
         requestDelete={async (id) => {
           return await PublishActions.deletePublish(id);

@@ -236,47 +236,46 @@ function AutoRunTaskComponent() {
 
   const { runTask } = useRunAutoTaskWithUI({ isDebug });
 
-  const autoRunTask = useCallback(() => {
+  const autoRunTask = useCallback(async () => {
     // 检查是否有任务需要运行
-    return setInterval(async () => {
-      console.log('autoRunTask', maxRunCount, runningTaskIds);
+    console.log('autoRunTask', maxRunCount, runningTaskIds);
+    if (runningTaskIds.length >= maxRunCount) {
+      return;
+    }
 
-      if (runningTaskIds.length >= maxRunCount) {
-        return;
+    // 获取任务列表
+    const tasksRes = await TaskActions.pageTasks({
+      current: 1,
+      pageSize: 10,
+      status: TaskStatus.PENDING,
+      // 账号没删除的
+      account: {
+        deletedAt: null,
+        status: AccountStatus.AUTHED,
+      },
+    });
+    await handleRequestRes(tasksRes);
+
+    const tasks = tasksRes.data?.data || [];
+
+    // 设置任务数
+    setCount(tasks.length);
+
+    // 得到需要运行的任务
+    const toRunTasks = tasks.slice(-maxRunCount - runningTaskIds.length);
+
+    // 运行啦
+    for (const task of toRunTasks) {
+      runningTaskIds.push(task.id);
+
+      try {
+        await runTask(task.id);
+      } catch (e) {
+        console.log(e);
       }
 
-      const tasksRes = await TaskActions.pageTasks({
-        current: 1,
-        pageSize: 100,
-        status: TaskStatus.PENDING,
-        // 账号没删除的
-        account: {
-          deletedAt: null,
-          status: AccountStatus.AUTHED,
-        },
-      });
-      await handleRequestRes(tasksRes);
-
-      const tasks = tasksRes.data?.data || [];
-
-      // 设置任务数
-      setCount(tasks.length);
-
-      // 获取到需要运行的任务
-      const toRunTasks = tasks.slice(-maxRunCount - runningTaskIds.length);
-
-      for (const task of toRunTasks) {
-        runningTaskIds.push(task.id);
-
-        try {
-          await runTask(task.id);
-        } catch (e) {
-          console.log(e);
-        }
-
-        runningTaskIds = runningTaskIds.filter((id) => id !== task.id);
-      }
-    }, INTERVAL);
+      runningTaskIds = runningTaskIds.filter((id) => id !== task.id);
+    }
   }, [runTask]);
 
   useEffect(() => {
@@ -285,11 +284,18 @@ function AutoRunTaskComponent() {
       return;
     }
 
-    const timer = autoRunTask() as any;
+    const timer = setInterval(() => autoRunTask(), INTERVAL) as any;
     return () => {
       clearInterval(timer);
     };
   }, []);
+
+  useEffect(() => {
+    window.addEventListener(globalEventKey.AUTO_RUN_TASK, autoRunTask);
+    return () => {
+      window.removeEventListener(globalEventKey.AUTO_RUN_TASK, autoRunTask);
+    };
+  }, [autoRunTask]);
 
   return (
     <Button
