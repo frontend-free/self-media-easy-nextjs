@@ -209,7 +209,8 @@ function useRunAutoTaskWithUI({ isDebug }: { isDebug?: boolean }) {
             key,
             message: (
               <div>
-                <div>任务运行失败 {error.message}</div>
+                <div>任务运行失败</div>
+                <div>{error.message}</div>
                 {itemNode}
               </div>
             ),
