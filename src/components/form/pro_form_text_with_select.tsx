@@ -1,7 +1,7 @@
 import * as PublishActions from '@/app/actions/publish_actions';
 import { handleRequestRes } from '@/lib/request';
 import { ProForm } from '@ant-design/pro-components';
-import { AutoComplete } from 'antd';
+import { Alert, AutoComplete } from 'antd';
 import { useEffect, useState } from 'react';
 
 interface TextWithSelectProps {
@@ -57,9 +57,11 @@ function ProFormTextWithSelect(props) {
         },
       ]}
       extra={
-        <div>
-          <div>最少6个字,最多30个字</div>
-          <div>符号仅支持书名号、引号、冒号、加号、问号、百分号、摄氏度，逗号可用空格代替</div>
+        <div className="mt-2">
+          <Alert
+            type="info"
+            message="最少6个字,最多30个字；符号仅支持书名号、引号、冒号、加号、问号、百分号、摄氏度，逗号可用空格代替"
+          />
         </div>
       }
     >

@@ -35,17 +35,6 @@ function Files(props: FilesProps) {
           </div>
         )}
       </div>
-      <div className="mt-2 flex flex-col gap-2">
-        <Alert
-          message={
-            <div>
-              {/* 抖音 16G 1h; 视频号 4G 2h; */}
-              <div>视频文件大小不超过4G，时长在60分钟以内。否则可能影响发布。</div>
-            </div>
-          }
-          type="info"
-        />
-      </div>
     </div>
   );
 }
@@ -54,7 +43,22 @@ function ProFormFiles(props) {
   /* eslint-disable-next-line */
   const { cacheForSwr, proFieldKey, onBlur, fieldProps, ...rest } = props;
   return (
-    <ProForm.Item {...rest}>
+    <ProForm.Item
+      {...rest}
+      extra={
+        <div className="mt-2 flex flex-col gap-2">
+          <Alert
+            message={
+              <div>
+                {/* 抖音 16G 1h; 视频号 4G 2h; */}
+                <div>视频文件大小不超过4G，时长在60分钟以内。否则可能影响发布。</div>
+              </div>
+            }
+            type="info"
+          />
+        </div>
+      }
+    >
       <Files {...fieldProps} />
     </ProForm.Item>
   );

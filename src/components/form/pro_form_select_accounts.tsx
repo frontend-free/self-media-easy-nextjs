@@ -58,6 +58,7 @@ function ProFormSelectAccounts(props) {
         return result;
       }}
       fieldProps={{
+        showSearch: true,
         mode: 'multiple',
         optionRender: (option) => {
           const account = option.data.originData as Account;
