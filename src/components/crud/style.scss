@@ -45,8 +45,11 @@
     }
   }
 
-  .ant-pro-table-list-toolbar {
-    margin-top: -64px;
-    pointer-events: none;
+  .ant-pro-table-list-toolbar-container {
+    padding-block: 0;
+
+    .ant-pro-table-list-toolbar-right > div {
+      margin-top: -64px;
+    }
   }
 }

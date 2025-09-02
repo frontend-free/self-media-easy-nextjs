@@ -3,11 +3,11 @@
 import * as PublishActions from '@/app/actions/publish_actions';
 import { TaskWithRelations } from '@/app/actions/task_actions';
 import { CRUD } from '@/components/crud';
+import { ProFormFiles } from '@/components/form/pro_form_files';
 import { ProFormSelectAccounts } from '@/components/form/pro_form_select_accounts';
 import { ProFormTextWithSelect } from '@/components/form/pro_form_text_with_select';
 import { Platform } from '@/components/platform';
 import { Resource } from '@/components/resource';
-import { electronApi } from '@/electron';
 import {
   EnumPlatform,
   TagTaskStatus,
@@ -15,75 +15,17 @@ import {
   valueEnumPublishType,
 } from '@/generated/enums';
 import { AccountStatus, PublishResourceType, PublishType } from '@/generated/prisma';
-import { DeleteOutlined } from '@ant-design/icons';
 import {
-  ProForm,
   ProFormField,
   ProFormRadio,
   ProFormText,
   ProFormTextArea,
 } from '@ant-design/pro-components';
-import { Alert, Button } from 'antd';
+import { Alert } from 'antd';
 import cn from 'classnames';
 import dayjs from 'dayjs';
 import { useEffect, useRef } from 'react';
 import { globalEventKey } from '../config';
-
-interface FilesProps {
-  value?: string;
-  onChange: (value?: string) => void;
-}
-
-function Files(props: FilesProps) {
-  return (
-    <div>
-      <div className="flex flex-row items-center gap-2">
-        <Button
-          onClick={async () => {
-            const res = await electronApi.showOpenDialogOfOpenFile();
-            if (res.success) {
-              props.onChange(res.data?.filePaths[0] || undefined);
-            }
-          }}
-        >
-          选择文件
-        </Button>
-
-        {props.value && (
-          <div className="flex flex-row items-center gap-2">
-            <div className="">{props.value}</div>
-            <Button
-              type="text"
-              icon={<DeleteOutlined />}
-              onClick={() => props.onChange(undefined)}
-            />
-          </div>
-        )}
-      </div>
-      <div className="mt-2 flex flex-col gap-2">
-        <Alert
-          message={
-            <div>
-              {/* 抖音 16G 1h; 视频号 4G 2h; */}
-              <div>1. 视频文件大小不超过4G，时长在60分钟以内。否则可能影响发布。</div>
-            </div>
-          }
-          type="info"
-        />
-      </div>
-    </div>
-  );
-}
-
-function ProFormFiles(props) {
-  /* eslint-disable-next-line */
-  const { cacheForSwr, proFieldKey, onBlur, fieldProps, ...rest } = props;
-  return (
-    <ProForm.Item {...rest}>
-      <Files {...fieldProps} />
-    </ProForm.Item>
-  );
-}
 
 function Page() {
   const refCRUD = useRef<any | undefined>(undefined);
@@ -103,7 +45,7 @@ function Page() {
   return (
     <div>
       <div className="px-4 pt-4">
-        <Alert message={<div>新建发布后，会自动排队并运行发布任务，请等待。</div>} type="info" />
+        <Alert message={<div>新建发布后，会自动排队发布任务，请耐心等待。</div>} type="info" />
       </div>
       <CRUD
         ref={refCRUD}

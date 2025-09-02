@@ -11,7 +11,7 @@ function ResourceVideo({ resourceOfVideo }: { resourceOfVideo?: string }) {
 
   return (
     <Tooltip title={resourceOfVideo}>
-      <div className="max-w-[150px] whitespace-normal break-words">{fileName}</div>
+      <div className="max-w-[150px] break-words whitespace-normal">{fileName}</div>
     </Tooltip>
   );
 }
@@ -44,4 +44,4 @@ function getFileName(resourceOfVideo: string) {
   return fileNameWithExtension.split('.').slice(0, -1).join('.');
 }
 
-export { getFileName, Resource };
+export { getFileName, getFileNameWithExtension, Resource };

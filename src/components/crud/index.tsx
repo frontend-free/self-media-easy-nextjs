@@ -7,7 +7,7 @@ import type {
   ProFormInstance,
   ProTableProps,
 } from '@ant-design/pro-components';
-import { ModalForm, ProForm } from '@ant-design/pro-components';
+import { DrawerForm, ModalForm, ProForm } from '@ant-design/pro-components';
 import { useDebounceFn, useUpdateEffect } from 'ahooks';
 import { App, Button } from 'antd';
 import classNames from 'classnames';
@@ -64,7 +64,7 @@ function Add<T>({
   const { message } = App.useApp();
 
   return (
-    <ModalForm
+    <DrawerForm
       title={createButtonText}
       autoFocusFirstInput
       trigger={<Button type="primary">{createButtonText}</Button>}
@@ -77,12 +77,12 @@ function Add<T>({
 
         return true;
       })}
-      modalProps={{
+      drawerProps={{
         destroyOnHidden: true,
       }}
     >
       {detailForm && detailForm({ type: 'create' })}
-    </ModalForm>
+    </DrawerForm>
   );
 }
 

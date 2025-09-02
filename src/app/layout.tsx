@@ -96,7 +96,7 @@ function RootLayout({ children }: { children: React.ReactNode }) {
             <AppMenu items={menuItems} />
           </div>
         }
-        childrenClassName="m-2 rounded-lg bg-white"
+        childrenClassName="my-2 mr-2 rounded-lg bg-white"
       >
         {children}
       </PageLayout>
