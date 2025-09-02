@@ -67,7 +67,6 @@ function Page() {
           {
             title: '平台账号',
             dataIndex: ['account', 'platformName'],
-            search: true,
             render: (_, record: TaskWithRelations) => (
               <Platform
                 name={record.account.platformName || ''}
@@ -86,7 +85,6 @@ function Page() {
             title: '状态',
             dataIndex: 'status',
             valueEnum: valueEnumTaskStatus,
-            search: true,
             render: (_, record: TaskWithRelations) => {
               return <TagTaskStatus value={record.status} />;
             },

@@ -9,6 +9,7 @@ import type {
 } from '@ant-design/pro-components';
 import { ModalForm } from '@ant-design/pro-components';
 import { App, Button } from 'antd';
+import classNames from 'classnames';
 import dynamic from 'next/dynamic';
 import { Fragment, RefObject, useCallback, useImperativeHandle, useMemo, useRef } from 'react';
 import { LoadingButton } from '../loading_button';
@@ -305,7 +306,7 @@ function CRUD<T extends Record<string, any>>({
   });
 
   return (
-    <div className="cb-custom-crud">
+    <div className={classNames('cb-custom-crud')}>
       <ProTable<T>
         cardBordered={false}
         actionRef={actionRef}
