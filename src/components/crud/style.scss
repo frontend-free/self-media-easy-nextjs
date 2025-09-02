@@ -12,11 +12,18 @@
   }
 
   .ant-pro-query-filter-container {
-    .ant-col.ant-col-6,
-    .ant-col.ant-col-8,
-    .ant-col.ant-col-12 {
-      flex: none !important;
-      min-width: 150px !important;
+    .ant-col {
+      &.ant-col-6,
+      &.ant-col-8,
+      &.ant-col-12,
+      &.ant-col-16 {
+        flex: none !important;
+        min-width: 150px !important;
+
+        &:not(.ant-pro-query-filter-row-split) {
+          min-width: auto !important;
+        }
+      }
     }
 
     .ant-col.ant-col-offset-8,
@@ -38,7 +45,7 @@
     }
   }
 
-  .ant-pro-table-list-toolbar-container {
+  .ant-pro-table-list-toolbar {
     margin-top: -64px;
     pointer-events: none;
   }

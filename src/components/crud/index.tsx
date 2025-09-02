@@ -7,7 +7,8 @@ import type {
   ProFormInstance,
   ProTableProps,
 } from '@ant-design/pro-components';
-import { ModalForm } from '@ant-design/pro-components';
+import { ModalForm, ProForm } from '@ant-design/pro-components';
+import { useDebounceFn, useUpdateEffect } from 'ahooks';
 import { App, Button } from 'antd';
 import classNames from 'classnames';
 import dynamic from 'next/dynamic';
@@ -142,6 +143,31 @@ function Update<T>({
       {detailForm && detailForm({ type: 'update' })}
     </ModalForm>
   );
+}
+
+function useSearch() {
+  const [form] = ProForm.useForm();
+
+  const values = ProForm.useWatch([], form);
+
+  const valuesString = useMemo(() => {
+    return JSON.stringify(values || {});
+  }, [values]);
+
+  const doSearch = useDebounceFn(
+    () => {
+      form.submit();
+    },
+    {
+      wait: 500,
+    },
+  );
+
+  useUpdateEffect(() => {
+    doSearch.run(values);
+  }, [valuesString]);
+
+  return { form };
 }
 
 function CRUD<T extends Record<string, any>>({
@@ -305,6 +331,8 @@ function CRUD<T extends Record<string, any>>({
     actionRef,
   });
 
+  const { form } = useSearch();
+
   return (
     <div className={classNames('cb-custom-crud')}>
       <ProTable<T>
@@ -329,6 +357,10 @@ function CRUD<T extends Record<string, any>>({
         search={{
           labelWidth: 'auto',
           defaultCollapsed: false,
+          optionRender: (searchConfig, props, dom) => {
+            return [...dom.slice(1)];
+          },
+          form,
         }}
         scroll={getTableScroll(newColumns)}
         rowSelection={rowSelection}
